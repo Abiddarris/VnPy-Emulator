@@ -1,0 +1,35 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/build.gradle",
+      "selection": {
+        "end": {
+          "column": 56,
+          "index": 227,
+          "line": 3
+        },
+        "start": {
+          "column": 56,
+          "index": 227,
+          "line": 3
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/build.gradle",
+      "selection": {
+        "end": {
+          "column": 0,
+          "index": 46,
+          "line": 4
+        },
+        "start": {
+          "column": 0,
+          "index": 46,
+          "line": 4
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/build.gradle"
+}
