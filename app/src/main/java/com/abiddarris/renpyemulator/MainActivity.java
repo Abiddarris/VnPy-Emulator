@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
 
         // set content view to binding's root
         setContentView(binding.getRoot());
-        startActivity(new Intent(this, PythonSDLActivity.class));
+        
+        //startActivity(new Intent(this, PythonSDLActivity.class));
     }
     
     @Override
