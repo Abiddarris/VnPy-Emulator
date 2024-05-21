@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace 'com.android.vending.expansion.downloader'
+    namespace 'com.google.android.vending.licensing'
     compileSdk 33
     buildToolsVersion '34.0.4'
 
     defaultConfig {
-        minSdk 4
+        minSdk 3
         targetSdk 15
     }
 
@@ -26,6 +26,6 @@ android {
 }
 
 dependencies {
-    implementation project(":market_licensing")
+    
 }
 
