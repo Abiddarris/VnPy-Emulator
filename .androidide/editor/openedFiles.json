@@ -14,7 +14,22 @@
           "line": 21
         }
       }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/.gitignore",
+      "selection": {
+        "end": {
+          "column": 12,
+          "index": 1451,
+          "line": 85
+        },
+        "start": {
+          "column": 12,
+          "index": 1451,
+          "line": 85
+        }
+      }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/MainActivity.java"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/.gitignore"
 }
