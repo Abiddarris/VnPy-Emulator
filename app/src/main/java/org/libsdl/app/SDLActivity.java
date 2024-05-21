@@ -81,6 +81,7 @@ public class SDLActivity extends Activity {
     // Load the .so
     public void loadLibraries() {
        for (String lib : getLibraries()) {
+          System.out.println(lib);  
           System.loadLibrary(lib);
        }
     }

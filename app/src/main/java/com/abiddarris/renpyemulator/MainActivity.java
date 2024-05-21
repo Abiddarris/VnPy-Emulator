@@ -1,9 +1,11 @@
 
 package com.abiddarris.renpyemulator;
 
+import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.abiddarris.renpyemulator.databinding.ActivityMainBinding;
+import org.renpy.android.PythonSDLActivity;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -17,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set content view to binding's root
         setContentView(binding.getRoot());
+        startActivity(new Intent(this, PythonSDLActivity.class));
     }
     
     @Override
