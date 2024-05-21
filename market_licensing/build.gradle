@@ -23,10 +23,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
-    implementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    implementation 'org.apache.httpcomponents:httpcore:4.4.14'
+    
 }
 
