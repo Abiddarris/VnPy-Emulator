@@ -44,7 +44,67 @@
           "line": 558
         }
       }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/layout/downloader.xml",
+      "selection": {
+        "end": {
+          "column": 29,
+          "index": 3508,
+          "line": 82
+        },
+        "start": {
+          "column": 29,
+          "index": 3508,
+          "line": 82
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/values/strings.xml",
+      "selection": {
+        "end": {
+          "column": 5,
+          "index": 929,
+          "line": 16
+        },
+        "start": {
+          "column": 5,
+          "index": 929,
+          "line": 16
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/org/renpy/android/DownloaderActivity.java",
+      "selection": {
+        "end": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/market_apk_expansion/src/main/res/values/strings.xml",
+      "selection": {
+        "end": {
+          "column": 63,
+          "index": 2578,
+          "line": 38
+        },
+        "start": {
+          "column": 5,
+          "index": 2461,
+          "line": 37
+        }
+      }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/org/renpy/android/Constants.java"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/values/strings.xml"
 }
