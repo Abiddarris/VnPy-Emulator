@@ -1,0 +1,50 @@
+{
+  "allFiles": [
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/org/renpy/android/Constants.java",
+      "selection": {
+        "end": {
+          "column": 118,
+          "index": 262,
+          "line": 5
+        },
+        "start": {
+          "column": 118,
+          "index": 262,
+          "line": 5
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/build.gradle",
+      "selection": {
+        "end": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        },
+        "start": {
+          "column": 0,
+          "index": 0,
+          "line": 0
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/build.py",
+      "selection": {
+        "end": {
+          "column": 105,
+          "index": 13990,
+          "line": 558
+        },
+        "start": {
+          "column": 35,
+          "index": 13920,
+          "line": 558
+        }
+      }
+    }
+  ],
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/org/renpy/android/Constants.java"
+}
