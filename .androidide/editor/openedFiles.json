@@ -1,35 +1,35 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/MainActivity.java",
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/LICENSE",
       "selection": {
         "end": {
-          "column": 8,
-          "index": 685,
-          "line": 21
+          "column": 32,
+          "index": 35131,
+          "line": 673
         },
         "start": {
-          "column": 8,
-          "index": 685,
-          "line": 21
+          "column": 32,
+          "index": 35131,
+          "line": 673
         }
       }
     },
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/.gitignore",
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/MainActivity.java",
       "selection": {
         "end": {
-          "column": 12,
-          "index": 1451,
-          "line": 85
+          "column": 24,
+          "index": 467,
+          "line": 9
         },
         "start": {
-          "column": 12,
-          "index": 1451,
-          "line": 85
+          "column": 24,
+          "index": 467,
+          "line": 9
         }
       }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/.gitignore"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/MainActivity.java"
 }
