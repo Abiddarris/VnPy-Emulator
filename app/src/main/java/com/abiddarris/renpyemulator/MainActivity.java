@@ -34,17 +34,17 @@ import java.util.List;
 import org.renpy.android.PythonSDLActivity;
 
 public class MainActivity extends AppCompatActivity {
+   
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Inflate and get instance of binding
+        
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-
-        // set content view to binding's root
+        
         setContentView(binding.getRoot());
+        setSupportActionBar(binding.toolbar);
         
         //Quick fix
         try {
