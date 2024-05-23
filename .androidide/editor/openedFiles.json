@@ -1,35 +1,35 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/LICENSE",
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/MainActivity.java",
       "selection": {
         "end": {
-          "column": 32,
-          "index": 35131,
-          "line": 673
+          "column": 28,
+          "index": 2544,
+          "line": 71
         },
         "start": {
-          "column": 32,
-          "index": 35131,
-          "line": 673
+          "column": 28,
+          "index": 2544,
+          "line": 71
         }
       }
     },
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/MainActivity.java",
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/layout/activity_main.xml",
       "selection": {
         "end": {
-          "column": 24,
-          "index": 467,
-          "line": 9
+          "column": 49,
+          "index": 492,
+          "line": 10
         },
         "start": {
-          "column": 24,
-          "index": 467,
-          "line": 9
+          "column": 49,
+          "index": 492,
+          "line": 10
         }
       }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/MainActivity.java"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/layout/activity_main.xml"
 }
