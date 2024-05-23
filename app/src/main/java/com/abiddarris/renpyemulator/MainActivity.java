@@ -20,10 +20,12 @@ package com.abiddarris.renpyemulator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.abiddarris.renpyemulator.databinding.ActivityMainBinding;
+import com.abiddarris.renpyemulator.dialogs.AddNewGameDialog;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -73,6 +75,19 @@ public class MainActivity extends AppCompatActivity {
        
         return true;
     }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.add_new_game:
+                new AddNewGameDialog()
+                    .show(getSupportFragmentManager(), null);
+                return true; 
+        }
+        
+        return false;
+    }
+    
     
     @Override
     protected void onDestroy() {
