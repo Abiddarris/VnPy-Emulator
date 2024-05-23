@@ -26,8 +26,11 @@ public class BaseDialogFragment extends DialogFragment {
     
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
-        return new MaterialAlertDialogBuilder(getContext())
-            .create();
+        return createDialog().create();
+    }
+    
+    protected MaterialAlertDialogBuilder createDialog() {
+    	return new MaterialAlertDialogBuilder(getContext());
     }
     
 }
