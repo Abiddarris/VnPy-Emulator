@@ -17,5 +17,23 @@
  ***********************************************************************************/
 package com.abiddarris.renpyemulator.dialogs;
 
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.MainThread;
+import androidx.annotation.Nullable;
+
+import com.abiddarris.renpyemulator.R;
+
 public class AddNewGameDialog extends BaseDialogFragment {
+    
+    @Override
+    @MainThread
+    @Nullable
+    public View onCreateView(LayoutInflater arg0, ViewGroup arg1, Bundle arg2) {
+        getDialog().setTitle(R.string.add_new_game);
+        return super.onCreateView(arg0, arg1, arg2);
+    }
+    
 }
