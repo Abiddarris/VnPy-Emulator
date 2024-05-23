@@ -16,4 +16,6 @@
     
     <string name="kilobytes_per_second">%1$s KB/s</string>
     <string name="time_remaining">Time remaining: %1$s</string>
+    
+    <string name="add_new_game">Add new game</string>
 </resources>

@@ -19,6 +19,7 @@ package com.abiddarris.renpyemulator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
@@ -64,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
                     .show();
             }
         });
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
+       
+        return true;
     }
     
     @Override
