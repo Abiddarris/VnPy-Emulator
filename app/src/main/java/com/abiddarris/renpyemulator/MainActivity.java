@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         
         //Quick fix
         try {
-           new File(getFilesDir(), "python")
+           new File(getExternalMediaDirs()[0], "python")
                 .createNewFile();
         } catch (IOException e) {
             throw new RuntimeException(e);

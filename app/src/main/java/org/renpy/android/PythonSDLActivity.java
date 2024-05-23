@@ -247,26 +247,22 @@ public class PythonSDLActivity extends SDLActivity {
         mActivity = this;
 
         resourceManager = new ResourceManager(this);
-
+        
         File oldExternalStorage = new File(Environment.getExternalStorageDirectory(), getPackageName());
-        File externalStorage = getExternalFilesDir(null);
+        File externalStorage = getExternalMediaDirs()[0];
         File path;
-
+        
         if (externalStorage == null) {
             externalStorage = oldExternalStorage;
         }
+        
+        path = externalStorage;
 
-        if (resourceManager.getString("public_version") != null) {
-            path = externalStorage;
-        } else {
-            path = getFilesDir();
-        }
-
-        unpackData("private", getFilesDir());
+        unpackData("private", path);
         unpackData("public", externalStorage);
 
         nativeSetEnv("ANDROID_ARGUMENT", path.getAbsolutePath());
-        nativeSetEnv("ANDROID_PRIVATE", getFilesDir().getAbsolutePath());
+        nativeSetEnv("ANDROID_PRIVATE", path.getAbsolutePath());
         nativeSetEnv("ANDROID_PUBLIC",  externalStorage.getAbsolutePath());
         nativeSetEnv("ANDROID_OLD_PUBLIC", oldExternalStorage.getAbsolutePath());
 
@@ -291,8 +287,8 @@ public class PythonSDLActivity extends SDLActivity {
         }
 
         nativeSetEnv("PYTHONOPTIMIZE", "2");
-        nativeSetEnv("PYTHONHOME", getFilesDir().getAbsolutePath());
-        nativeSetEnv("PYTHONPATH", path.getAbsolutePath() + ":" + getFilesDir().getAbsolutePath() + "/lib");
+        nativeSetEnv("PYTHONHOME", path.getAbsolutePath());
+        nativeSetEnv("PYTHONPATH", path.getAbsolutePath() + ":" + path.getAbsolutePath() + "/lib");
 
         Log.v("python", "Finished preparePython.");
 
