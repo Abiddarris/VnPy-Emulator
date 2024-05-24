@@ -33,7 +33,6 @@ public class ApplyPatchDialog extends BaseDialogFragment {
         return super.onCreateDialog(bundle);
     }
     
-    
     @Override
     protected MaterialAlertDialogBuilder createDialog() {
         return super.createDialog()

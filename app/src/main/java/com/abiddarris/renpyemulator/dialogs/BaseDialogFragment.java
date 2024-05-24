@@ -37,7 +37,10 @@ public class BaseDialogFragment extends DialogFragment {
             Resources resources = getResources();
             int padding = (int)resources.getDimension(R.dimen.abc_dialog_padding_material);
             int paddingTop = (int)resources.getDimension(R.dimen.abc_dialog_padding_top_material);
-            view.setPadding(padding, padding, paddingTop, 0);
+            view.setPadding(view.getPaddingLeft() + padding, 
+                view.getPaddingRight() + padding, 
+                view.getPaddingTop() + paddingTop,
+                view.getPaddingBottom() + (hasButton() ? 0 : (int)resources.getDimension(R.dimen.abc_dialog_list_padding_bottom_no_buttons)));
             
             builder.setView(view);
         }
@@ -53,4 +56,7 @@ public class BaseDialogFragment extends DialogFragment {
         return null;
     }
     
+    protected boolean hasButton() {
+        return false;
+    }
 }

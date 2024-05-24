@@ -46,6 +46,11 @@ public class AddNewGameDialog extends BaseDialogFragment {
         
         return binding.getRoot();
     }
+    
+    @Override
+    protected boolean hasButton() {
+        return true;
+    }
   
     @SuppressWarnings("deprecation")
     private String getDefaultLocation() {
