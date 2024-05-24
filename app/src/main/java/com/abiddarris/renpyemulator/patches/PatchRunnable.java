@@ -30,12 +30,6 @@ import java.util.regex.Pattern;
 
 public class PatchRunnable implements BaseRunnable {
     
-    private static final Pattern VERSION_PATTERN = Pattern.compile(
-        "version_tuple\\s*=\\s*\\(([^)]*)\\)");
-    
-    private static final Pattern VC_VERSION_PATTERN = Pattern.compile(
-        "vc_version\\s*=\\s*(.*)");
-    
     private ApplyPatchDialog dialog;
     private Context applicationContext;
     private File folderToPatch;
@@ -55,44 +49,9 @@ public class PatchRunnable implements BaseRunnable {
         setMessage(applicationContext.getString(
                 R.string.patching) + " " + folderToPatch);
         
-        File initFile = new File(folderToPatch, "renpy/__init__.py");
-        if(!initFile.isFile()) {
-            return;
-        }
+        String version = RenPyParser.getVersion(folderToPatch);
         
-        BufferedReader reader = new BufferedReader(
-            new FileReader(initFile));
-        
-        StringBuilder builder = new StringBuilder();
-        reader.lines()
-            .forEach(builder::append);
-        reader.close();
-        
-        Matcher matcher = VERSION_PATTERN.matcher(builder.toString());
-        if(!matcher.find()) {
-            return;
-        }
-        
-        String version = matcher.group(1);
-        if(version.contains("vc_version")) {
-            builder.delete(0, builder.length());
-            
-            reader = new BufferedReader(new FileReader(
-                new File(folderToPatch, "renpy/vc_version.py")));
-            reader.lines()
-                .forEach(builder::append);
-            reader.close();
-            
-            matcher = VC_VERSION_PATTERN.matcher(builder.toString());
-            if(!matcher.find()) {
-                return;
-            }
-            version = version.replace("vc_version", matcher.group(1));
-        }
-        version = version.replace(",", "")
-            .replace(" ", ".");
-        
-        setMessage(version);
+        setMessage(version == null ? "null" : version);
     }
     
     private void setMessage(String message) {
