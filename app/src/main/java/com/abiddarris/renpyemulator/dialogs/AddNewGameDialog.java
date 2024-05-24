@@ -31,7 +31,9 @@ public class AddNewGameDialog extends BaseDialogFragment {
     @Override
     protected MaterialAlertDialogBuilder createDialog() {
         return super.createDialog()
-            .setTitle(R.string.add_new_game);
+            .setTitle(R.string.add_new_game)
+            .setNegativeButton(android.R.string.cancel, (d,w) -> {})
+            .setPositiveButton(android.R.string.ok, (d,w) -> {});
     }
     
     @Override

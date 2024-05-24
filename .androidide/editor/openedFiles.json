@@ -14,7 +14,22 @@
           "line": 0
         }
       }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/AddNewGameDialog.java",
+      "selection": {
+        "end": {
+          "column": 44,
+          "index": 1470,
+          "line": 34
+        },
+        "start": {
+          "column": 44,
+          "index": 1470,
+          "line": 34
+        }
+      }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/BaseDialogFragment.java"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/AddNewGameDialog.java"
 }
