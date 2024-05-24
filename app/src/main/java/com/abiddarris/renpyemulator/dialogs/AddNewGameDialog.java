@@ -17,14 +17,13 @@
  ***********************************************************************************/
 package com.abiddarris.renpyemulator.dialogs;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.content.Context;
+import android.os.Build;
 import android.view.View;
-import android.view.ViewGroup;
-import androidx.annotation.MainThread;
-import androidx.annotation.Nullable;
 import com.abiddarris.renpyemulator.R;
+import com.abiddarris.renpyemulator.databinding.AddNewGameLayoutBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import java.io.File;
 
 public class AddNewGameDialog extends BaseDialogFragment {
     
@@ -38,8 +37,28 @@ public class AddNewGameDialog extends BaseDialogFragment {
     
     @Override
     public View createView() {
-        return getLayoutInflater().inflate(
-            R.layout.add_new_game_layout, null);
+        AddNewGameLayoutBinding binding = AddNewGameLayoutBinding.inflate(getLayoutInflater());
+        binding.pathEditText.addOnEditTextAttachedListener(v -> v.getEditText().setText(getDefaultLocation()));
+        
+        return binding.getRoot();
+    }
+  
+    @SuppressWarnings("deprecation")
+    private String getDefaultLocation() {
+    	Context context = getContext();
+        File[] files = null;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && "samsung".equalsIgnoreCase(Build.MANUFACTURER)) {
+            files = context.getExternalMediaDirs();
+            
+            for(var file : files) {
+                if(file != null) {
+                    return file.getAbsolutePath();
+                }
+            }
+        } 
+        
+        File file = context.getExternalFilesDir(null);
+        return file == null ? "" : file.getAbsolutePath();
     }
     
 }
