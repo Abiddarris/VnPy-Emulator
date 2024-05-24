@@ -18,19 +18,39 @@
 package com.abiddarris.renpyemulator.dialogs;
 
 import android.app.Dialog;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import androidx.fragment.app.DialogFragment;
+import com.abiddarris.renpyemulator.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class BaseDialogFragment extends DialogFragment {
     
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
-        return createDialog().create();
+        MaterialAlertDialogBuilder builder = createDialog();
+        View view = createView();
+        if(view != null) {
+            Resources resources = getResources();
+            int padding = (int)resources.getDimension(R.dimen.abc_dialog_padding_material);
+            int paddingTop = (int)resources.getDimension(R.dimen.abc_dialog_padding_top_material);
+            view.setPadding(padding, padding, paddingTop, 0);
+            
+            builder.setView(view);
+        }
+        
+        return builder.create();
     }
     
     protected MaterialAlertDialogBuilder createDialog() {
     	return new MaterialAlertDialogBuilder(getContext());
+    }
+    
+    protected View createView() {
+        return null;
     }
     
 }

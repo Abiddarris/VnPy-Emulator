@@ -31,8 +31,13 @@ public class AddNewGameDialog extends BaseDialogFragment {
     @Override
     protected MaterialAlertDialogBuilder createDialog() {
         return super.createDialog()
-            .setTitle(R.string.add_new_game)
-            .setView(R.layout.add_new_game_layout);
+            .setTitle(R.string.add_new_game);
+    }
+    
+    @Override
+    public View createView() {
+        return getLayoutInflater().inflate(
+            R.layout.add_new_game_layout, null);
     }
     
 }
