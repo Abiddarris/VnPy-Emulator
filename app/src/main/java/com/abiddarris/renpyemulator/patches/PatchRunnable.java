@@ -18,6 +18,7 @@
 package com.abiddarris.renpyemulator.patches;
 
 import android.content.Context;
+import com.abiddarris.renpyemulator.R;
 import com.abiddarris.renpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.renpyemulator.utils.BaseRunnable;
 import java.io.IOException;
@@ -37,7 +38,7 @@ public class PatchRunnable implements BaseRunnable {
     
     @Override
     public void execute() throws IOException {
-        setMessage("Finding path");
+        setMessage(applicationContext.getString(R.string.patching));
     }
     
     private void setMessage(String message) {
