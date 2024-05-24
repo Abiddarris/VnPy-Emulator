@@ -19,4 +19,5 @@
     
     <string name="add_new_game">Add new game</string>
     <string name="location_to_game">Location to game (Absolute path)</string>
+    <string name="apply_patch_dialog_title">Applying Patch...</string>
 </resources>

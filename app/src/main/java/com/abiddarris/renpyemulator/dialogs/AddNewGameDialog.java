@@ -20,6 +20,7 @@ package com.abiddarris.renpyemulator.dialogs;
 import android.content.Context;
 import android.os.Build;
 import android.view.View;
+import androidx.fragment.app.DialogFragment;
 import com.abiddarris.renpyemulator.R;
 import com.abiddarris.renpyemulator.databinding.AddNewGameLayoutBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -32,7 +33,10 @@ public class AddNewGameDialog extends BaseDialogFragment {
         return super.createDialog()
             .setTitle(R.string.add_new_game)
             .setNegativeButton(android.R.string.cancel, (d,w) -> {})
-            .setPositiveButton(android.R.string.ok, (d,w) -> {});
+            .setPositiveButton(android.R.string.ok, (d,w) -> {
+                var dialog = new ApplyPatchDialog();
+                dialog.show(getParentFragmentManager(), null);
+            });
     }
     
     @Override

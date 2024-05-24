@@ -1,17 +1,32 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/BaseDialogFragment.java",
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/layout/dialog_apply_patch.xml",
       "selection": {
         "end": {
-          "column": 0,
-          "index": 0,
-          "line": 0
+          "column": 40,
+          "index": 216,
+          "line": 4
         },
         "start": {
-          "column": 0,
-          "index": 0,
-          "line": 0
+          "column": 40,
+          "index": 216,
+          "line": 4
+        }
+      }
+    },
+    {
+      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/ApplyPatchDialog.java",
+      "selection": {
+        "end": {
+          "column": 7,
+          "index": 1331,
+          "line": 31
+        },
+        "start": {
+          "column": 7,
+          "index": 1331,
+          "line": 31
         }
       }
     },
@@ -19,17 +34,17 @@
       "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/AddNewGameDialog.java",
       "selection": {
         "end": {
-          "column": 54,
-          "index": 2408,
-          "line": 59
+          "column": 85,
+          "index": 856,
+          "line": 16
         },
         "start": {
-          "column": 54,
-          "index": 2408,
-          "line": 59
+          "column": 0,
+          "index": 0,
+          "line": 0
         }
       }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/AddNewGameDialog.java"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/ApplyPatchDialog.java"
 }
