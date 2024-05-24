@@ -9,6 +9,7 @@
     <com.google.android.material.textfield.TextInputLayout
          android:layout_height="wrap_content"
          android:layout_width="match_parent"
+         android:hint="@string/location_to_game"
          android:id="@+id/pathEditText">
 
         <com.google.android.material.textfield.TextInputEditText

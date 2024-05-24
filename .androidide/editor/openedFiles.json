@@ -1,65 +1,20 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/AddNewGameDialog.java",
-      "selection": {
-        "end": {
-          "column": 45,
-          "index": 1426,
-          "line": 33
-        },
-        "start": {
-          "column": 45,
-          "index": 1426,
-          "line": 33
-        }
-      }
-    },
-    {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/layout/add_new_game_layout.xml",
-      "selection": {
-        "end": {
-          "column": 48,
-          "index": 601,
-          "line": 14
-        },
-        "start": {
-          "column": 48,
-          "index": 601,
-          "line": 14
-        }
-      }
-    },
-    {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/res/layout/activity_main.xml",
-      "selection": {
-        "end": {
-          "column": 0,
-          "index": 0,
-          "line": 0
-        },
-        "start": {
-          "column": 0,
-          "index": 0,
-          "line": 0
-        }
-      }
-    },
-    {
       "file": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/BaseDialogFragment.java",
       "selection": {
         "end": {
-          "column": 4,
-          "index": 2031,
-          "line": 50
+          "column": 0,
+          "index": 0,
+          "line": 0
         },
         "start": {
-          "column": 4,
-          "index": 2031,
-          "line": 50
+          "column": 0,
+          "index": 0,
+          "line": 0
         }
       }
     }
   ],
-  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/AddNewGameDialog.java"
+  "selectedFile": "/storage/emulated/0/AndroidIDEProjects/Renpy_Emulator/Renpy Emulator/app/src/main/java/com/abiddarris/renpyemulator/dialogs/BaseDialogFragment.java"
 }
