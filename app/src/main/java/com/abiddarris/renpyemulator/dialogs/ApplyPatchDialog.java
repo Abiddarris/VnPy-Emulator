@@ -20,17 +20,35 @@ package com.abiddarris.renpyemulator.dialogs;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
+import androidx.annotation.CallSuper;
+import androidx.annotation.MainThread;
 import com.abiddarris.renpyemulator.R;
 import com.abiddarris.renpyemulator.databinding.DialogApplyPatchBinding;
+import com.abiddarris.renpyemulator.patches.PatchRunnable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ApplyPatchDialog extends BaseDialogFragment {
+    
+    private static final ExecutorService PATCH_THREAD = Executors.newSingleThreadExecutor();
+    private static PatchRunnable runnable;
+    
+    private DialogApplyPatchBinding binding;
     
     @Override
     public Dialog onCreateDialog(Bundle bundle) {
         setCancelable(false);
        
-        return super.onCreateDialog(bundle);
+        var dialog = super.onCreateDialog(bundle);
+        
+        if(runnable == null) {
+            PATCH_THREAD.submit(runnable = new PatchRunnable(this));
+        } else {
+            runnable.setDialog(this);
+        }
+        
+        return dialog;
     }
     
     @Override
@@ -41,9 +59,25 @@ public class ApplyPatchDialog extends BaseDialogFragment {
     
     @Override
     protected View createView() {
-        DialogApplyPatchBinding binding = DialogApplyPatchBinding.inflate(getLayoutInflater());
+        binding = DialogApplyPatchBinding.inflate(getLayoutInflater());
         
         return binding.getRoot();
+    }
+    
+    @Override
+    @MainThread
+    @CallSuper
+    public void onDestroy() {
+        if(runnable != null) {
+            runnable.setDialog(null);
+        }
+        
+        super.onDestroy();
+    }
+    
+    
+    public void setMessage(String message) {
+    	binding.message.setText(message);
     }
     
 }
