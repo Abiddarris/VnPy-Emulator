@@ -25,8 +25,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class PatchRunnable implements BaseRunnable {
     
@@ -49,9 +52,33 @@ public class PatchRunnable implements BaseRunnable {
         setMessage(applicationContext.getString(
                 R.string.patching) + " " + folderToPatch);
         
+        var files = folderToPatch.listFiles();
+        if(files == null) {
+            // TODO: Add error handling
+            return;
+        }
+        
+        List<File> scripts = new ArrayList<>();
+        for(var file : files) {
+        	if(file.getName().endsWith(".py")) {
+                scripts.add(file);
+            }
+        }
+        
+        if(scripts.size() < 1) {
+            // TODO: Add error handling
+        }
+        
+        File script = null;
+        if(scripts.size() > 1) {
+            // TODO: open dialog for users to choose
+        } else {
+            script = scripts.get(0);
+        }
+        
         String version = RenPyParser.getVersion(folderToPatch);
         
-        setMessage(version == null ? "null" : version);
+        setMessage(script == null ? "null" : script.getPath());
     }
     
     private void setMessage(String message) {
