@@ -21,24 +21,29 @@ import android.content.Context;
 import com.abiddarris.renpyemulator.R;
 import com.abiddarris.renpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.renpyemulator.utils.BaseRunnable;
+import java.io.File;
 import java.io.IOException;
 
 public class PatchRunnable implements BaseRunnable {
     
     private ApplyPatchDialog dialog;
     private Context applicationContext;
+    private File folderToPatch;
     private String message;
     
     public PatchRunnable(ApplyPatchDialog dialog) {
         this.dialog = dialog;
         
+        folderToPatch = new File(dialog.getArguments()
+            .getString(ApplyPatchDialog.FOLDER_TO_PATCH));
         applicationContext = dialog.getActivity()
             .getApplicationContext();
     }
     
     @Override
     public void execute() throws IOException {
-        setMessage(applicationContext.getString(R.string.patching));
+        setMessage(applicationContext.getString(
+                R.string.patching) + " " + folderToPatch);
     }
     
     private void setMessage(String message) {

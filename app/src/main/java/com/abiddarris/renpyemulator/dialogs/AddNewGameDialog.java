@@ -15,10 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
+
 package com.abiddarris.renpyemulator.dialogs;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.view.View;
 import androidx.fragment.app.DialogFragment;
 import com.abiddarris.renpyemulator.R;
@@ -28,20 +30,28 @@ import java.io.File;
 
 public class AddNewGameDialog extends BaseDialogFragment {
     
+    private AddNewGameLayoutBinding binding;
+    
     @Override
     protected MaterialAlertDialogBuilder createDialog() {
         return super.createDialog()
             .setTitle(R.string.add_new_game)
             .setNegativeButton(android.R.string.cancel, (d,w) -> {})
             .setPositiveButton(android.R.string.ok, (d,w) -> {
+                var bundle = new Bundle();
                 var dialog = new ApplyPatchDialog();
+                
+                bundle.putString(ApplyPatchDialog.FOLDER_TO_PATCH, 
+                    binding.pathEditText.getEditText().getText().toString());
+                
+                dialog.setArguments(bundle);
                 dialog.show(getParentFragmentManager(), null);
             });
     }
     
     @Override
     public View createView() {
-        AddNewGameLayoutBinding binding = AddNewGameLayoutBinding.inflate(getLayoutInflater());
+        binding = AddNewGameLayoutBinding.inflate(getLayoutInflater());
         binding.pathEditText.addOnEditTextAttachedListener(v -> v.getEditText().setText(getDefaultLocation()));
         
         return binding.getRoot();

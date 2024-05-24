@@ -31,6 +31,8 @@ import java.util.concurrent.Executors;
 
 public class ApplyPatchDialog extends BaseDialogFragment {
     
+    public static final String FOLDER_TO_PATCH = "folderToPatch";
+    
     private static final ExecutorService PATCH_THREAD = Executors.newSingleThreadExecutor();
     private static PatchRunnable runnable;
     
