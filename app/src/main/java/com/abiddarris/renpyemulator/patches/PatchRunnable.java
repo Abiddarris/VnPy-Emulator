@@ -21,10 +21,20 @@ import android.content.Context;
 import com.abiddarris.renpyemulator.R;
 import com.abiddarris.renpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.renpyemulator.utils.BaseRunnable;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PatchRunnable implements BaseRunnable {
+    
+    private static final Pattern VERSION_PATTERN = Pattern.compile(
+        "version_tuple\\s*=\\s*\\(([^)]*)\\)");
+    
+    private static final Pattern VC_VERSION_PATTERN = Pattern.compile(
+        "vc_version\\s*=\\s*(.*)");
     
     private ApplyPatchDialog dialog;
     private Context applicationContext;
@@ -44,6 +54,45 @@ public class PatchRunnable implements BaseRunnable {
     public void execute() throws IOException {
         setMessage(applicationContext.getString(
                 R.string.patching) + " " + folderToPatch);
+        
+        File initFile = new File(folderToPatch, "renpy/__init__.py");
+        if(!initFile.isFile()) {
+            return;
+        }
+        
+        BufferedReader reader = new BufferedReader(
+            new FileReader(initFile));
+        
+        StringBuilder builder = new StringBuilder();
+        reader.lines()
+            .forEach(builder::append);
+        reader.close();
+        
+        Matcher matcher = VERSION_PATTERN.matcher(builder.toString());
+        if(!matcher.find()) {
+            return;
+        }
+        
+        String version = matcher.group(1);
+        if(version.contains("vc_version")) {
+            builder.delete(0, builder.length());
+            
+            reader = new BufferedReader(new FileReader(
+                new File(folderToPatch, "renpy/vc_version.py")));
+            reader.lines()
+                .forEach(builder::append);
+            reader.close();
+            
+            matcher = VC_VERSION_PATTERN.matcher(builder.toString());
+            if(!matcher.find()) {
+                return;
+            }
+            version = version.replace("vc_version", matcher.group(1));
+        }
+        version = version.replace(",", "")
+            .replace(" ", ".");
+        
+        setMessage(version);
     }
     
     private void setMessage(String message) {
