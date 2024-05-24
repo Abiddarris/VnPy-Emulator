@@ -12,10 +12,11 @@
          android:id="@+id/progress" />
 
     <TextView
-         android:layout_marginLeft="@dimen/apply_patch_message_left_margin"
-         android:id="@+id/message"
          android:layout_height="wrap_content"
          android:layout_width="wrap_content"
-         android:layout_toEndOf="@id/progress" />
+         android:layout_toEndOf="@id/progress"
+         android:layout_centerVertical="true"
+         android:layout_marginLeft="@dimen/apply_patch_message_left_margin"
+         android:id="@+id/message" />
 
 </RelativeLayout>
