@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.renpyemulator.patches;
+package com.abiddarris.vnpyemulator.patches;
 
 import android.content.Context;
-import com.abiddarris.renpyemulator.R;
-import com.abiddarris.renpyemulator.dialogs.ApplyPatchDialog;
-import com.abiddarris.renpyemulator.utils.BaseRunnable;
+import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
+import com.abiddarris.vnpyemulator.utils.BaseRunnable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;

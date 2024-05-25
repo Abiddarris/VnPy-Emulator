@@ -15,16 +15,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.renpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.dialogs;
 
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.CallSuper;
 import androidx.annotation.MainThread;
-import com.abiddarris.renpyemulator.R;
-import com.abiddarris.renpyemulator.databinding.DialogApplyPatchBinding;
-import com.abiddarris.renpyemulator.patches.PatchRunnable;
+import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.databinding.DialogApplyPatchBinding;
+import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

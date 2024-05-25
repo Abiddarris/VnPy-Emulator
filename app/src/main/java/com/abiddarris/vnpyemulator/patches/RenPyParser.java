@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.renpyemulator.patches;
+package com.abiddarris.vnpyemulator.patches;
 
 import java.io.BufferedReader;
 import java.io.File;

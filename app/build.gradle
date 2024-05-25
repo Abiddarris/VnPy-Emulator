@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace 'com.abiddarris.renpyemulator'
+    namespace 'com.abiddarris.vnpyemulator'
     compileSdk 33
     buildToolsVersion '34.0.4'
     
@@ -15,7 +15,7 @@ android {
     }
     
     defaultConfig {
-        applicationId "com.abiddarris.renpyemulator"
+        applicationId "com.abiddarris.vnpyemulator"
         minSdk 16
         targetSdk 33
         versionCode 1

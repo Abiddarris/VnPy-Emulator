@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="appName">Renpy Emulator</string>
-    <string name="iconName">Renpy Emulator</string>
+    <string name="appName">Visual Novel Python Emulator</string>
+    <string name="iconName">VnPy Emulator</string>
 
     <string name="private_version">1</string>
     <!-- <string name="public_version">1</string> -->

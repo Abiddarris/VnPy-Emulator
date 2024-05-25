@@ -16,15 +16,15 @@
  *
  ***********************************************************************************/
 
-package com.abiddarris.renpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.dialogs;
 
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import androidx.fragment.app.DialogFragment;
-import com.abiddarris.renpyemulator.R;
-import com.abiddarris.renpyemulator.databinding.AddNewGameLayoutBinding;
+import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.databinding.AddNewGameLayoutBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.File;
 

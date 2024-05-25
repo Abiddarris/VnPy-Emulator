@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.renpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.dialogs;
 
 import android.app.Dialog;
 import android.content.res.Resources;
@@ -24,7 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.fragment.app.DialogFragment;
-import com.abiddarris.renpyemulator.R;
+import com.abiddarris.vnpyemulator.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class BaseDialogFragment extends DialogFragment {

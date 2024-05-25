@@ -15,14 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.renpyemulator;
+package com.abiddarris.vnpyemulator;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
-import com.abiddarris.renpyemulator.databinding.ActivityMainBinding;
-import com.abiddarris.renpyemulator.dialogs.AddNewGameDialog;
+import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
+import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
 import java.io.File;
 import java.io.IOException;
 

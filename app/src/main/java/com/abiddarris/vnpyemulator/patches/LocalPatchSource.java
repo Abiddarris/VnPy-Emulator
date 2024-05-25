@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.renpyemulator.patches;
+package com.abiddarris.vnpyemulator.patches;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -31,7 +31,7 @@ public class LocalPatchSource implements PatchSource {
     /**
      * Hardcoded path
      */
-    private static final File PATCH_FOLDER = new File("/storage/emulated/0/Android/media/com.abiddarris.renpyemulator/patches");
+    private static final File PATCH_FOLDER = new File("/storage/emulated/0/Android/media/com.abiddarris.vnpyemulator/patches");
     
     /**
      * Hold fetched patchers
