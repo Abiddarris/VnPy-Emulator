@@ -21,15 +21,10 @@ import android.content.Context;
 import com.abiddarris.renpyemulator.R;
 import com.abiddarris.renpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.renpyemulator.utils.BaseRunnable;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public class PatchRunnable implements BaseRunnable {
     
@@ -48,14 +43,37 @@ public class PatchRunnable implements BaseRunnable {
     }
     
     @Override
-    public void execute() throws IOException {
+    public void execute() throws Exception {
         setMessage(applicationContext.getString(
                 R.string.patching) + " " + folderToPatch);
         
+        File script = getScriptFile();
+        String version = RenPyParser.getVersion(folderToPatch);
+        PatchSource source = PatchSource.getPatcher();
+        
+        setMessage(Arrays.toString(source.getVersions()));
+        
+        Thread.sleep(2000);
+        
+        setMessage(version);
+        
+        
+        if(!Arrays.asList(source.getVersions())
+            .contains(version)) {
+               // TODO: Implemenent Error handling if version is not available
+            return;
+        }
+        
+        Thread.sleep(2000);
+        
+        setMessage(script == null ? "null" : script.getPath());
+    }
+    
+    private File getScriptFile() {
         var files = folderToPatch.listFiles();
         if(files == null) {
             // TODO: Add error handling
-            return;
+            
         }
         
         List<File> scripts = new ArrayList<>();
@@ -75,10 +93,7 @@ public class PatchRunnable implements BaseRunnable {
         } else {
             script = scripts.get(0);
         }
-        
-        String version = RenPyParser.getVersion(folderToPatch);
-        
-        setMessage(script == null ? "null" : script.getPath());
+        return script;
     }
     
     private void setMessage(String message) {
