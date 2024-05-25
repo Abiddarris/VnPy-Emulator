@@ -88,7 +88,6 @@ public class RenPyParser {
         }
         version = version.replace(",", "")
             .replace(" ", ".");
-        
         return version;
     }
     
