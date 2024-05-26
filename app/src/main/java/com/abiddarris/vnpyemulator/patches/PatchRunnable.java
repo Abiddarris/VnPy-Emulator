@@ -17,10 +17,13 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import static com.abiddarris.vnpyemulator.games.Game.*;
+
 import android.content.Context;
 import android.util.Log;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
+import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.utils.BaseRunnable;
 import com.abiddarris.vnpyemulator.utils.Hash;
 import java.io.BufferedInputStream;
@@ -111,6 +114,16 @@ public class PatchRunnable implements BaseRunnable {
             os.flush();
             os.close();
         }
+        var game = new Game();
+        game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
+        game.put(GAME_SCRIPT, script.getName());
+        game.put(GAME_NAME, removeExtension(script.getName()));
+        
+        Game.storeGame(applicationContext, game);
+    }
+    
+    private String removeExtension(String name) {
+        return name.substring(0, name.lastIndexOf("."));
     }
     
     private File getScriptFile() {
