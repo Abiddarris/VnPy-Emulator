@@ -83,4 +83,8 @@ public class ApplyPatchDialog extends BaseDialogFragment {
             binding.message.setText(message));
     }
     
+    public void tear() {
+    	runnable = null;
+        dismiss();
+    }
 }

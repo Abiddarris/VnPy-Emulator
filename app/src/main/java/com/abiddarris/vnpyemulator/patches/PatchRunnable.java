@@ -147,6 +147,13 @@ public class PatchRunnable implements BaseRunnable {
         }
     }
     
+    @Override
+    public void onFinally() {
+        if(dialog != null) {
+            dialog.tear();
+        }
+    }    
+    
     public void setDialog(ApplyPatchDialog dialog) {
     	this.dialog = dialog;
         
