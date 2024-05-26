@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <color name="colorPrimary">#4CAF50</color> <!-- Green -->
+    <color name="colorPrimaryVariant">#388E3C</color> <!-- Darker green -->
+    <color name="colorSecondary">#FF5722</color> <!-- Deep Orange -->
+    <color name="colorBackground">#FFFFFF</color> <!-- White -->
+    <color name="colorSurface">#FFFFFF</color> <!-- White -->
+    <color name="colorError">#B00020</color> <!-- Red -->
+    <color name="colorOnPrimary">#FFFFFF</color> <!-- White -->
+    <color name="colorOnSecondary">#FFFFFF</color> <!-- White -->
+    <color name="colorOnBackground">#000000</color> <!-- Black -->
+    <color name="colorOnSurface">#000000</color> <!-- Black -->
+    <color name="colorOnError">#FFFFFF</color> <!-- White -->
+</resources>
