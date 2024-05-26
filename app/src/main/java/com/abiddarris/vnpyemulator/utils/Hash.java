@@ -17,6 +17,7 @@ package com.abiddarris.vnpyemulator.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -29,11 +30,12 @@ public class Hash {
     /**
      * Create SHA-256 from a path
      *
-     * @param path File to hash
+     * @param stream {@code InputStream} to hash
+     * @param out OutputStream to write after calling {@code InputStream.read()}
      * @return Hash in hex
      * @throws IOException If hashing failed
      */
-    public static String createHashingFrom(InputStream stream) throws IOException {
+    public static String createHashingFrom(InputStream stream, OutputStream out) throws IOException {
         MessageDigest digest;
         try {
             digest = MessageDigest.getInstance("SHA-256");
@@ -43,7 +45,10 @@ public class Hash {
 
         try (DigestInputStream inputStream = new DigestInputStream(stream, digest)){
             byte[] buf = new byte[8192];
-            while(inputStream.read(buf) != - 1) {}
+            int len;
+            while((len = inputStream.read(buf)) != - 1) {
+                out.write(buf,0,len);
+            }
 
             byte[] hashBytes = digest.digest();
             return toHexString(hashBytes);

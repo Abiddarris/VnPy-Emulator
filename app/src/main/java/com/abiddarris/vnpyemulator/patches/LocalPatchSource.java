@@ -19,8 +19,10 @@ package com.abiddarris.vnpyemulator.patches;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.stream.Stream;
 
 /**
@@ -56,7 +58,15 @@ public class LocalPatchSource implements PatchSource {
      */
     @Override
     public Patcher getPatcher(String version) {
-        return null;
+        return Stream.of(patchers)
+            .filter(patcher -> patcher.getVersion().equals(version))
+            .findFirst()
+            .get();
+    }
+    
+    @Override
+    public InputStream open(String fileName) throws IOException {
+        return new FileInputStream(new File(PATCH_FOLDER, fileName));
     }
     
     /**
@@ -68,7 +78,7 @@ public class LocalPatchSource implements PatchSource {
             new FileReader(new File(PATCH_FOLDER, "version")));
         
         patchers = reader.lines()
-            .map(Patcher::new)
+            .map(line -> new Patcher(this, line))
             .toArray(Patcher[]::new);
     }
 }

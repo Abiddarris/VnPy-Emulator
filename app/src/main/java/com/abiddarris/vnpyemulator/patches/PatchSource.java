@@ -18,6 +18,7 @@
 package com.abiddarris.vnpyemulator.patches;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Class that provides patches
@@ -45,6 +46,17 @@ public interface PatchSource {
      * @return {@code Patcher} from given version
      */
     public Patcher getPatcher(String version) throws IOException;
+    
+    /**
+     * Open an {@code InputStream} relative from folder containing 
+     * patches from specified file name
+     *
+     * @param fileName File path relative from folder containing 
+     *                 patches from specified file name
+     * @throws IOException If unable to open
+     * @return {@code InputStream}
+     */
+    public InputStream open(String fileName) throws IOException;
     
     /**
      * Returns {@code PatchSource} that provides {@code Patcher}

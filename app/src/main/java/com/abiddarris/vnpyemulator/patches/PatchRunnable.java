@@ -18,15 +18,25 @@
 package com.abiddarris.vnpyemulator.patches;
 
 import android.content.Context;
+import android.util.Log;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.vnpyemulator.utils.BaseRunnable;
+import com.abiddarris.vnpyemulator.utils.Hash;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PatchRunnable implements BaseRunnable {
+    
+    public static final String TAG = PatchRunnable.class.getSimpleName();
     
     private ApplyPatchDialog dialog;
     private Context applicationContext;
@@ -57,7 +67,6 @@ public class PatchRunnable implements BaseRunnable {
         
         setMessage(version);
         
-        
         if(!Arrays.asList(source.getVersions())
             .contains(version)) {
                // TODO: Implemenent Error handling if version is not available
@@ -67,6 +76,41 @@ public class PatchRunnable implements BaseRunnable {
         Thread.sleep(2000);
         
         setMessage(script == null ? "null" : script.getPath());
+        
+        var patcher = source.getPatcher(version);
+        for(var patch : patcher.getPatches()) {
+            var target = new File(folderToPatch, patch.getFileToPatch());
+            if(!target.exists()) {
+                throw new PatchException("Unable to patch non exist file: " + target.getPath());
+            }
+            
+            var inputStream = new BufferedInputStream(patcher.open(patch.getPatchFileName()));
+            var outputStream = new ByteArrayOutputStream();
+            
+            var patchHash = Hash.createHashingFrom(inputStream, outputStream);
+            var patchContent = outputStream.toByteArray();
+           
+            outputStream.close();
+            inputStream.close();
+            inputStream = new BufferedInputStream(new FileInputStream(target));
+            
+            var originalFileHash = Hash.createHashingFrom(inputStream, OutputStream.nullOutputStream());
+            
+            inputStream.close();
+            if(originalFileHash.equals(patchHash)) {
+                Log.i(TAG, target.getPath() + "Already patched");
+                continue;
+            }
+            
+            if(originalFileHash.equals(patch.getOriginalFileHash())) {
+                // TODO: prompt a user patching may cause a problem
+            }
+            
+            var os = new BufferedOutputStream(new FileOutputStream(target));
+            os.write(patchContent);
+            os.flush();
+            os.close();
+        }
     }
     
     private File getScriptFile() {
