@@ -62,7 +62,7 @@ public class PatchRunnable implements BaseRunnable {
         
         File script = getScriptFile();
         String version = RenPyParser.getVersion(folderToPatch);
-        PatchSource source = PatchSource.getPatcher());
+        PatchSource source = PatchSource.getPatcher();
         
         if(!Arrays.asList(source.getVersions())
             .contains(version)) {
