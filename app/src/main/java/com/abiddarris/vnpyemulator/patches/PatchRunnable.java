@@ -58,28 +58,18 @@ public class PatchRunnable implements BaseRunnable {
     @Override
     public void execute() throws Exception {
         setMessage(applicationContext.getString(
-                R.string.patching) + " " + folderToPatch);
+                R.string.patching));
         
         File script = getScriptFile();
         String version = RenPyParser.getVersion(folderToPatch);
-        PatchSource source = PatchSource.getPatcher();
-        
-        setMessage(Arrays.toString(source.getVersions()));
-        
-        Thread.sleep(2000);
-        
-        setMessage(version);
+        PatchSource source = PatchSource.getPatcher());
         
         if(!Arrays.asList(source.getVersions())
             .contains(version)) {
                // TODO: Implemenent Error handling if version is not available
             return;
         }
-        
-        Thread.sleep(2000);
-        
-        setMessage(script == null ? "null" : script.getPath());
-        
+
         var patcher = source.getPatcher(version);
         for(var patch : patcher.getPatches()) {
             var target = new File(folderToPatch, patch.getFileToPatch());
@@ -114,6 +104,7 @@ public class PatchRunnable implements BaseRunnable {
             os.flush();
             os.close();
         }
+        
         var game = new Game();
         game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
         game.put(GAME_SCRIPT, script.getName());
