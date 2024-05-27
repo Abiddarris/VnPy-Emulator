@@ -17,18 +17,26 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.stream.Stream;
 
 /**
  * Class that provides patches
  */
-public interface PatchSource {
+public class PatchSource {
     
     /**
-     * For testing on local repo
+     * Hold {@code PatchSource} singleton
      */
-    static final boolean LOCAL_SOURCE = true;
+    private static PatchSource patchSource;
+    
+    /**
+     * Hold fetched patchers
+     */
+    private Patcher[] patchers;
     
     /**
      * Returns versions that have a patch
@@ -36,7 +44,14 @@ public interface PatchSource {
      * @throws IOException if unable to fetch versions
      * @return Versions that have a patch
      */
-    public String[] getVersions() throws IOException;
+    public String[] getVersions() throws IOException {
+        if(patchers == null) {
+            fetch();
+        }
+        return Stream.of(patchers)
+            .map(Patcher::getVersion)
+            .toArray(String[]::new);
+    }
     
     /**
      * Returns {@code Patcher} from given version
@@ -45,7 +60,16 @@ public interface PatchSource {
      * @throws IOException if unable to fetch the patcher
      * @return {@code Patcher} from given version
      */
-    public Patcher getPatcher(String version) throws IOException;
+    public Patcher getPatcher(String version) throws IOException {
+        if(patchers == null) {
+            fetch();
+        }
+        
+        return Stream.of(patchers)
+            .filter(patcher -> patcher.getVersion().equals(version))
+            .findFirst()
+            .get();
+    }
     
     /**
      * Open an {@code InputStream} relative from folder containing 
@@ -56,7 +80,23 @@ public interface PatchSource {
      * @throws IOException If unable to open
      * @return {@code InputStream}
      */
-    public InputStream open(String fileName) throws IOException;
+    public InputStream open(String fileName) throws IOException {
+        return Source.getSource()
+            .open("patches/" + fileName);
+    }
+    
+    /**
+     * Function that fetched patches and store it in 
+     * {@code patchers} field
+     */
+    private void fetch() throws IOException {
+        BufferedReader reader = new BufferedReader(
+            new InputStreamReader(open("version")));
+        
+        patchers = reader.lines()
+            .map(line -> new Patcher(this, line))
+            .toArray(Patcher[]::new);
+    }
     
     /**
      * Returns {@code PatchSource} that provides {@code Patcher}
@@ -64,9 +104,9 @@ public interface PatchSource {
      * @return {@code PatchSource} that provides {@code Patcher}
      */
     public static PatchSource getPatcher() {
-    	if(LOCAL_SOURCE) {
-            return new LocalPatchSource();
+    	if(patchSource == null) {
+            return new PatchSource();
         }
-        return null;
+        return patchSource;
     }
 }
