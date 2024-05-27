@@ -22,4 +22,6 @@
     <string name="apply_patch_dialog_title">Applying Patch...</string>
     <string name="patching">Patching...</string>
     <string name="error">Error</string>
+    <string name="python_required">Python required</string>
+    <string name="python_required_message">Python is required to run %s.</string>
 </resources>

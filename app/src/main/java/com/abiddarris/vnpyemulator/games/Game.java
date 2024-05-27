@@ -39,9 +39,14 @@ public class Game extends JSONObject {
     public static final String GAME_NAME = "name";
     public static final String GAME_SCRIPT = "script";
     public static final String RENPY_VERSION = "renpy_version";
+    public static final String PYTHON_VERSION = "python_version";
     
     Game(JSONObject object) throws JSONException {
-        super(object.toString());
+        this(object.toString());
+    }
+    
+    public Game(String json) throws JSONException {
+        super(json);
     }
         
     public Game() {}

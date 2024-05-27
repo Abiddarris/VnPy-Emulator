@@ -17,6 +17,9 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import com.abiddarris.vnpyemulator.dialogs.PythonRequiredDialog;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
@@ -35,11 +38,11 @@ import org.json.JSONException;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
 
-    private Context context;
+    private AppCompatActivity context;
     private List<Game> games;
     private LayoutInflater inflater;
     
-    public GameAdapter(Context context) {
+    public GameAdapter(AppCompatActivity context) {
     	this.context = context;
         
         inflater = LayoutInflater.from(context);
@@ -54,6 +57,8 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     @Override
     public void onBindViewHolder(GameViewHolder holder, int index) {
         Game game = games.get(index);
+        holder.binding.root
+            .setOnClickListener(v -> open(game));
         
         try {
             holder.binding.gameName.setText(
@@ -75,6 +80,18 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     
     public void refresh() {
     	this.games = Game.loadGames(context);
+    }
+    
+    private void open(Game game) {
+        String pythonVersion = game.optString(PYTHON_VERSION, null);
+        if(pythonVersion == null) {
+            var argument = new Bundle();
+            argument.putString(PythonRequiredDialog.GAME, game.toString());
+            
+            var dialog = new PythonRequiredDialog();
+            dialog.setArguments(argument);
+            dialog.show(context.getSupportFragmentManager(), null);
+        }
     }
     
     public static class GameViewHolder extends ViewHolder {

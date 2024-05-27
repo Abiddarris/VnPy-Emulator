@@ -21,8 +21,10 @@ import android.app.Application;
 import com.google.android.material.color.DynamicColors;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 public class VnPyApplication extends Application {
@@ -43,6 +45,14 @@ public class VnPyApplication extends Application {
             }
             System.exit(1);
         });
+        
+        try {
+            var writer = new FileOutputStream(new File(getExternalFilesDir(null), "log.txt"));
+            
+            System.setOut(new PrintStream(writer));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
         DynamicColors.applyToActivitiesIfAvailable(this);
     }
