@@ -38,6 +38,7 @@ public class Game extends JSONObject {
     public static final String GAME_FOLDER_PATH = "folder_path";
     public static final String GAME_NAME = "name";
     public static final String GAME_SCRIPT = "script";
+    public static final String RENPY_VERSION = "renpy_version";
     
     Game(JSONObject object) throws JSONException {
         super(object.toString());
@@ -48,6 +49,8 @@ public class Game extends JSONObject {
     public static void storeGame(Context context, Game game) throws IOException {
         var gameFile = getGameFile(context);
         var games = loadGames(context);
+        
+        games.add(game);
         
         saveGames(context, games);
     }
@@ -63,7 +66,7 @@ public class Game extends JSONObject {
             var array = new JSONArray(new String(cbuf));
             for(int i = 0; i < array.length(); ++i) {
             	list.add(new Game(
-                        array.getJSONObject(0)));
+                        array.getJSONObject(i)));
             }
         } catch (IOException | JSONException e) {
             e.printStackTrace();

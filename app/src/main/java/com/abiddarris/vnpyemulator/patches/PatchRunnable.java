@@ -118,6 +118,7 @@ public class PatchRunnable implements BaseRunnable {
         game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
         game.put(GAME_SCRIPT, script.getName());
         game.put(GAME_NAME, removeExtension(script.getName()));
+        game.put(RENPY_VERSION, version);
         
         Game.storeGame(applicationContext, game);
     }

@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
 import java.io.File;
@@ -29,7 +31,8 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
    
     private ActivityMainBinding binding;
-
+    private GameAdapter adapter;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
-        
+       
         //Quick fix
         try {
            new File(getExternalMediaDirs()[0], "python")
@@ -47,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
         
+        adapter = new GameAdapter(this);
+        
+        binding.games.setLayoutManager(new LinearLayoutManager(this));
+        binding.games.setAdapter(adapter);
     }
     
     @Override

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2024  Abiddarris
+<!-- Copyright (C) 2024 Abiddarris
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,7 +38,12 @@
     <RelativeLayout
          android:layout_height="match_parent"
          android:layout_width="match_parent">
-        
+
+        <androidx.recyclerview.widget.RecyclerView
+             android:layout_height="match_parent"
+             android:layout_width="match_parent"
+             android:id="@+id/games" />
+
     </RelativeLayout>
 
 </LinearLayout>
