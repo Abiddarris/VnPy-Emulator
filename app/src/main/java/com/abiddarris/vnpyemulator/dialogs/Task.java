@@ -21,6 +21,8 @@ import com.abiddarris.vnpyemulator.utils.BaseRunnable;
 
 public abstract class Task implements BaseRunnable {
     
+    private volatile Context context;
+    
     private FragmentManager manager;
     private String id;
     private String message;
@@ -45,6 +47,27 @@ public abstract class Task implements BaseRunnable {
             dialog.sendMessage(message);
     }
     
+    public ProgressDialog getDialog() {
+        return (ProgressDialog) manager.findFragmentByTag(id);
+    }
+    
+    /**
+     * Returns application context. This method block until context is
+     * Attached.
+     *
+     * @return application context.
+     */
+    public Context getApplicationContext() {
+        while(context == null) {
+            try {
+            	Thread.sleep(1);
+            } catch(InterruptedException e) {
+            	e.printStackTrace();
+            }
+        } 
+        return context;
+    }
+    
     public String getMessage() {
     	return message;
     }
@@ -54,10 +77,7 @@ public abstract class Task implements BaseRunnable {
         this.id = id;
     }
     
-    public ProgressDialog getDialog() {
-        return (ProgressDialog) manager.findFragmentByTag(id);
-    }
-    
-    public void onAttachApplicationContext(Context context) {
+    void onAttachApplicationContext(Context context) {
+        this.context = context;
     }
 }
