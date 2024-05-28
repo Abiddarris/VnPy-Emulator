@@ -15,29 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.patches;
+package com.abiddarris.vnpyemulator.pythons;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import android.content.Context;
+import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.dialogs.Task;
 
-/**
- * Source implementation that provides file from local storage
- */
-public class LocalSource implements Source {
+public class FetchPythonTask extends Task {
     
-    /**
-     * Hardcoded path
-     */
-    private static final File PATCH_FOLDER = new File("/storage/emulated/0/Android/media/com.abiddarris.vnpyemulator");
-    
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public InputStream open(String fileName) throws IOException {
-        return new FileInputStream(new File(PATCH_FOLDER, fileName));
+    public void execute() throws Exception {
+        Thread.sleep(5000);
+    }
+    
+    @Override
+    public void onAttachApplicationContext(Context context) {
+        super.onAttachApplicationContext(context);
+        
+        setMessage(context.getString(R.string.fetching));
     }
     
 }

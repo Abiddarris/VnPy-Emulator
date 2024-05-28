@@ -17,20 +17,22 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import com.abiddarris.vnpyemulator.dialogs.PythonRequiredDialog;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter.GameViewHolder;
 import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
+import com.abiddarris.vnpyemulator.dialogs.Dialogs;
+import com.abiddarris.vnpyemulator.dialogs.PythonRequiredDialog;
 import com.abiddarris.vnpyemulator.games.Game;
+import com.abiddarris.vnpyemulator.pythons.FetchPythonTask;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -84,14 +86,12 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     
     private void open(Game game) {
         String pythonVersion = game.optString(PYTHON_VERSION, null);
-        if(pythonVersion == null) {
-            var argument = new Bundle();
-            argument.putString(PythonRequiredDialog.GAME, game.toString());
-            
-            var dialog = new PythonRequiredDialog();
-            dialog.setArguments(argument);
-            dialog.show(context.getSupportFragmentManager(), null);
+        if(pythonVersion != null) {
+            return;
         }
+        
+        Dialogs.runTask(context.getSupportFragmentManager(),
+             context.getString(R.string.fetching_python_title), false, new FetchPythonTask());
     }
     
     public static class GameViewHolder extends ViewHolder {

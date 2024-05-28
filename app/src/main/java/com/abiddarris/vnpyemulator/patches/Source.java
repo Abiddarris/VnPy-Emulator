@@ -27,15 +27,15 @@ import java.io.InputStream;
 public interface Source {
     
     /**
-     * Store singleton of source
-     */
-    static Source source = null;
-    
-    /**
      * For testing purpose, {@link #getSource()} will provide
      * stream on internal storage.
      */
     static final boolean LOCAL = true;
+    
+    /**
+     * Store singleton of source
+     */
+    static Source source = LOCAL ? new LocalSource() : null;
     
     /**
      * Open an {@code InputStream} relative from folder containing 
@@ -49,9 +49,6 @@ public interface Source {
     InputStream open(String fileName) throws IOException;
     
     public static Source getSource() {
-        if(source == null) {
-            source = LOCAL ? new LocalSource() : null;
-        }
         return source;
     }
 }

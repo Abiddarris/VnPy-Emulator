@@ -77,7 +77,6 @@ public class ApplyPatchDialog extends BaseDialogFragment {
         super.onDestroy();
     }
     
-    
     public void setMessage(String message) {
         getActivity().runOnUiThread(() -> 
             binding.message.setText(message));

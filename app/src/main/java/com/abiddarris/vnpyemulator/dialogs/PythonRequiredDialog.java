@@ -26,10 +26,13 @@ import org.json.JSONException;
 public class PythonRequiredDialog extends BaseDialogFragment {
     
     public static final String GAME = "game";
+    public static final String PYTHON_VERSIONS = "python_versions";
     
     @Override
     protected MaterialAlertDialogBuilder createDialog() {
         Bundle bundle = getArguments();
+        var pythonVersions = bundle.getStringArray(PYTHON_VERSIONS);
+        
         Game game = null;
         try {
             game = new Game(bundle.getString(GAME));
@@ -40,7 +43,12 @@ public class PythonRequiredDialog extends BaseDialogFragment {
         return super.createDialog()
             .setTitle(R.string.python_required)
             .setMessage(getString(
-                R.string.python_required_message, game.optString(Game.GAME_NAME)));
+                R.string.python_required_message, game.optString(Game.GAME_NAME)))
+            .setSingleChoiceItems(pythonVersions, -1, (dialog, index) -> download(pythonVersions[index]));
+    }
+    
+    public void download(String a) {
+    	
     }
     
 }
