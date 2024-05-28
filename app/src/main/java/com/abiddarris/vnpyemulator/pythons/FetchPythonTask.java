@@ -17,22 +17,67 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.pythons;
 
-import android.content.Context;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.Task;
+import com.abiddarris.vnpyemulator.files.Files;
+import com.abiddarris.vnpyemulator.patches.Source;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FetchPythonTask extends Task {
     
     @Override
     public void execute() throws Exception {
-        Thread.sleep(5000);
+        setMessage(getApplicationContext()
+            .getString(R.string.fetching));
+        try {
+        	var continue0 = fetchFromSource();
+            if(!continue0) {
+                // TODO: SHOW ERROR
+                return;
+            }
+        } catch(IOException e) {
+        	e.printStackTrace();
+        }
+        
+        List<ExternalPython> pythons = new ArrayList<>();
+        try (var reader = new BufferedReader(new FileReader(
+                Files.getPythonVersionCache(getApplicationContext())))) {
+         	reader.lines()
+                .forEach(line -> {
+                    var components = line.split("//");
+                    pythons.add(new ExternalPython(components[0], components[1]));
+                });
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
     
-    @Override
-    public void onAttachApplicationContext(Context context) {
-        super.onAttachApplicationContext(context);
+    private boolean fetchFromSource() throws IOException {
+    	Source source = Source.getSource();
+        byte[] data;
+        try (var stream = new BufferedInputStream(source.open("python/version"))) {
+            data = stream.readAllBytes();
+        } 
         
-        setMessage(context.getString(R.string.fetching));
+        try (var stream = new BufferedOutputStream(
+                new FileOutputStream(Files.getPythonVersionCache(getApplicationContext())))) {
+        	
+            stream.write(data);
+            stream.flush();
+        } catch(IOException e) {
+            //this should not happend!
+        	e.printStackTrace();
+            return false;
+        }
+        return true;
     }
     
 }
