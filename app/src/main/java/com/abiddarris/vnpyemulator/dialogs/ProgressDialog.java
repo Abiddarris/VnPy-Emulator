@@ -51,7 +51,7 @@ public class ProgressDialog extends BaseDialogFragment {
     @Override
     protected MaterialAlertDialogBuilder createDialog() {
         return super.createDialog()
-            .setTitle(R.string.apply_patch_dialog_title);
+            .setTitle(info.title);
     }
     
     @Override
