@@ -19,8 +19,6 @@ package com.abiddarris.vnpyemulator.adapters;
 
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
-import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,12 +27,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter.GameViewHolder;
 import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
-import com.abiddarris.vnpyemulator.dialogs.Dialogs;
-import com.abiddarris.vnpyemulator.dialogs.PythonRequiredDialog;
+import com.abiddarris.vnpyemulator.dialogs.DialogUtils;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.pythons.FetchPythonTask;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.json.JSONException;
 
@@ -90,7 +85,7 @@ public class GameAdapter extends Adapter<GameViewHolder> {
             return;
         }
         
-        Dialogs.runTask(context.getSupportFragmentManager(),
+        DialogUtils.runTask(context.getSupportFragmentManager(),
              context.getString(R.string.fetching_python_title), false, new FetchPythonTask());
     }
     

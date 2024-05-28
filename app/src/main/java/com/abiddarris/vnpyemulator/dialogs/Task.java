@@ -16,15 +16,24 @@
 package com.abiddarris.vnpyemulator.dialogs;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import androidx.fragment.app.FragmentManager;
+import com.abiddarris.vnpyemulator.databinding.DialogProgressBinding;
 import com.abiddarris.vnpyemulator.utils.BaseRunnable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class Task implements BaseRunnable {
     
     private volatile Context context;
     
+    private boolean executed;
+    private BaseDialog dialog;
+    private DialogProgressBinding binding;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
     private FragmentManager manager;
-    private String id;
+    private Handler handler = new Handler(Looper.getMainLooper());
     private String message;
     
     public final void onFinally() {
@@ -32,7 +41,9 @@ public abstract class Task implements BaseRunnable {
         if(dialog != null) {
             dialog.tear();
         }
-         
+        
+        executor.shutdown();
+        
         cleanUp();
     }
     
@@ -43,28 +54,21 @@ public abstract class Task implements BaseRunnable {
         this.message = message;
         
         var dialog = getDialog();
-        if(dialog != null)
-            dialog.sendMessage(message);
+        if(binding != null) {
+            handler.post(() -> binding.message.setText(message));
+        }
     }
     
-    public ProgressDialog getDialog() {
-        return (ProgressDialog) manager.findFragmentByTag(id);
+    public BaseDialog getDialog() {
+        return dialog;
     }
     
     /**
-     * Returns application context. This method block until context is
-     * Attached.
+     * Returns application context. 
      *
      * @return application context.
      */
     public Context getApplicationContext() {
-        while(context == null) {
-            try {
-            	Thread.sleep(1);
-            } catch(InterruptedException e) {
-            	e.printStackTrace();
-            }
-        } 
         return context;
     }
     
@@ -72,12 +76,18 @@ public abstract class Task implements BaseRunnable {
     	return message;
     }
     
-    void init(FragmentManager manager, String id) {
-        this.manager = manager;
-        this.id = id;
+    void attachDialog(BaseDialog dialog) {
+        this.dialog = dialog;
+        this.context = dialog.getContext()
+            .getApplicationContext();
+        
+        if(!executed) {
+            executor.submit(this);
+            executed = true;
+        } 
     }
     
-    void onAttachApplicationContext(Context context) {
-        this.context = context;
+    void attachUI(DialogProgressBinding binding) {
+        this.binding = binding;
     }
 }

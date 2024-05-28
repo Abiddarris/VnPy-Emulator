@@ -17,38 +17,53 @@ package com.abiddarris.vnpyemulator.dialogs;
 
 import android.os.Bundle;
 import androidx.fragment.app.FragmentManager;
+import com.abiddarris.vnpyemulator.databinding.DialogProgressBinding;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import com.abiddarris.vnpyemulator.dialogs.ProgressDialog.ProgressDialogInformation;
+import java.util.function.Consumer;
 
-public class Dialogs {
+public class DialogUtils {
     
     static final String ID = "id";
     
     private static final Random ID_GENERATOR = new Random();
     private static final Map<Integer, ? super DialogInformation> infos = new HashMap<>();
     
-    public static void runTask(FragmentManager fragmentManager, String title,
-            boolean cancelable, Task task) {
+    public static void show(FragmentManager fragmentManager, DialogInformation info) {
         int id = generateID();
-        var idString = String.valueOf(id);
-        
-        var info = new ProgressDialogInformation();
-        info.title = title;
-        info.cancelable = cancelable;
-        info.task = task;
-        
-        task.init(fragmentManager, idString);
-        
-        infos.put(id, info);
        
         var arguments = new Bundle();
         arguments.putInt(ID, id);
         
-    	var dialog = new ProgressDialog();
+        infos.put(id, info);
+        
+    	var dialog = new BaseDialog();
         dialog.setArguments(arguments);
-        dialog.show(fragmentManager, idString);
+        dialog.show(fragmentManager, null);
+    }
+    
+    public static void runTask(FragmentManager fragmentManager, String title,
+            boolean cancelable, Task task) {
+        
+        var info = new ProgressDialogInformation();
+        info.setCustomizer(builder -> builder.setTitle(title))
+            .setView(inflater -> {
+                var binding = DialogProgressBinding.inflate(inflater);
+                binding.message.setText(info.task.getMessage());
+        
+                task.attachUI(binding);  
+                    
+                return binding.getRoot();
+            })
+            .setOnDialogCreated(dialog -> {
+                dialog.setCancelable(cancelable);
+                
+                task.attachDialog(dialog);
+            });
+        
+        info.task = task;
+        show(fragmentManager, info);
     }
     
     @SuppressWarnings("unchecked")
@@ -56,14 +71,13 @@ public class Dialogs {
     	return (T)infos.get(id);
     }
     
+    static void tear(int id) {
+        infos.remove(id);
+    }
+    
     private static int generateID() {
         return ID_GENERATOR.nextInt();
     }
     
-    static class DialogInformation {
-        protected String title;
-        protected String message;
-        protected boolean cancelable;
-    }
-
+    
 }
