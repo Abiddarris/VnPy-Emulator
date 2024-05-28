@@ -16,6 +16,7 @@
 package com.abiddarris.vnpyemulator.dialogs;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -62,6 +63,14 @@ public class BaseDialog<T extends DialogInformation> extends BaseDialogFragment 
             
         return dialogBuilder;
     }
+    
+    @Override
+    public void onCancel(DialogInterface _interface) {
+        super.onCancel(_interface);
+
+        tear();
+    }
+    
     
     public void tear() {
         dismiss();
