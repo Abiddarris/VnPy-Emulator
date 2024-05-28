@@ -24,12 +24,15 @@ import com.abiddarris.vnpyemulator.patches.Source;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class FetchPythonTask extends Task {
     
@@ -47,18 +50,31 @@ public class FetchPythonTask extends Task {
         	e.printStackTrace();
         }
         
-        List<ExternalPython> pythons = new ArrayList<>();
+        List<ExternalPython> externalPythons = new ArrayList<>();
         try (var reader = new BufferedReader(new FileReader(
                 Files.getPythonVersionCache(getApplicationContext())))) {
          	reader.lines()
                 .forEach(line -> {
                     var components = line.split("//");
-                    pythons.add(new ExternalPython(components[0], components[1]));
+                    externalPythons.add(new ExternalPython(components[0], components[1]));
                 });
         } catch(FileNotFoundException e) {
             e.printStackTrace();
         }
-       
+        
+        List<String> downloadedVersion = getDownloadedVersion();
+        List<String> choices = new ArrayList<>(downloadedVersion);
+        
+        externalPythons.stream()
+            .filter(python -> !downloadedVersion.contains(python.getVersionName()))
+            .map(ExternalPython::getVersionName)
+            .forEach(choices::add);
+    }
+    
+    private List<String> getDownloadedVersion() {
+        var pythonFolder = Files.getPythonFolders(getApplicationContext())
+            .list();
+        return pythonFolder == null ? new LinkedList<String>() : List.of(pythonFolder);
     }
     
     private boolean fetchFromSource() throws IOException {
