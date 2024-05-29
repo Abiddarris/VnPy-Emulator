@@ -17,14 +17,16 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.pythons;
 
+import android.widget.Toast;
 import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.dialogs.DialogUtils;
 import com.abiddarris.vnpyemulator.dialogs.Task;
 import com.abiddarris.vnpyemulator.files.Files;
+import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.patches.Source;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -32,9 +34,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class FetchPythonTask extends Task {
+    
+    private Game game;
+    
+    public FetchPythonTask(Game game) {
+        this.game = game;
+    }
     
     @Override
     public void execute() throws Exception {
@@ -69,6 +76,15 @@ public class FetchPythonTask extends Task {
             .filter(python -> !downloadedVersion.contains(python.getVersionName()))
             .map(ExternalPython::getVersionName)
             .forEach(choices::add);
+      
+        var activity = getDialog().getActivity(); 
+        DialogUtils.choseItem(getDialog().getParentFragmentManager(),
+                getApplicationContext().getString(R.string.select_python_version), 
+                getApplicationContext().getString(R.string.select_python_message, game.optString(Game.GAME_NAME)), 
+                true, choices.toArray(new String[0]), 0, index -> {
+                    Toast.makeText(activity, choices.get(index), Toast.LENGTH_LONG)
+                        .show();
+                });
     }
     
     private List<String> getDownloadedVersion() {
@@ -97,4 +113,5 @@ public class FetchPythonTask extends Task {
         return true;
     }
     
+
 }

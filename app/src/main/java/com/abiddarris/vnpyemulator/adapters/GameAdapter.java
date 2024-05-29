@@ -86,7 +86,8 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         }
         
         DialogUtils.runTask(context.getSupportFragmentManager(),
-             context.getString(R.string.fetching_python_title), false, new FetchPythonTask());
+             context.getString(R.string.fetching_python_title), false, 
+             new FetchPythonTask(game));
     }
     
     public static class GameViewHolder extends ViewHolder {

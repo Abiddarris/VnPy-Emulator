@@ -26,4 +26,6 @@
     <string name="fetching">Fetching</string>
     <string name="python_required">Python required</string>
     <string name="python_required_message">Python is required to run %s.</string>
+    <string name="select_python_version">Select Python version</string>
+    <string name="select_python_message">Select Python version that will be used when running %s</string>
 </resources>
