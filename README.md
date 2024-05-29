@@ -1,6 +1,6 @@
 # VnPy Emulator
 An emulator for running Ren'Py games on Android.
-This app is derivative work of Ren'Py and RAPT
+This app is derivative work of [Ren'Py](https://github.com/renpy/renpy) and [RAPT](https://github.com/renpy/rapt)
 
 **Note**: This project still in development and prune to errors.
 
