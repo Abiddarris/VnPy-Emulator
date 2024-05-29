@@ -17,6 +17,8 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
+import android.content.Intent;
+import com.abiddarris.vnpyemulator.files.Files;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.view.LayoutInflater;
@@ -30,8 +32,15 @@ import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
 import com.abiddarris.vnpyemulator.dialogs.DialogUtils;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.pythons.FetchPythonTask;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 import org.json.JSONException;
+import org.renpy.android.PythonSDLActivity;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
 
@@ -82,12 +91,42 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     private void open(Game game) {
         String pythonVersion = game.optString(PYTHON_VERSION, null);
         if(pythonVersion != null) {
+            var gamePath = game.getGamePath();
+            copyGameMainScript(gamePath, game.getGameScript());
+            
+            var intent = new Intent(context, PythonSDLActivity.class)
+                .putExtra(PythonSDLActivity.GAME_PATH, gamePath)
+                .putExtra(PythonSDLActivity.PYTHON_PATH, new File(
+                    Files.getPythonFolders(context), pythonVersion).getAbsolutePath());
+            
+            context.startActivity(intent);
+            
             return;
         }
         
         DialogUtils.runTask(context.getSupportFragmentManager(),
              context.getString(R.string.fetching_python_title), false, 
              new FetchPythonTask(game));
+    }
+    
+    private void copyGameMainScript(String gamePath, String scriptName) {
+    	try {
+            var src = new File(gamePath, scriptName);
+            var dest = new File(gamePath, "main.py");
+            
+            var inputStream = new BufferedInputStream(new FileInputStream(src));
+            var outputStream = new BufferedOutputStream(new FileOutputStream(dest));
+            var buf = new byte[8192];
+            int len;
+            while((len = inputStream.read(buf)) != -1) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public static class GameViewHolder extends ViewHolder {

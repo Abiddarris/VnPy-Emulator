@@ -56,6 +56,14 @@ public class Game extends JSONObject {
     	return optString(GAME_NAME, null);
     }
     
+    public String getGamePath() {
+    	return optString(GAME_FOLDER_PATH, null);
+    }
+    
+    public String getGameScript() {
+    	return optString(GAME_SCRIPT, null);
+    }
+    
     public static void updateGame(Context context, Game game) throws IOException {
         List<Game> games = new ArrayList<>();
         loadGames(context)

@@ -32,6 +32,9 @@ import org.renpy.iap.Store;
 
 public class PythonSDLActivity extends SDLActivity {
 
+    public static final String GAME_PATH = "game_path";
+    public static final String PYTHON_PATH = "python_path";
+    
     /**
      * This exists so python code can access this activity.
      */
@@ -248,23 +251,16 @@ public class PythonSDLActivity extends SDLActivity {
 
         resourceManager = new ResourceManager(this);
         
-        File oldExternalStorage = new File(Environment.getExternalStorageDirectory(), getPackageName());
-        File externalStorage = getExternalMediaDirs()[0];
-        File path;
-        
-        if (externalStorage == null) {
-            externalStorage = oldExternalStorage;
-        }
-        
-        path = externalStorage;
+        String path = getIntent().getStringExtra(GAME_PATH);
+        String python = getIntent().getStringExtra(PYTHON_PATH);
 
-        unpackData("private", path);
-        unpackData("public", externalStorage);
+        //unpackData("private", path);
+        //unpackData("public", externalStorage);
 
-        nativeSetEnv("ANDROID_ARGUMENT", path.getAbsolutePath());
-        nativeSetEnv("ANDROID_PRIVATE", path.getAbsolutePath());
-        nativeSetEnv("ANDROID_PUBLIC",  externalStorage.getAbsolutePath());
-        nativeSetEnv("ANDROID_OLD_PUBLIC", oldExternalStorage.getAbsolutePath());
+        nativeSetEnv("ANDROID_ARGUMENT", path);
+        nativeSetEnv("ANDROID_PRIVATE", python);
+        nativeSetEnv("ANDROID_PUBLIC",  path);
+        nativeSetEnv("ANDROID_OLD_PUBLIC", path);
 
         // Figure out the APK path.
         String apkFilePath;
@@ -286,9 +282,12 @@ public class PythonSDLActivity extends SDLActivity {
             nativeSetEnv("ANDROID_EXPANSION", expansionFile);
         }
 
+        Log.d("debug", python);
+        Log.d("debug", python + ":" + python + "/lib");
+        
         nativeSetEnv("PYTHONOPTIMIZE", "2");
-        nativeSetEnv("PYTHONHOME", path.getAbsolutePath());
-        nativeSetEnv("PYTHONPATH", path.getAbsolutePath() + ":" + path.getAbsolutePath() + "/lib");
+        nativeSetEnv("PYTHONHOME", python);
+        nativeSetEnv("PYTHONPATH", python + ":" + python + "/lib");
 
         Log.v("python", "Finished preparePython.");
 
