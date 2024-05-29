@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.json.JSONArray;
@@ -51,8 +52,23 @@ public class Game extends JSONObject {
         
     public Game() {}
     
+    public String getName() {
+    	return optString(GAME_NAME, null);
+    }
+    
+    public static void updateGame(Context context, Game game) throws IOException {
+        List<Game> games = new ArrayList<>();
+        loadGames(context)
+            .stream()
+            .filter(g -> !game.getName().equals(g.getName()))
+            .forEach(games::add);
+        
+        games.add(game);
+        
+        saveGames(context, games);
+    }
+    
     public static void storeGame(Context context, Game game) throws IOException {
-        var gameFile = getGameFile(context);
         var games = loadGames(context);
         
         games.add(game);

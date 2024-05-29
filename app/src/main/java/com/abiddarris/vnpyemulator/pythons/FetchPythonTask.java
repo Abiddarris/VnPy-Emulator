@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.json.JSONException;
 
 public class FetchPythonTask extends Task {
     
@@ -77,14 +78,34 @@ public class FetchPythonTask extends Task {
             .map(ExternalPython::getVersionName)
             .forEach(choices::add);
       
-        var activity = getDialog().getActivity(); 
-        DialogUtils.choseItem(getDialog().getParentFragmentManager(),
-                getApplicationContext().getString(R.string.select_python_version), 
-                getApplicationContext().getString(R.string.select_python_message, game.optString(Game.GAME_NAME)), 
-                true, choices.toArray(new String[0]), 0, index -> {
-                    Toast.makeText(activity, choices.get(index), Toast.LENGTH_LONG)
-                        .show();
-                });
+        var context = getApplicationContext();
+        var manager = getDialog().getParentFragmentManager();
+        DialogUtils.choseItem(manager,
+            getApplicationContext().getString(R.string.select_python_version), 
+            getApplicationContext().getString(R.string.select_python_message, game.optString(Game.GAME_NAME)), 
+            true, choices.toArray(new String[0]), 0, index -> {
+                String version = choices.get(index);
+                if(downloadedVersion.contains(version)) {
+                    setGameVersion(version);
+                    return;
+                }
+                    
+                externalPythons.stream()
+                    .filter(python -> version.equals(python.getVersionName()))
+                    .findFirst()
+                    .ifPresent(python -> DialogUtils.runTask(manager, context.getString(R.string.downloading_python),
+                        false, new DownloadPythonTask(context, python, () -> setGameVersion(version))));
+            });
+    }
+    
+    private void setGameVersion(String version) {
+        try {
+            game.put(Game.PYTHON_VERSION, version);
+            
+            Game.updateGame(getApplicationContext(), game);
+        } catch (JSONException | IOException e) {
+            e.printStackTrace();
+        }
     }
     
     private List<String> getDownloadedVersion() {
