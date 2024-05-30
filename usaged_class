@@ -8,3 +8,4 @@ org.renpy.android.GenericBroadcastReceiver
 org.renpy.android.PythonService
 org.renpy.android.VideoPlayer
 org.renpy.iap.Store
+org/renpy/android/Action
