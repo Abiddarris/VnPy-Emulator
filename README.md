@@ -27,4 +27,4 @@ Thank you for your support!
 
 ## License
 This project is licensed under the GPL 3.0. Some files also licensed on Apache 2.0.
-See the [LICENSE](LICENSE) file for details. running Ren'Py games on Android.
+See the [LICENSE](LICENSE) file for details or see individual file's header.
