@@ -21,11 +21,11 @@ import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
 import android.util.Log;
+import com.abiddarris.common.utils.BaseRunnable;
+import com.abiddarris.common.utils.Hash;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.vnpyemulator.games.Game;
-import com.abiddarris.vnpyemulator.utils.BaseRunnable;
-import com.abiddarris.vnpyemulator.utils.Hash;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;

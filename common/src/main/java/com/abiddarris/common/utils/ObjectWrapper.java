@@ -1,4 +1,4 @@
-package com.abiddarris.vnpyemulator.utils;
+package com.abiddarris.common.utils;
 
 /**
  * Class that wraps an object
