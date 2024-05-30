@@ -142,106 +142,6 @@ public class PythonSDLActivity extends SDLActivity {
         setupMainWindowDisplayMode();
     }
 
-    // Code to unpack python and get things running ///////////////////////////
-
-    public void recursiveDelete(File f) {
-        if (f.isDirectory()) {
-            for (File r : f.listFiles()) {
-                recursiveDelete(r);
-            }
-        }
-        f.delete();
-    }
-
-    /**
-     * This determines if unpacking one the zip files included in
-     * the .apk is necessary. If it is, the zip file is unpacked.
-     */
-    public void unpackData(final String resource, File target) {
-
-        /**
-         * Delete main.pyo unconditionally. This fixes a problem where we have
-         * a main.py newer than main.pyo, but start.c won't run it.
-         */
-        new File(target, "main.pyo").delete();
-
-        // The version of data in memory and on disk.
-        String data_version = resourceManager.getString(resource + "_version");
-        String disk_version = null;
-
-        // If no version, no unpacking is necessary.
-        if (data_version == null) {
-            return;
-        }
-
-        // Check the current disk version, if any.
-        String filesDir = target.getAbsolutePath();
-        String disk_version_fn = filesDir + "/" + resource + ".version";
-
-        try {
-            byte buf[] = new byte[64];
-            InputStream is = new FileInputStream(disk_version_fn);
-            int len = is.read(buf);
-            disk_version = new String(buf, 0, len);
-            is.close();
-        } catch (Exception e) {
-            disk_version = "";
-        }
-
-        // If the disk data is out of date, extract it and write the
-        // version file.
-        if (! data_version.equals(disk_version)) {
-            Log.v("python", "Extracting " + resource + " assets.");
-
-            // Delete old libraries & renpy files.
-            recursiveDelete(new File(target, "lib"));
-            recursiveDelete(new File(target, "renpy"));
-
-            target.mkdirs();
-
-            AssetExtract ae = new AssetExtract(this);
-            if (!ae.extractTar(resource + ".mp3", target.getAbsolutePath())) {
-                toastError("Could not extract " + resource + " data.");
-            }
-
-            try {
-                // Write .nomedia.
-                new File(target, ".nomedia").createNewFile();
-
-                // Write version file.
-                FileOutputStream os = new FileOutputStream(disk_version_fn);
-                os.write(data_version.getBytes());
-                os.close();
-            } catch (Exception e) {
-                Log.w("python", e);
-            }
-        }
-
-    }
-
-    /**
-     * Show an error using a toast. (Only makes sense from non-UI
-     * threads.)
-     */
-    public void toastError(final String msg) {
-
-        final Activity thisActivity = this;
-
-        runOnUiThread(new Runnable () {
-            public void run() {
-                Toast.makeText(thisActivity, msg, Toast.LENGTH_LONG).show();
-            }
-        });
-
-        // Wait to show the error.
-        synchronized (this) {
-            try {
-                this.wait(1000);
-            } catch (InterruptedException e) {
-            }
-        }
-    }
-
     public native void nativeSetEnv(String variable, String value);
 
     public void preparePython() {
@@ -253,9 +153,6 @@ public class PythonSDLActivity extends SDLActivity {
         
         String path = getIntent().getStringExtra(GAME_PATH);
         String python = getIntent().getStringExtra(PYTHON_PATH);
-
-        //unpackData("private", path);
-        //unpackData("public", externalStorage);
 
         nativeSetEnv("ANDROID_ARGUMENT", path);
         nativeSetEnv("ANDROID_PRIVATE", python);
