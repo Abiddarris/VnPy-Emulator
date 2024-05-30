@@ -29,8 +29,6 @@ public class Store {
 
         if (storeName.equals("play")) {
             store = new PlayStore(activity);
-        } else if (storeName.equals("amazon")) {
-            store = new AmazonStore(activity);
         } else {
             store = new Store();
         }
