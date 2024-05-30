@@ -17,38 +17,35 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import android.net.Uri;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.stream.Stream;
 
 /**
- * Class that provides file for patching and downloading
- * python for running renpy games
+ * Provide an {@code InputStream} from github repo
+ *
+ * @Author Abiddarris
  */
-public interface Source {
+public class GithubSource implements Source {
     
     /**
-     * For testing purpose, {@link #getSource()} will provide
-     * stream on internal storage.
+     * Hardcoded URL
      */
-    static final boolean LOCAL = false;
+    private static final Uri PARENT = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/master");
     
     /**
-     * Store singleton of source
+     * {@inheritDoc}
      */
-    static Source source = LOCAL ? new LocalSource() : new GithubSource();
-    
-    /**
-     * Open an {@code InputStream} relative from folder containing 
-     * patches folder and python
-     *
-     * @param fileName File path relative from folder containing 
-     *        patches folder and python
-     * @throws IOException If unable to open
-     * @return {@code InputStream}
-     */
-    InputStream open(String fileName) throws IOException;
-    
-    public static Source getSource() {
-        return source;
+    @Override
+    public InputStream open(String fileName) throws IOException {
+        return new URL(PARENT.buildUpon()
+            .appendPath(fileName)
+            .build()
+            .toString())
+            .openStream();
     }
+    
 }
