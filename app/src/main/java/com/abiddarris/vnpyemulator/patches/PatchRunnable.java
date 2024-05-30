@@ -36,6 +36,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PatchRunnable implements BaseRunnable {
     
@@ -125,22 +126,19 @@ public class PatchRunnable implements BaseRunnable {
             
         }
         
-        List<File> scripts = new ArrayList<>();
-        for(var file : files) {
-        	if(file.getName().endsWith(".py")) {
-                scripts.add(file);
-            }
-        }
+        files = Stream.of(files)
+            .filter(file -> file.getName().endsWith(".py"))
+            .toArray(File[]::new);
         
-        if(scripts.size() < 1) {
+        if(files.length < 1) {
             // TODO: Add error handling
         }
         
         File script = null;
-        if(scripts.size() > 1) {
+        if(files.length > 1) {
             // TODO: open dialog for users to choose
         } else {
-            script = scripts.get(0);
+            script = files[0]
         }
         return script;
     }
