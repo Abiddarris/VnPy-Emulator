@@ -18,6 +18,7 @@
 package com.abiddarris.vnpyemulator.dialogs;
 
 import android.os.Bundle;
+import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;

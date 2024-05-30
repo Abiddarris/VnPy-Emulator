@@ -19,6 +19,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class BaseDialog<T extends DialogInformation> extends BaseDialogFragment {

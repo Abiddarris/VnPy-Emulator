@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import androidx.fragment.app.DialogFragment;
+import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.AddNewGameLayoutBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;

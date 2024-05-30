@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.dialogs;
+package com.abiddarris.common.android.dialogs;
 
 import android.app.Dialog;
 import android.content.res.Resources;
@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import androidx.fragment.app.DialogFragment;
-import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.common.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class BaseDialogFragment extends DialogFragment {

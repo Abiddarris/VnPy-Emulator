@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.CallSuper;
 import androidx.annotation.MainThread;
+import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.DialogApplyPatchBinding;
 import com.abiddarris.vnpyemulator.patches.PatchRunnable;
