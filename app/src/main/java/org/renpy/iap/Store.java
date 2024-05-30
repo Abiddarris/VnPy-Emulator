@@ -10,31 +10,12 @@ import android.content.pm.PackageManager;
 
 public class Store {
 
-    static public Store store = null;
+    public static Store store = new Store();
 
-    static public void create(Activity activity) {
-
-        String storeName = org.renpy.android.Constants.store;
-
-        if (storeName.equals("all")) {
-            PackageManager pkgManager = activity.getPackageManager();
-            String installerPackageName = pkgManager.getInstallerPackageName(activity.getPackageName());
-
-            if ((installerPackageName != null) && installerPackageName.startsWith("com.amazon")) {
-                storeName = "amazon";
-            } else {
-                storeName = "none";
-            }
-        }
-
-        if (storeName.equals("play")) {
-            store = new PlayStore(activity);
-        } else {
-            store = new Store();
-        }
+    public static void create(Activity activity) {
     }
 
-    static public Store getStore() {
+    public static Store getStore() {
         return store;
     }
 
