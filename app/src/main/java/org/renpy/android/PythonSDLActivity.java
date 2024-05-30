@@ -54,9 +54,6 @@ public class PythonSDLActivity extends SDLActivity {
      */
     public LinearLayout mVbox;
 
-    ResourceManager resourceManager;
-
-
     protected String[] getLibraries() {
         return new String[] {
             "png16",
@@ -149,8 +146,6 @@ public class PythonSDLActivity extends SDLActivity {
 
         mActivity = this;
 
-        resourceManager = new ResourceManager(this);
-        
         String path = getIntent().getStringExtra(GAME_PATH);
         String python = getIntent().getStringExtra(PYTHON_PATH);
 
@@ -189,28 +184,6 @@ public class PythonSDLActivity extends SDLActivity {
         Log.v("python", "Finished preparePython.");
 
     };
-
-    // Code to support devicePurchase. /////////////////////////////////////////
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Store.create(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Store.getStore().destroy();
-    }
-
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (Store.getStore().onActivityResult(requestCode, resultCode, intent)) {
-            return;
-        }
-
-        super.onActivityResult(requestCode, resultCode, intent);
-    }
 
     // Code to support public APIs. ////////////////////////////////////////////
 
