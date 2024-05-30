@@ -1,0 +1,10 @@
+org.renpy.android.RenPySound
+org.renpy.android.PythonSDLActivity
+org/renpy/android/PythonActivity$ActivityResultListener
+org/renpy/android/PythonActivity$NewIntentListener
+org.renpy.android.PythonActivity
+org/renpy/android/GenericBroadcastReceiverCallback
+org.renpy.android.GenericBroadcastReceiver
+org.renpy.android.PythonService
+org.renpy.android.VideoPlayer
+org.renpy.iap.Store
