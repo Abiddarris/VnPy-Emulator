@@ -15,4 +15,5 @@
     <string name="select_python_message">Select Python version that will be used when running %s</string>
     <string name="downloading_python">Downloading python</string>
     <string name="folder_not_exists">Folder does not exist</string>
+    <string name="not_a_folder">Is not a folder</string>
 </resources>

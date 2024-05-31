@@ -76,9 +76,13 @@ public class AddNewGameDialog extends BaseDialogFragment {
             .addTextChangedListener(TextListener.newTextListener(editable -> {
                 var file = new File(editable.toString());
                 String errorMessage = null;    
+               
                 if(!file.exists()) {
                     errorMessage = getString(R.string.folder_not_exists);
+                } else if(!file.isDirectory()) {
+                    errorMessage = getString(R.string.not_a_folder);
                 }
+                    
                 binding.pathEditText.setError(errorMessage == null ? "" : errorMessage);
                 binding.pathEditText.setErrorEnabled(errorMessage != null);
                     
