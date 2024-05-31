@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import com.abiddarris.common.utils.ObjectWrapper;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
@@ -106,14 +107,27 @@ public class PatchRunnable implements BaseRunnable {
             os.close();
         }
         
+        String baseName = removeExtension(script.getName());
+        ObjectWrapper<String> name = new ObjectWrapper<>(baseName);
+        List<Game> games = Game.loadGames(applicationContext);
+        int i = 0;
+        while(games.stream()
+                .map(Game::getName)
+                .anyMatch(gameName -> gameName.equals(name.getObject()))) {
+            
+            name.setObject(baseName + String.format(" (%s)", ++i));
+        }
+        
         var game = new Game();
         game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
         game.put(GAME_SCRIPT, script.getName());
-        game.put(GAME_NAME, removeExtension(script.getName()));
+        game.put(GAME_NAME, name.getObject());
         game.put(RENPY_VERSION, version);
         
         Game.storeGame(applicationContext, game);
     }
+    
+    
     
     private String removeExtension(String name) {
         return name.substring(0, name.lastIndexOf("."));
@@ -138,7 +152,7 @@ public class PatchRunnable implements BaseRunnable {
         if(files.length > 1) {
             // TODO: open dialog for users to choose
         } else {
-            script = files[0]
+            script = files[0];
         }
         return script;
     }
