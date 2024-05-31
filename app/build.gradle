@@ -16,7 +16,7 @@ android {
     
     defaultConfig {
         multiDexEnabled true
-        applicationId "com.abiddarris.vnpyemulator"
+        applicationId 'com.abiddarris.vnpyemulator'
         minSdk 16
         targetSdk 33
         versionCode 1
@@ -52,8 +52,8 @@ dependencies {
     
     implementation 'org.kamranzafar:jtar:2.3'
     
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.9.0")
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
