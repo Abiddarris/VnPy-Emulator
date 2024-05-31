@@ -141,8 +141,9 @@ public class PatchRunnable implements BaseRunnable {
     private File getScriptFile() {
         var files = folderToPatch.listFiles();
         if(files == null) {
-            // TODO: Add error handling
+            showScriptNotFoundError();
             
+            return null;
         }
         
         files = Stream.of(files)
@@ -150,10 +151,7 @@ public class PatchRunnable implements BaseRunnable {
             .toArray(File[]::new);
         
         if(files.length < 1) {
-            SimpleDialog.show(
-                dialog.getParentFragmentManager(), 
-                applicationContext.getString(R.string.patch_error),
-                applicationContext.getString(R.string.py_script_not_found));
+            showScriptNotFoundError();
             
             return null;
         }
@@ -165,6 +163,13 @@ public class PatchRunnable implements BaseRunnable {
             script = files[0];
         }
         return script;
+    }
+
+    private void showScriptNotFoundError() {
+        SimpleDialog.show(
+                dialog.getParentFragmentManager(), 
+                applicationContext.getString(R.string.patch_error),
+                applicationContext.getString(R.string.py_script_not_found));
     }
     
     private void setMessage(String message) {
