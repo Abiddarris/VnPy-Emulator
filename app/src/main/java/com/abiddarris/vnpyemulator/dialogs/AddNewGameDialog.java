@@ -23,8 +23,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import androidx.annotation.MainThread;
-import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
+import com.abiddarris.common.android.utils.TextListener;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.AddNewGameLayoutBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -69,6 +69,17 @@ public class AddNewGameDialog extends BaseDialogFragment {
     public View createView() {
         binding = AddNewGameLayoutBinding.inflate(getLayoutInflater());
         binding.pathEditText.addOnEditTextAttachedListener(v -> v.getEditText().setText(path));
+        binding.pathEditText.getEditText()
+            .addTextChangedListener(TextListener.newTextListener(editable -> {
+                var file = new File(editable.toString());
+                String errorMessage = null;    
+                if(!file.exists()) {
+                    errorMessage = getString(R.string.folder_not_exists);
+                }
+                    
+                binding.pathEditText.setError(errorMessage == null ? "" : errorMessage);
+                binding.pathEditText.setErrorEnabled(errorMessage != null);
+            }));
         
         return binding.getRoot();
     }
