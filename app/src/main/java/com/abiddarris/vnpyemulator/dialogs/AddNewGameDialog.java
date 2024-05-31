@@ -19,10 +19,13 @@
 package com.abiddarris.vnpyemulator.dialogs;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import androidx.annotation.MainThread;
+import androidx.appcompat.app.AlertDialog;
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.common.android.utils.TextListener;
 import com.abiddarris.vnpyemulator.R;
@@ -76,9 +79,12 @@ public class AddNewGameDialog extends BaseDialogFragment {
                 if(!file.exists()) {
                     errorMessage = getString(R.string.folder_not_exists);
                 }
-                    
                 binding.pathEditText.setError(errorMessage == null ? "" : errorMessage);
                 binding.pathEditText.setErrorEnabled(errorMessage != null);
+                    
+                AlertDialog dialog = (AlertDialog)getDialog();
+                Button button = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                button.setEnabled(!binding.pathEditText.isErrorEnabled());
             }));
         
         return binding.getRoot();
