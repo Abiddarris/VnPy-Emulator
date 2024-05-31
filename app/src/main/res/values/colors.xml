@@ -11,4 +11,5 @@
     <color name="colorOnBackground">#000000</color> <!-- Black -->
     <color name="colorOnSurface">#000000</color> <!-- Black -->
     <color name="colorOnError">#FFFFFF</color> <!-- White -->
+    <color name="ic_launcher_background">#FFC0C8</color>
 </resources>

@@ -26,11 +26,10 @@
         android:name="VnPyApplication"
         android:largeHeap="true"
         android:label="@string/app_name"
-        android:icon="@drawable/icon"
+        android:icon="@mipmap/ic_launcher"
         android:hardwareAccelerated="true" 
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
-        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         
