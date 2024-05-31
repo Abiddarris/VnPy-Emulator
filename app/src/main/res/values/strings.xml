@@ -16,4 +16,6 @@
     <string name="downloading_python">Downloading python</string>
     <string name="folder_not_exists">Folder does not exist</string>
     <string name="not_a_folder">Is not a folder</string>
+    <string name="patch_error">Error while patching</string>
+    <string name="py_script_not_found">Game .py not found</string>
 </resources>

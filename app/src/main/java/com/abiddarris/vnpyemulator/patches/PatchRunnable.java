@@ -17,13 +17,14 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import com.abiddarris.common.utils.ObjectWrapper;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
 import android.util.Log;
+import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.utils.BaseRunnable;
 import com.abiddarris.common.utils.Hash;
+import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.vnpyemulator.games.Game;
@@ -63,6 +64,10 @@ public class PatchRunnable implements BaseRunnable {
                 R.string.patching));
         
         File script = getScriptFile();
+        if(script == null) {
+            return;
+        }
+        
         String version = RenPyParser.getVersion(folderToPatch);
         PatchSource source = PatchSource.getPatcher();
         
@@ -145,7 +150,12 @@ public class PatchRunnable implements BaseRunnable {
             .toArray(File[]::new);
         
         if(files.length < 1) {
-            // TODO: Add error handling
+            SimpleDialog.show(
+                dialog.getParentFragmentManager(), 
+                applicationContext.getString(R.string.patch_error),
+                applicationContext.getString(R.string.py_script_not_found));
+            
+            return null;
         }
         
         File script = null;
