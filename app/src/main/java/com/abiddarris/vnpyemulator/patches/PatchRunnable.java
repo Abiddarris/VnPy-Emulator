@@ -132,8 +132,6 @@ public class PatchRunnable implements BaseRunnable {
         Game.storeGame(applicationContext, game);
     }
     
-    
-    
     private String removeExtension(String name) {
         return name.substring(0, name.lastIndexOf("."));
     }

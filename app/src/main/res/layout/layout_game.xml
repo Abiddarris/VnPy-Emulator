@@ -22,6 +22,7 @@
      android:clickable="true"
      android:focusable="true"
      android:background="?attr/selectableItemBackground"
+     android:paddingStart="@dimen/layout_game_padding_start"
      android:id="@+id/root">
 
     <TextView
