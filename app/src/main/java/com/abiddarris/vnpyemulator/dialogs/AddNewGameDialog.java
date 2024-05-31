@@ -22,6 +22,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import androidx.annotation.MainThread;
 import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.vnpyemulator.R;
@@ -31,7 +32,21 @@ import java.io.File;
 
 public class AddNewGameDialog extends BaseDialogFragment {
     
+    private static final String PATH = "PATH";
+    
     private AddNewGameLayoutBinding binding;
+    private String path;
+    
+    @Override
+    @MainThread
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        
+        path = getDefaultLocation();
+        if(bundle != null) {
+            path = bundle.getString(PATH, path);
+        }
+    }
     
     @Override
     protected MaterialAlertDialogBuilder createDialog() {
@@ -53,9 +68,17 @@ public class AddNewGameDialog extends BaseDialogFragment {
     @Override
     public View createView() {
         binding = AddNewGameLayoutBinding.inflate(getLayoutInflater());
-        binding.pathEditText.addOnEditTextAttachedListener(v -> v.getEditText().setText(getDefaultLocation()));
+        binding.pathEditText.addOnEditTextAttachedListener(v -> v.getEditText().setText(path));
         
         return binding.getRoot();
+    }
+    
+    @Override
+    @MainThread
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        
+        bundle.putString(PATH, binding.pathEditText.getEditText().getText().toString());
     }
     
     @Override
