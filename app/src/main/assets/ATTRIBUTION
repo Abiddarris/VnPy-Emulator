@@ -372,3 +372,15 @@ Version : 2.3
 Author : Kamranzafar
 License : Apache 2.0
 LicenseText : LICENSE.apache
+
+Library Name : Ren'Py
+Author : Tom Rothamel
+License : MIT License
+FullText: assets/Renpy.license
+
+Library Name : Modified Ren'Py
+Original Author : Tom Rothamel
+Original License : MIT License
+Sublicensed under : GPL 3
+LicenseText: renpy.LICENSE, LICENSE
+What about this?
