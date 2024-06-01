@@ -1,0 +1,365 @@
+Library name : activity
+Version : 1.6.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : annotation
+Version : 1.3.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : annotation-experimental
+Version : 1.3.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : appcompat
+Version : 1.6.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : appcompat-resources
+Version : 1.6.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : core-common
+Version : 2.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : core-runtime
+Version : 2.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : cardview
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : collection
+Version : 1.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : concurrent-futures
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : constraintlayout
+Version : 2.1.4
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : constraintlayout-core
+Version : 1.0.4
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : coordinatorlayout
+Version : 1.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : core
+Version : 1.9.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : core-ktx
+Version : 1.9.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : cursoradapter
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : customview
+Version : 1.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : viewbinding
+Version : 8.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : documentfile
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : drawerlayout
+Version : 1.1.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : dynamicanimation
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : emoji2
+Version : 1.2.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : emoji2-views-helper
+Version : 1.2.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : fragment
+Version : 1.3.6
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : interpolator
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : legacy-support-core-utils
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : lifecycle-common
+Version : 2.5.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : lifecycle-livedata
+Version : 2.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : lifecycle-livedata-core
+Version : 2.5.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : lifecycle-process
+Version : 2.4.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : lifecycle-runtime
+Version : 2.5.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : lifecycle-viewmodel
+Version : 2.5.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : lifecycle-viewmodel-savedstate
+Version : 2.5.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : loader
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : localbroadcastmanager
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : multidex
+Version : 2.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : print
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : recyclerview
+Version : 1.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : resourceinspection-annotation
+Version : 1.0.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : savedstate
+Version : 1.2.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : startup-runtime
+Version : 1.1.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : tracing
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : transition
+Version : 1.2.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : vectordrawable
+Version : 1.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : vectordrawable-animated
+Version : 1.1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : versionedparcelable
+Version : 1.1.1
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : viewpager
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : viewpager2
+Version : 1.0.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : material
+Version : 1.9.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : error_prone_annotations
+Version : 2.15.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : listenablefuture
+Version : 1.0
+Author : Google
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : annotations
+Version : 13.0
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlin-stdlib
+Version : 1.7.10
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlin-stdlib-common
+Version : 1.7.10
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlin-stdlib-jdk7
+Version : 1.6.0
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlin-stdlib-jdk8
+Version : 1.6.0
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlinx-coroutines-android
+Version : 1.6.1
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlinx-coroutines-bom
+Version : 1.6.1
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlinx-coroutines-core
+Version : 1.6.1
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : kotlinx-coroutines-core-jvm
+Version : 1.6.1
+Author : JetBrains
+License : Apache 2.0
+LicenseText : LICENSE.apache
+
+Library name : jtar
+Version : 2.3
+Author : Kamranzafar
+License : Apache 2.0
+LicenseText : LICENSE.apache
