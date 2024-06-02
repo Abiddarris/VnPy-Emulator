@@ -18,4 +18,5 @@
     <string name="not_a_folder">Is not a folder</string>
     <string name="patch_error">Error while patching</string>
     <string name="py_script_not_found">Game .py not found</string>
+    <string name="external_storage_permission_required_message">This app requires Manage External Storage permission for emulating game outside of app internal storage.</string>
 </resources>

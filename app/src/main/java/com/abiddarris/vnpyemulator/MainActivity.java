@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.abiddarris.common.android.utils.Permissions;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
@@ -36,6 +37,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        Permissions.requestManageExternalStoragePermission(
+            getSupportFragmentManager(), getString(R.string.external_storage_permission_required_message));
+        
         
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         
@@ -54,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         
         binding.games.setLayoutManager(new LinearLayoutManager(this));
         binding.games.setAdapter(adapter);
+        
     }
     
     @Override
