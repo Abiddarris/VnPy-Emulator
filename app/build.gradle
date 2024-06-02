@@ -1,8 +1,11 @@
-
 plugins {
     id 'com.android.application'
     id 'com.github.jk1.dependency-license-report'
 }
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     namespace 'com.abiddarris.vnpyemulator'
@@ -27,9 +30,20 @@ android {
             useSupportLibrary true
         }
     }
+    
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
 
     buildTypes {
         release {
+            signingConfig signingConfigs.release
+            
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
