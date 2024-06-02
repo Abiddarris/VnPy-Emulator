@@ -22,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import com.abiddarris.common.android.about.AboutActivity;
 import com.abiddarris.common.android.utils.Permissions;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
@@ -75,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
                 new AddNewGameDialog()
                     .show(getSupportFragmentManager(), null);
                 return true; 
+            case R.id.about :
+                startActivity(AboutActivity.newAboutActivity(this, "ABOUT"));
+                return true;
         }
         
         return false;
