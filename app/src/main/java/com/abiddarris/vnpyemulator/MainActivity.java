@@ -39,8 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         
         Permissions.requestManageExternalStoragePermission(
-            getSupportFragmentManager(), getString(R.string.external_storage_permission_required_message));
-        
+            this, getString(R.string.external_storage_permission_required_message));
         
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         
