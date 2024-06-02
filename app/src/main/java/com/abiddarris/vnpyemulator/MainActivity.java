@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     .show(getSupportFragmentManager(), null);
                 return true; 
             case R.id.about :
-                startActivity(AboutActivity.newAboutActivity(this, "ABOUT"));
+                startActivity(AboutActivity.newAboutActivity(this, "ABOUT", "ATTRIBUTION"));
                 return true;
         }
         
