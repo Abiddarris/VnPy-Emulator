@@ -2,4 +2,5 @@
 <resources>
     <dimen name="apply_patch_message_left_margin">20dp</dimen>
     <dimen name="layout_game_padding_start">10dp</dimen>
+    <dimen name="layout_game_name_size">20sp</dimen>
 </resources>
