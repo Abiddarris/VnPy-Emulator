@@ -52,24 +52,7 @@ public class AddNewGameDialog extends BaseDialogFragment {
     }
     
     @Override
-    protected MaterialAlertDialogBuilder createDialog() {
-        return super.createDialog()
-            .setTitle(R.string.add_new_game)
-            .setNegativeButton(android.R.string.cancel, (d,w) -> {})
-            .setPositiveButton(android.R.string.ok, (d,w) -> {
-                var bundle = new Bundle();
-                var dialog = new ApplyPatchDialog();
-                
-                bundle.putString(ApplyPatchDialog.FOLDER_TO_PATCH, 
-                    binding.pathEditText.getEditText().getText().toString());
-                
-                dialog.setArguments(bundle);
-                dialog.show(getParentFragmentManager(), null);
-            });
-    }
-    
-    @Override
-    public View createView() {
+    public void onCreateDialog(MaterialAlertDialogBuilder builder) {
         binding = AddNewGameLayoutBinding.inflate(getLayoutInflater());
         binding.pathEditText.addOnEditTextAttachedListener(v -> v.getEditText().setText(path));
         binding.pathEditText.getEditText()
@@ -91,7 +74,19 @@ public class AddNewGameDialog extends BaseDialogFragment {
                 button.setEnabled(!binding.pathEditText.isErrorEnabled());
             }));
         
-        return binding.getRoot();
+        builder.setTitle(R.string.add_new_game)
+            .setView(binding.getRoot())
+            .setNegativeButton(android.R.string.cancel, (d,w) -> {})
+            .setPositiveButton(android.R.string.ok, (d,w) -> {
+                var bundle = new Bundle();
+                var dialog = new ApplyPatchDialog();
+                
+                bundle.putString(ApplyPatchDialog.FOLDER_TO_PATCH, 
+                    binding.pathEditText.getEditText().getText().toString());
+                
+                dialog.setArguments(bundle);
+                dialog.show(getParentFragmentManager(), null);
+            });
     }
     
     @Override
@@ -100,11 +95,6 @@ public class AddNewGameDialog extends BaseDialogFragment {
         super.onSaveInstanceState(bundle);
         
         bundle.putString(PATH, binding.pathEditText.getEditText().getText().toString());
-    }
-    
-    @Override
-    protected boolean hasButton() {
-        return true;
     }
   
     @SuppressWarnings("deprecation")

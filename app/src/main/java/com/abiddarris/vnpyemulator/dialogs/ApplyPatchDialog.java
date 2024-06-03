@@ -55,16 +55,11 @@ public class ApplyPatchDialog extends BaseDialogFragment {
     }
     
     @Override
-    protected MaterialAlertDialogBuilder createDialog() {
-        return super.createDialog()
-            .setTitle(R.string.apply_patch_dialog_title);
-    }
-    
-    @Override
-    protected View createView() {
+    public void onCreateDialog(MaterialAlertDialogBuilder builder) {
         binding = DialogApplyPatchBinding.inflate(getLayoutInflater());
         
-        return binding.getRoot();
+        builder.setTitle(R.string.apply_patch_dialog_title)
+            .setView(binding.getRoot());
     }
     
     @Override

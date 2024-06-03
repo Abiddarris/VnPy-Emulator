@@ -44,25 +44,23 @@ public class BaseDialog<T extends DialogInformation> extends BaseDialogFragment 
     }
     
     @Override
-    protected View createView() {
+    @SuppressWarnings("unchecked")
+    public void onCreateDialog(MaterialAlertDialogBuilder builder) {
         var supplier = getDialogInformation().getView();
-        return supplier == null ? null : supplier.apply(getLayoutInflater());
+        var consumer = getDialogInformation().getCustomizer();
+        if(consumer != null) {
+            consumer.accept(builder);
+        }
+        
+        if(supplier == null) {
+            return;
+        }
+        var view = supplier.apply(getLayoutInflater());
+        builder.setView(view);
     }
     
     public T getDialogInformation() {
         return info;
-    }
-    
-    @Override
-    @SuppressWarnings("unchecked")
-    protected MaterialAlertDialogBuilder createDialog() {
-        var dialogBuilder = super.createDialog();
-        var consumer = getDialogInformation().getCustomizer();
-        if(consumer != null) {
-            consumer.accept(dialogBuilder);
-        }
-            
-        return dialogBuilder;
     }
     
     @Override
