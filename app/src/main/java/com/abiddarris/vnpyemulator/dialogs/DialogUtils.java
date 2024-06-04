@@ -18,9 +18,9 @@ package com.abiddarris.vnpyemulator.dialogs;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import androidx.fragment.app.FragmentManager;
+import com.abiddarris.common.databinding.DialogSingleChoiceBinding;
 import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.databinding.DialogProgressBinding;
-import com.abiddarris.vnpyemulator.databinding.DialogSelectItemBinding;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,8 +63,8 @@ public class DialogUtils {
                     }))
             .setOnDialogCreated(dialog -> dialog.setCancelable(cancelable))
             .setView(inflater -> {
-                var binding = DialogSelectItemBinding.inflate(inflater);
-                var editText = binding.inputLayout.getEditText();
+                var binding = DialogSingleChoiceBinding.inflate(inflater);
+                var editText = binding.spinner.getEditText();
                 if(editText instanceof MaterialAutoCompleteTextView) {
                     var spinner = (MaterialAutoCompleteTextView)editText;
                     var adapter = new ArrayAdapter<>(inflater.getContext(),
