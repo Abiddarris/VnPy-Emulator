@@ -19,4 +19,7 @@
     <string name="patch_error">Error while patching</string>
     <string name="py_script_not_found">Game .py not found</string>
     <string name="external_storage_permission_required_message">This app requires Manage External Storage permission for emulating game outside of app internal storage.</string>
+    <string name="select_python_script">Select Python Script</string>
+    <string name="select_python_script_message">Select Python Script that will be used to launch the game</string>
+    <string name="select">Select</string>
 </resources>

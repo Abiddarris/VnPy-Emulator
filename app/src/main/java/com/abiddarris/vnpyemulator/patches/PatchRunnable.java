@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
@@ -156,6 +157,12 @@ public class PatchRunnable implements BaseRunnable {
         
         File script = null;
         if(files.length > 1) {
+            SelectMainPythonDialog.newDialog(
+                Stream.of(files)
+                    .map(File::getName)
+                    .toArray(String[]::new))
+            .show(dialog.getParentFragmentManager(), null);
+            
             // TODO: open dialog for users to choose
         } else {
             script = files[0];
