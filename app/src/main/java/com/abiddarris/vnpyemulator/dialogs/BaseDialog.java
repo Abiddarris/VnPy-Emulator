@@ -45,7 +45,7 @@ public class BaseDialog<T extends DialogInformation> extends BaseDialogFragment 
     
     @Override
     @SuppressWarnings("unchecked")
-    public void onCreateDialog(MaterialAlertDialogBuilder builder) {
+    public void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
         var supplier = getDialogInformation().getView();
         var consumer = getDialogInformation().getCustomizer();
         if(consumer != null) {

@@ -55,7 +55,7 @@ public class ApplyPatchDialog extends BaseDialogFragment {
     }
     
     @Override
-    public void onCreateDialog(MaterialAlertDialogBuilder builder) {
+    public void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
         binding = DialogApplyPatchBinding.inflate(getLayoutInflater());
         
         builder.setTitle(R.string.apply_patch_dialog_title)

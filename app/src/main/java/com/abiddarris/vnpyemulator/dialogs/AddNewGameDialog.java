@@ -52,7 +52,7 @@ public class AddNewGameDialog extends BaseDialogFragment {
     }
     
     @Override
-    public void onCreateDialog(MaterialAlertDialogBuilder builder) {
+    public void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
         binding = AddNewGameLayoutBinding.inflate(getLayoutInflater());
         binding.pathEditText.addOnEditTextAttachedListener(v -> v.getEditText().setText(path));
         binding.pathEditText.getEditText()
