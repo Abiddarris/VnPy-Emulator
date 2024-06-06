@@ -23,4 +23,8 @@
     <string name="select_python_script_message">Select Python Script that will be used to launch the game</string>
     <string name="select">Select</string>
     <string name="select_patch_version">Select Patch Version</string>
+    <string name="incompatible_patch">Incompatible Patch</string>
+    <string name="incompatible_patch_message">Incompatible patch when applying patch to %s. Applying the patch could cause a problem.</string>
+    <string name="abort">Abort</string>
+    <string name="apply_anyway">Apply Anyway</string>
 </resources>

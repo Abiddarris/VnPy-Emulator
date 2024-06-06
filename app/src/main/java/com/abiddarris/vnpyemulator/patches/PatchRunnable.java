@@ -17,9 +17,9 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import androidx.fragment.app.FragmentManager;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
+import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,6 +29,7 @@ import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
+import com.abiddarris.vnpyemulator.dialogs.IncompatiblePatchDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectPatchVersionDialog;
 import com.abiddarris.vnpyemulator.games.Game;
@@ -114,8 +115,14 @@ public class PatchRunnable implements BaseRunnable {
                 continue;
             }
             
-            if(originalFileHash.equals(patch.getOriginalFileHash())) {
-                // TODO: prompt a user patching may cause a problem
+            if(!originalFileHash.equals(patch.getOriginalFileHash())) {
+                var dialog = new IncompatiblePatchDialog();
+                dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, target.getName());
+                
+                boolean result = dialog.showForResultAndBlock(manager);
+                if(!result) {
+                    return;
+                }
             }
             
             var os = new BufferedOutputStream(new FileOutputStream(target));
