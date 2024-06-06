@@ -24,12 +24,15 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class SelectPatchVersionDialog extends SingleChoiceDialog {
 
+    public static final String MESSAGE = "message";
+    
     @Override
     protected void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
         super.onCreateDialog(builder, savedInstanceState);
         
         builder.setTitle(R.string.select_patch_version)
             .setPositiveButton(R.string.select, null)
-            .setNegativeButton(android.R.string.cancel, null);
+            .setNegativeButton(android.R.string.cancel, null)
+            .setMessage(getVariable(MESSAGE));
     }
 }

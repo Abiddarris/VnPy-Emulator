@@ -39,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -73,13 +74,22 @@ public class PatchRunnable implements BaseRunnable {
         if(script == null) {
             return;
         }
-        
-        String version = RenPyParser.getVersion(folderToPatch);
         PatchSource source = PatchSource.getPatcher();
+        
+        String version;
+        try {
+            version = RenPyParser.getVersion(folderToPatch);
+        } catch (IOException e) {
+            e.printStackTrace();
+            
+            version = null;
+        }
         
         String[] versions = source.getVersions();
         if(!Arrays.asList(versions).contains(version)) {
             var dialog = new SelectPatchVersionDialog();
+            dialog.saveVariable(SelectPatchVersionDialog.MESSAGE,
+                 version == null ? applicationContext.getString(R.string.unknown_version_message) : null);
             dialog.setItems(versions, -1);
            
             int selection = dialog.showForResultAndBlock(manager);

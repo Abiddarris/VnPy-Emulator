@@ -27,4 +27,5 @@
     <string name="incompatible_patch_message">Incompatible patch when applying patch to %s. Applying the patch could cause a problem.</string>
     <string name="abort">Abort</string>
     <string name="apply_anyway">Apply Anyway</string>
+    <string name="unknown_version_message">"We are unable to determine the game's Ren'Py engine version. Please select closest patch version"</string>
 </resources>
