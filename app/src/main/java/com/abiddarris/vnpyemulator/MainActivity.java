@@ -46,15 +46,7 @@ public class MainActivity extends AppCompatActivity {
         
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
-       
-        //Quick fix
-        try {
-           new File(getExternalMediaDirs()[0], "python")
-                .createNewFile();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        
+   
         adapter = new GameAdapter(this);
         
         binding.games.setLayoutManager(new LinearLayoutManager(this));
