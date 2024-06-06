@@ -22,4 +22,5 @@
     <string name="select_python_script">Select Python Script</string>
     <string name="select_python_script_message">Select Python Script that will be used to launch the game</string>
     <string name="select">Select</string>
+    <string name="select_patch_version">Select Patch Version</string>
 </resources>

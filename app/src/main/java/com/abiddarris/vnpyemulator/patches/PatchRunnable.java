@@ -17,18 +17,20 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import android.widget.Toast;
-import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
+import androidx.fragment.app.FragmentManager;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.utils.BaseRunnable;
 import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
+import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
+import com.abiddarris.vnpyemulator.dialogs.SelectPatchVersionDialog;
 import com.abiddarris.vnpyemulator.games.Game;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -49,12 +51,14 @@ public class PatchRunnable implements BaseRunnable {
     private Context applicationContext;
     private File folderToPatch;
     private String message;
+    private FragmentManager manager;
     
     public PatchRunnable(ApplyPatchDialog dialog) {
         this.dialog = dialog;
         
         folderToPatch = new File(dialog.getArguments()
             .getString(ApplyPatchDialog.FOLDER_TO_PATCH));
+        manager = dialog.getParentFragmentManager();
         applicationContext = dialog.getActivity()
             .getApplicationContext();
     }
@@ -72,10 +76,17 @@ public class PatchRunnable implements BaseRunnable {
         String version = RenPyParser.getVersion(folderToPatch);
         PatchSource source = PatchSource.getPatcher();
         
-        if(!Arrays.asList(source.getVersions())
-            .contains(version)) {
-               // TODO: Implemenent Error handling if version is not available
-            return;
+        String[] versions = source.getVersions();
+        if(!Arrays.asList(versions).contains(version)) {
+            var dialog = new SelectPatchVersionDialog();
+            dialog.setItems(versions, -1);
+           
+            int selection = dialog.showForResultAndBlock(manager);
+            
+            if(selection < 0)
+                return;
+            
+            version = versions[selection];
         }
 
         var patcher = source.getPatcher(version);
