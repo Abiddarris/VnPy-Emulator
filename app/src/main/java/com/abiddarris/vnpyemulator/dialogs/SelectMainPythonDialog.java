@@ -43,11 +43,13 @@ public class SelectMainPythonDialog extends SingleChoiceDialog {
 
         builder.setTitle(R.string.select_python_script)
             .setMessage(R.string.select_python_script_message)
-            .setPositiveButton(R.string.select, (dialog, which) -> {Toast.makeText(getContext(), getItems()[which], Toast.LENGTH_LONG).show();})
-            .setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+            .setPositiveButton(R.string.select, null)
+            .setNegativeButton(android.R.string.cancel, null);
         
-        var items = getArguments().getStringArray(ITEMS);
-        setItems(items, 0);
+        if(savedInstanceState == null) {
+            var items = getArguments().getStringArray(ITEMS);
+            setItems(items, -1);
+        }
     }
     
 }

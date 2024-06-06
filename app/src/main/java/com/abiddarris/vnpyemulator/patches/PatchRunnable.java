@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import android.widget.Toast;
 import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
@@ -36,7 +37,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
@@ -157,13 +157,13 @@ public class PatchRunnable implements BaseRunnable {
         
         File script = null;
         if(files.length > 1) {
-            SelectMainPythonDialog.newDialog(
+            int index = SelectMainPythonDialog.newDialog(
                 Stream.of(files)
                     .map(File::getName)
                     .toArray(String[]::new))
-            .show(dialog.getParentFragmentManager(), null);
+            .showForResultAndBlock(dialog.getParentFragmentManager());
             
-            // TODO: open dialog for users to choose
+            script = index >= 0 ? files[index] : null;
         } else {
             script = files[0];
         }
