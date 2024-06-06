@@ -89,7 +89,8 @@ public class PatchRunnable implements BaseRunnable {
         if(!Arrays.asList(versions).contains(version)) {
             var dialog = new SelectPatchVersionDialog();
             dialog.saveVariable(SelectPatchVersionDialog.MESSAGE,
-                 version == null ? applicationContext.getString(R.string.unknown_version_message) : null);
+                 version == null ? applicationContext.getString(R.string.unknown_version_message) 
+                 : applicationContext.getString(R.string.renpy_version_not_available, version));
             dialog.setItems(versions, -1);
            
             int selection = dialog.showForResultAndBlock(manager);
