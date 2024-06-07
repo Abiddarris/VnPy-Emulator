@@ -19,14 +19,13 @@ package com.abiddarris.vnpyemulator.patches;
 
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
-import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.utils.BaseRunnable;
 import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
+import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.vnpyemulator.dialogs.IncompatiblePatchDialog;
@@ -48,21 +47,28 @@ import java.util.stream.Stream;
 public class PatchRunnable implements BaseRunnable {
     
     public static final String TAG = PatchRunnable.class.getSimpleName();
+  
+    private static final String DIALOG_TAG = "applyPatchDialog";
     
-    private ApplyPatchDialog dialog;
     private Context applicationContext;
+    private MainActivity activity;
     private File folderToPatch;
-    private String message;
-    private FragmentManager manager;
     
-    public PatchRunnable(ApplyPatchDialog dialog) {
-        this.dialog = dialog;
+    public PatchRunnable(String folderToPatch) {
+        this.folderToPatch = new File(folderToPatch);
+    }
+    
+    public void setActivity(MainActivity activity) {
+        this.activity = activity;
         
-        folderToPatch = new File(dialog.getArguments()
-            .getString(ApplyPatchDialog.FOLDER_TO_PATCH));
-        manager = dialog.getParentFragmentManager();
-        applicationContext = dialog.getActivity()
-            .getApplicationContext();
+        if(applicationContext != null) {
+            return;
+        }
+        
+        applicationContext = activity.getApplicationContext();
+       
+        var dialog = new ApplyPatchDialog();
+        dialog.showNow(activity.getSupportFragmentManager(), DIALOG_TAG);
     }
     
     @Override
@@ -93,7 +99,7 @@ public class PatchRunnable implements BaseRunnable {
                  : applicationContext.getString(R.string.renpy_version_not_available, version));
             dialog.setItems(versions, -1);
            
-            int selection = dialog.showForResultAndBlock(manager);
+            int selection = dialog.showForResultAndBlock(activity.getSupportFragmentManager());
             
             if(selection < 0)
                 return;
@@ -130,7 +136,7 @@ public class PatchRunnable implements BaseRunnable {
                 var dialog = new IncompatiblePatchDialog();
                 dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, target.getName());
                 
-                boolean result = dialog.showForResultAndBlock(manager);
+                boolean result = dialog.showForResultAndBlock(activity.getSupportFragmentManager());
                 if(!result) {
                     return;
                 }
@@ -190,7 +196,7 @@ public class PatchRunnable implements BaseRunnable {
                 Stream.of(files)
                     .map(File::getName)
                     .toArray(String[]::new))
-            .showForResultAndBlock(dialog.getParentFragmentManager());
+            .showForResultAndBlock(activity.getSupportFragmentManager());
             
             script = index >= 0 ? files[index] : null;
         } else {
@@ -201,29 +207,23 @@ public class PatchRunnable implements BaseRunnable {
 
     private void showScriptNotFoundError() {
         SimpleDialog.show(
-                dialog.getParentFragmentManager(), 
+                activity.getSupportFragmentManager(), 
                 applicationContext.getString(R.string.patch_error),
                 applicationContext.getString(R.string.py_script_not_found));
     }
     
     private void setMessage(String message) {
-        this.message = message;
-        if(dialog != null) {
-            dialog.setMessage(message);
-        }
+        ApplyPatchDialog dialog = (ApplyPatchDialog) activity.getSupportFragmentManager()
+            .findFragmentByTag(DIALOG_TAG);
+        
+        dialog.setMessage(message);
     }
     
     @Override
     public void onFinally() {
-        if(dialog != null) {
-            dialog.tear();
-        }
-    }    
-    
-    public void setDialog(ApplyPatchDialog dialog) {
-    	this.dialog = dialog;
+        BaseRunnable.super.onFinally();
         
-        setMessage(message);
+        activity.detach();
     }
     
 }

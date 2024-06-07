@@ -17,69 +17,18 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.dialogs;
 
-import android.app.Dialog;
 import android.os.Bundle;
-import android.view.View;
-import androidx.annotation.CallSuper;
-import androidx.annotation.MainThread;
-import com.abiddarris.common.android.dialogs.BaseDialogFragment;
+import com.abiddarris.common.android.dialogs.ProgressDialog;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.databinding.DialogApplyPatchBinding;
-import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class ApplyPatchDialog extends BaseDialogFragment {
-    
-    public static final String FOLDER_TO_PATCH = "folderToPatch";
-    
-    private static final ExecutorService PATCH_THREAD = Executors.newSingleThreadExecutor();
-    private static PatchRunnable runnable;
-    
-    private DialogApplyPatchBinding binding;
-    
-    @Override
-    public Dialog onCreateDialog(Bundle bundle) {
-        setCancelable(false);
-       
-        var dialog = super.onCreateDialog(bundle);
-        
-        if(runnable == null) {
-            PATCH_THREAD.submit(runnable = new PatchRunnable(this));
-        } else {
-            runnable.setDialog(this);
-        }
-        
-        return dialog;
-    }
+public class ApplyPatchDialog extends ProgressDialog {
     
     @Override
     public void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
-        binding = DialogApplyPatchBinding.inflate(getLayoutInflater());
+        setCancelable(false);
         
-        builder.setTitle(R.string.apply_patch_dialog_title)
-            .setView(binding.getRoot());
+        builder.setTitle(R.string.apply_patch_dialog_title);
     }
-    
-    @Override
-    @MainThread
-    @CallSuper
-    public void onDestroy() {
-        if(runnable != null) {
-            runnable.setDialog(null);
-        }
-        
-        super.onDestroy();
-    }
-    
-    public void setMessage(String message) {
-        getActivity().runOnUiThread(() -> 
-            binding.message.setText(message));
-    }
-    
-    public void tear() {
-    	runnable = null;
-        dismiss();
-    }
+  
 }

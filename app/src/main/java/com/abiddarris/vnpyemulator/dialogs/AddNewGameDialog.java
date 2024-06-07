@@ -33,7 +33,7 @@ import com.abiddarris.vnpyemulator.databinding.AddNewGameLayoutBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.io.File;
 
-public class AddNewGameDialog extends BaseDialogFragment {
+public class AddNewGameDialog extends BaseDialogFragment<String> {
     
     private static final String PATH = "PATH";
     
@@ -77,16 +77,8 @@ public class AddNewGameDialog extends BaseDialogFragment {
         builder.setTitle(R.string.add_new_game)
             .setView(binding.getRoot())
             .setNegativeButton(android.R.string.cancel, (d,w) -> {})
-            .setPositiveButton(android.R.string.ok, (d,w) -> {
-                var bundle = new Bundle();
-                var dialog = new ApplyPatchDialog();
-                
-                bundle.putString(ApplyPatchDialog.FOLDER_TO_PATCH, 
-                    binding.pathEditText.getEditText().getText().toString());
-                
-                dialog.setArguments(bundle);
-                dialog.show(getParentFragmentManager(), null);
-            });
+            .setPositiveButton(android.R.string.ok, (d,w) -> 
+                sendResult(binding.pathEditText.getEditText().getText().toString()));
     }
     
     @Override

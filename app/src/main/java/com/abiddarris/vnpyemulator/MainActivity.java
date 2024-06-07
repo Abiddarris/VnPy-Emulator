@@ -21,23 +21,33 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.abiddarris.common.android.about.AboutActivity;
 import com.abiddarris.common.android.utils.Permissions;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
+import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
    
     private ActivityMainBinding binding;
+    private ActivityViewModel model;
     private GameAdapter adapter;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        model = new ViewModelProvider(this)
+            .get(ActivityViewModel.class);
+        model.attachActivity(this);
         
         Permissions.requestManageExternalStoragePermission(
             this, getString(R.string.external_storage_permission_required_message));
@@ -66,7 +76,8 @@ public class MainActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.add_new_game:
                 new AddNewGameDialog()
-                    .show(getSupportFragmentManager(), null);
+                    .showForResult(getSupportFragmentManager(), message -> 
+                        model.execute(new PatchRunnable(message)));
                 return true; 
             case R.id.about :
                 startActivity(AboutActivity.newAboutActivity(this, "ABOUT", "ATTRIBUTION"));
@@ -75,5 +86,43 @@ public class MainActivity extends AppCompatActivity {
         
         return false;
     }
+    
+    public void detach() {
+        model.currentPatchRunnable = null;
+    }
  
+    public static class ActivityViewModel extends ViewModel {
+        
+        private MainActivity activity;
+        private ExecutorService executor = Executors.newSingleThreadExecutor();
+        private PatchRunnable currentPatchRunnable;
+        
+        private void attachActivity(MainActivity activity) {
+            this.activity = activity;
+            
+            attachToRunnable();
+        }
+        
+        private void attachToRunnable() {
+            if(currentPatchRunnable != null) {
+                currentPatchRunnable.setActivity(activity);
+            }
+        }
+        
+        private void execute(PatchRunnable runnable) {
+            this.currentPatchRunnable = runnable;
+            
+            attachToRunnable();
+            
+            executor.submit(runnable);
+        }
+        
+        @Override
+        protected void onCleared() {
+            super.onCleared();
+            
+            executor.shutdown();
+        }
+        
+    }
 }
