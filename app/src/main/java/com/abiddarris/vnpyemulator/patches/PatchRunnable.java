@@ -213,15 +213,23 @@ public class PatchRunnable implements BaseRunnable {
     }
     
     private void setMessage(String message) {
-        ApplyPatchDialog dialog = (ApplyPatchDialog) activity.getSupportFragmentManager()
-            .findFragmentByTag(DIALOG_TAG);
+        ApplyPatchDialog dialog = getDialog();
         
         dialog.setMessage(message);
+    }
+    
+    private ApplyPatchDialog getDialog() {
+        ApplyPatchDialog dialog = (ApplyPatchDialog) activity.getSupportFragmentManager()
+            .findFragmentByTag(DIALOG_TAG);
+       
+        return dialog;
     }
     
     @Override
     public void onFinally() {
         BaseRunnable.super.onFinally();
+        
+        getDialog().dismiss();
         
         activity.detach();
     }
