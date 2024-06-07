@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
     
     public void detach() {
         model.currentPatchRunnable = null;
+        
+        adapter.refresh();
     }
  
     public static class ActivityViewModel extends ViewModel {
