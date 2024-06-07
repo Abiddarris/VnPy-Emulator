@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import android.widget.Toast;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
@@ -223,6 +224,16 @@ public class PatchRunnable implements BaseRunnable {
             .findFragmentByTag(DIALOG_TAG);
        
         return dialog;
+    }
+    
+    @Override
+    public void onExceptionThrown(Exception e) {
+        BaseRunnable.super.onExceptionThrown(e);
+        
+        activity.runOnUiThread(() -> {
+            Toast.makeText(activity, e.toString(), Toast.LENGTH_LONG)
+                .show();
+        });
     }
     
     @Override

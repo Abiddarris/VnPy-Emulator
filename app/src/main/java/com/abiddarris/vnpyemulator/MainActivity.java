@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         
         binding.games.setLayoutManager(new LinearLayoutManager(this));
         binding.games.setAdapter(adapter);
-        
     }
     
     @Override
