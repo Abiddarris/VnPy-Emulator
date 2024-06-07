@@ -34,7 +34,7 @@ public class GithubSource implements Source {
     /**
      * Hardcoded URL
      */
-    private static final Uri PARENT = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/master");
+    private static final Uri PARENT = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.1.0");
     
     /**
      * {@inheritDoc}
