@@ -18,6 +18,7 @@
 package com.abiddarris.vnpyemulator.patches;
 
 import android.widget.Toast;
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
@@ -230,10 +231,13 @@ public class PatchRunnable implements BaseRunnable {
     public void onExceptionThrown(Exception e) {
         BaseRunnable.super.onExceptionThrown(e);
         
-        activity.runOnUiThread(() -> {
-            Toast.makeText(activity, e.toString(), Toast.LENGTH_LONG)
-                .show();
-        });
+        System.out.println("check ");
+        var dialog = new ExceptionDialog();
+        System.out.println("che3ck ");
+        dialog.setThrowable(e);
+        System.out.println("heck ");
+        dialog.show(activity.getSupportFragmentManager(), null);
+        System.out.println("beck ");
     }
     
     @Override
