@@ -76,6 +76,7 @@ public class DownloadPythonTask extends Task {
         }
         is.close();
         
+        temp.delete();
         success.run();
     }
     
