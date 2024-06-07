@@ -90,7 +90,10 @@ public class MainActivity extends AppCompatActivity {
     public void detach() {
         model.currentPatchRunnable = null;
         
-        adapter.refresh();
+        runOnUiThread(() -> {
+            adapter.refresh();
+            adapter.notifyDataSetChanged();
+        });
     }
  
     public static class ActivityViewModel extends ViewModel {
