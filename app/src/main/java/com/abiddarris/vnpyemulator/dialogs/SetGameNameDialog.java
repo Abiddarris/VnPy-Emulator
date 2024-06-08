@@ -30,6 +30,8 @@ public class SetGameNameDialog extends EditTextDialog {
         
         setCancelable(false);
         
+        getUI().textInputLayout.setHint(R.string.set_game_name_title);
+        
         builder.setPositiveButton(android.R.string.ok, null)
             .setTitle(R.string.set_game_name_title);
     }
