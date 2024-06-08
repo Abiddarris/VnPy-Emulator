@@ -19,6 +19,7 @@ package com.abiddarris.vnpyemulator.dialogs;
 
 import android.os.Bundle;
 import com.abiddarris.common.android.dialogs.EditTextDialog;
+import com.abiddarris.common.android.utils.TextListener;
 import com.abiddarris.vnpyemulator.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -30,7 +31,17 @@ public class SetGameNameDialog extends EditTextDialog {
         
         setCancelable(false);
         
-        getUI().textInputLayout.setHint(R.string.set_game_name_title);
+        var ui = getUI();
+        ui.textInputLayout.setHint(R.string.set_game_name_title);
+        ui.textInputEditText.addTextChangedListener(TextListener.newTextListener((string) -> {
+            boolean invalid = string.toString().isBlank();
+            boolean error = ui.textInputLayout.isErrorEnabled();
+            if(error == invalid) return;        
+           
+            ui.textInputLayout.setErrorEnabled(invalid);
+                    
+            enablePositiveButton(!invalid);
+        }));
         
         builder.setPositiveButton(android.R.string.ok, null)
             .setTitle(R.string.set_game_name_title);
