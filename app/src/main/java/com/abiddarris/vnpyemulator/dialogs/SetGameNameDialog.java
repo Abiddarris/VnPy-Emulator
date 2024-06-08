@@ -22,9 +22,12 @@ import com.abiddarris.common.android.dialogs.EditTextDialog;
 import com.abiddarris.common.android.utils.TextListener;
 import com.abiddarris.vnpyemulator.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import java.util.List;
 
 public class SetGameNameDialog extends EditTextDialog {
    
+    private static final String DISALLOWED_NAMES = "disallowed_names";
+    
     @Override
     protected void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
         super.onCreateDialog(builder, savedInstanceState);
@@ -32,13 +35,20 @@ public class SetGameNameDialog extends EditTextDialog {
         setCancelable(false);
         
         var ui = getUI();
+        List<String> disallowedNames = getVariable(DISALLOWED_NAMES);
+        
         ui.textInputLayout.setHint(R.string.set_game_name_title);
-        ui.textInputEditText.addTextChangedListener(TextListener.newTextListener((string) -> {
+        ui.textInputEditText.addTextChangedListener(TextListener.newTextListener((editable) -> {
+            String string = editable.toString();
             boolean invalid = false;
             String message = null;
-            if(string.toString().isBlank()) {
+                    
+            if(string.isBlank()) {
                 invalid = true;
                 message = getString(R.string.name_cannot_be_blank);
+            } else if(disallowedNames.contains(string)) {
+                invalid = true;
+                message = getString(R.string.name_already_used);
             }
                     
             boolean error = ui.textInputLayout.isErrorEnabled();
@@ -52,5 +62,9 @@ public class SetGameNameDialog extends EditTextDialog {
         
         builder.setPositiveButton(android.R.string.ok, null)
             .setTitle(R.string.set_game_name_title);
+    }
+    
+    public void setDisallowedNames(List<String> names) {
+        saveVariable(DISALLOWED_NAMES, names);
     }
 }

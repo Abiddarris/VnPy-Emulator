@@ -44,7 +44,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PatchRunnable implements BaseRunnable {
@@ -163,6 +165,9 @@ public class PatchRunnable implements BaseRunnable {
         }
         
         var dialog = new SetGameNameDialog();
+        dialog.setDisallowedNames(games.stream()
+            .map(Game::getName)
+            .collect(Collectors.toList()));
         dialog.setText(name.getObject());
       
         String gameName = dialog.showForResultAndBlock(activity.getSupportFragmentManager());
