@@ -34,11 +34,18 @@ public class SetGameNameDialog extends EditTextDialog {
         var ui = getUI();
         ui.textInputLayout.setHint(R.string.set_game_name_title);
         ui.textInputEditText.addTextChangedListener(TextListener.newTextListener((string) -> {
-            boolean invalid = string.toString().isBlank();
+            boolean invalid = false;
+            String message = null;
+            if(string.toString().isBlank()) {
+                invalid = true;
+                message = getString(R.string.name_cannot_be_blank);
+            }
+                    
             boolean error = ui.textInputLayout.isErrorEnabled();
             if(error == invalid) return;        
            
             ui.textInputLayout.setErrorEnabled(invalid);
+            ui.textInputLayout.setError(message);
                     
             enablePositiveButton(!invalid);
         }));
