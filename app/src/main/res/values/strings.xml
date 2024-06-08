@@ -29,4 +29,5 @@
     <string name="apply_anyway">Apply Anyway</string>
     <string name="unknown_version_message">"We are unable to determine the game's Ren'Py engine version. Please select closest patch version"</string>
     <string name="renpy_version_not_available">"Unfortunately patch for Ren'Py version is %s is not available yet. Please select closest patch version"</string>
+    <string name="set_game_name_title">Game name</string>
 </resources>

@@ -17,12 +17,13 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import android.widget.Toast;
-import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import com.abiddarris.vnpyemulator.dialogs.SetGameNameDialog;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.utils.BaseRunnable;
 import com.abiddarris.common.utils.Hash;
@@ -161,10 +162,15 @@ public class PatchRunnable implements BaseRunnable {
             name.setObject(baseName + String.format(" (%s)", ++i));
         }
         
+        var dialog = new SetGameNameDialog();
+        dialog.setText(name.getObject());
+      
+        String gameName = dialog.showForResultAndBlock(activity.getSupportFragmentManager());
+        
         var game = new Game();
         game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
         game.put(GAME_SCRIPT, script.getName());
-        game.put(GAME_NAME, name.getObject());
+        game.put(GAME_NAME, gameName);
         game.put(RENPY_VERSION, version);
         
         Game.storeGame(applicationContext, game);
