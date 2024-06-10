@@ -26,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.abiddarris.common.android.about.AboutActivity;
 import com.abiddarris.common.android.utils.Permissions;
+import com.abiddarris.plugin.PermissionActivity;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
@@ -35,7 +36,7 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends PermissionActivity {
    
     private ActivityMainBinding binding;
     private ActivityViewModel model;
@@ -48,9 +49,6 @@ public class MainActivity extends AppCompatActivity {
         model = new ViewModelProvider(this)
             .get(ActivityViewModel.class);
         model.attachActivity(this);
-        
-        Permissions.requestManageExternalStoragePermission(
-            this, getString(R.string.external_storage_permission_required_message));
         
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         
