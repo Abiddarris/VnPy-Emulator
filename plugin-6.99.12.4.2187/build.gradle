@@ -1,0 +1,93 @@
+plugins {
+    id 'com.android.application'
+    id 'com.github.jk1.dependency-license-report'
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    namespace 'com.abiddarris.vnpyemulator'
+    compileSdk 33
+    buildToolsVersion '34.0.4'
+    
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+    
+    defaultConfig {
+        multiDexEnabled true
+        applicationId 'com.abiddarris.vnpyemulator'
+        minSdk 16
+        targetSdk 33
+        versionCode 1
+        versionName "v0.1.0-beta"
+        
+        vectorDrawables { 
+            useSupportLibrary true
+        }
+    }
+    
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile rootProject.file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            //remove this if you don't have key
+            signingConfig signingConfigs.release
+        }
+    }
+    
+    splits {
+        abi {
+            enable true
+            reset()
+            
+            include "armeabi", "x86"
+            universalApk true
+        }
+    }
+
+    packagingOptions {
+        doNotStrip "jniLibs/armeabi/*.so"
+        doNotStrip "jniLibs/x86/*.so"
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+    
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':common')
+    
+    implementation 'org.kamranzafar:jtar:2.3'
+    
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+}
