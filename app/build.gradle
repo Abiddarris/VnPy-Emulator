@@ -46,16 +46,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
-    
-    splits {
-        abi {
-            enable true
-            reset()
-            
-            include "armeabi", "x86"
-            universalApk true
-        }
-    }
 
     packagingOptions {
         doNotStrip "jniLibs/armeabi/*.so"
