@@ -52,10 +52,6 @@
             android:launchMode="singleTop"
             android:screenOrientation="sensorLandscape"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize"/>
-        
-        <meta-data android:name="wakelock" android:value="1" />
-        <meta-data android:name="surface.transparent" android:value="0" />
-        <meta-data android:name="fullscreen" android:value="1" />
 
     </application>
     
