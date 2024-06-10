@@ -47,11 +47,6 @@ android {
         }
     }
 
-    packagingOptions {
-        doNotStrip "jniLibs/armeabi/*.so"
-        doNotStrip "jniLibs/x86/*.so"
-    }
-
     compileOptions {
         coreLibraryDesugaringEnabled true
     
