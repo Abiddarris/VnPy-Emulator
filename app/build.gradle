@@ -12,12 +12,6 @@ android {
     compileSdk 33
     buildToolsVersion '34.0.4'
     
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['src/main/jniLibs']
-        }
-    }
-    
     defaultConfig {
         multiDexEnabled true
         applicationId 'com.abiddarris.vnpyemulator'
