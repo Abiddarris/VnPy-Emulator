@@ -25,6 +25,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.abiddarris.common.android.about.AboutActivity;
+import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.common.android.utils.Permissions;
 import com.abiddarris.plugin.PermissionActivity;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
@@ -39,16 +40,14 @@ import java.util.concurrent.Executors;
 public class MainActivity extends PermissionActivity {
    
     private ActivityMainBinding binding;
-    private ActivityViewModel model;
+    private TaskViewModel model;
     private GameAdapter adapter;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        model = new ViewModelProvider(this)
-            .get(ActivityViewModel.class);
-        model.attachActivity(this);
+        model = TaskViewModel.getInstance(this);
         
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         
@@ -84,47 +83,10 @@ public class MainActivity extends PermissionActivity {
         return false;
     }
     
-    public void detach() {
-        model.currentPatchRunnable = null;
-        
+    public void refresh() {
         runOnUiThread(() -> {
             adapter.refresh();
             adapter.notifyDataSetChanged();
         });
-    }
- 
-    public static class ActivityViewModel extends ViewModel {
-        
-        private MainActivity activity;
-        private ExecutorService executor = Executors.newSingleThreadExecutor();
-        private PatchRunnable currentPatchRunnable;
-        
-        private void attachActivity(MainActivity activity) {
-            this.activity = activity;
-            
-            attachToRunnable();
-        }
-        
-        private void attachToRunnable() {
-            if(currentPatchRunnable != null) {
-                currentPatchRunnable.setActivity(activity);
-            }
-        }
-        
-        private void execute(PatchRunnable runnable) {
-            this.currentPatchRunnable = runnable;
-            
-            attachToRunnable();
-            
-            executor.submit(runnable);
-        }
-        
-        @Override
-        protected void onCleared() {
-            super.onCleared();
-            
-            executor.shutdown();
-        }
-        
     }
 }

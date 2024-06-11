@@ -17,23 +17,24 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import com.abiddarris.vnpyemulator.dialogs.SetGameNameDialog;
+import com.abiddarris.vnpyemulator.MainActivity;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
-import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelStoreOwner;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
-import com.abiddarris.common.utils.BaseRunnable;
+import com.abiddarris.common.android.tasks.TaskDialog;
+import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
-import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.vnpyemulator.dialogs.IncompatiblePatchDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectPatchVersionDialog;
+import com.abiddarris.vnpyemulator.dialogs.SetGameNameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -44,41 +45,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PatchRunnable implements BaseRunnable {
+public class PatchRunnable extends TaskDialog {
     
     public static final String TAG = PatchRunnable.class.getSimpleName();
   
     private static final String DIALOG_TAG = "applyPatchDialog";
-    
-    private Context applicationContext;
-    private MainActivity activity;
     private File folderToPatch;
     
     public PatchRunnable(String folderToPatch) {
         this.folderToPatch = new File(folderToPatch);
     }
     
-    public void setActivity(MainActivity activity) {
-        this.activity = activity;
-        
-        if(applicationContext != null) {
-            return;
-        }
-        
-        applicationContext = activity.getApplicationContext();
-       
-        var dialog = new ApplyPatchDialog();
-        dialog.showNow(activity.getSupportFragmentManager(), DIALOG_TAG);
+    @Override
+    protected String getTag() {
+        return DIALOG_TAG;
+    }
+    
+    @Override
+    protected DialogFragment newDialog() {
+        return new ApplyPatchDialog();
     }
     
     @Override
     public void execute() throws Exception {
-        setMessage(applicationContext.getString(
+        setMessage(getString(
                 R.string.patching));
         
         File script = getScriptFile();
@@ -100,11 +94,11 @@ public class PatchRunnable implements BaseRunnable {
         if(!Arrays.asList(versions).contains(version)) {
             var dialog = new SelectPatchVersionDialog();
             dialog.saveVariable(SelectPatchVersionDialog.MESSAGE,
-                 version == null ? applicationContext.getString(R.string.unknown_version_message) 
-                 : applicationContext.getString(R.string.renpy_version_not_available, version));
+                 version == null ? getString(R.string.unknown_version_message) 
+                 : getString(R.string.renpy_version_not_available, version));
             dialog.setItems(versions, -1);
            
-            int selection = dialog.showForResultAndBlock(activity.getSupportFragmentManager());
+            int selection = dialog.showForResultAndBlock(getFragmentManager());
             
             if(selection < 0)
                 return;
@@ -141,7 +135,7 @@ public class PatchRunnable implements BaseRunnable {
                 var dialog = new IncompatiblePatchDialog();
                 dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, target.getName());
                 
-                boolean result = dialog.showForResultAndBlock(activity.getSupportFragmentManager());
+                boolean result = dialog.showForResultAndBlock(getFragmentManager());
                 if(!result) {
                     return;
                 }
@@ -155,7 +149,7 @@ public class PatchRunnable implements BaseRunnable {
         
         String baseName = removeExtension(script.getName());
         ObjectWrapper<String> name = new ObjectWrapper<>(baseName);
-        List<Game> games = Game.loadGames(applicationContext);
+        List<Game> games = Game.loadGames(getApplicationContext());
         int i = 0;
         while(games.stream()
                 .map(Game::getName)
@@ -170,7 +164,7 @@ public class PatchRunnable implements BaseRunnable {
             .collect(Collectors.toList()));
         dialog.setText(name.getObject());
       
-        String gameName = dialog.showForResultAndBlock(activity.getSupportFragmentManager());
+        String gameName = dialog.showForResultAndBlock(getFragmentManager());
         
         var game = new Game();
         game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
@@ -178,7 +172,7 @@ public class PatchRunnable implements BaseRunnable {
         game.put(GAME_NAME, gameName);
         game.put(RENPY_VERSION, version);
         
-        Game.storeGame(applicationContext, game);
+        Game.storeGame(getApplicationContext(), game);
     }
     
     private String removeExtension(String name) {
@@ -209,7 +203,7 @@ public class PatchRunnable implements BaseRunnable {
                 Stream.of(files)
                     .map(File::getName)
                     .toArray(String[]::new))
-            .showForResultAndBlock(activity.getSupportFragmentManager());
+            .showForResultAndBlock(getFragmentManager());
             
             script = index >= 0 ? files[index] : null;
         } else {
@@ -217,47 +211,26 @@ public class PatchRunnable implements BaseRunnable {
         }
         return script;
     }
+    
+    @Override
+    public void onFinally() {
+        super.onFinally();
+        
+        MainActivity activity = getActivity();
+        activity.refresh();
+    }
 
     private void showScriptNotFoundError() {
         SimpleDialog.show(
-                activity.getSupportFragmentManager(), 
-                applicationContext.getString(R.string.patch_error),
-                applicationContext.getString(R.string.py_script_not_found));
+                getFragmentManager(), 
+                getString(R.string.patch_error),
+                getString(R.string.py_script_not_found));
     }
     
     private void setMessage(String message) {
         ApplyPatchDialog dialog = getDialog();
         
         dialog.setMessage(message);
-    }
-    
-    private ApplyPatchDialog getDialog() {
-        ApplyPatchDialog dialog = (ApplyPatchDialog) activity.getSupportFragmentManager()
-            .findFragmentByTag(DIALOG_TAG);
-       
-        return dialog;
-    }
-    
-    @Override
-    public void onExceptionThrown(Exception e) {
-        BaseRunnable.super.onExceptionThrown(e);
-        
-        System.out.println("check ");
-        var dialog = new ExceptionDialog();
-        System.out.println("che3ck ");
-        dialog.setThrowable(e);
-        System.out.println("heck ");
-        dialog.show(activity.getSupportFragmentManager(), null);
-        System.out.println("beck ");
-    }
-    
-    @Override
-    public void onFinally() {
-        BaseRunnable.super.onFinally();
-        
-        getDialog().dismiss();
-        
-        activity.detach();
     }
     
 }
