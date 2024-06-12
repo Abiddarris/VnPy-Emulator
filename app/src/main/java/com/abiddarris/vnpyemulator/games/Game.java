@@ -42,6 +42,8 @@ public class Game extends JSONObject {
     public static final String RENPY_VERSION = "renpy_version";
     public static final String PYTHON_VERSION = "python_version";
     
+    private static final String PLUGIN_VERSION = "plugin_version";
+    
     Game(JSONObject object) throws JSONException {
         this(object.toString());
     }
@@ -62,6 +64,10 @@ public class Game extends JSONObject {
     
     public String getGameScript() {
     	return optString(GAME_SCRIPT, null);
+    }
+    
+    public String getPlugin() {
+        return optString(PLUGIN_VERSION, null);
     }
     
     public static void updateGame(Context context, Game game) throws IOException {
