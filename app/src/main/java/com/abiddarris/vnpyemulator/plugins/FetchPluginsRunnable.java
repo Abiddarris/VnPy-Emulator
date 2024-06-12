@@ -21,7 +21,15 @@ import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.FetchPluginsDialog;
+import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
+import com.abiddarris.vnpyemulator.patches.Source;
+import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,9 +66,27 @@ public class FetchPluginsRunnable extends TaskDialog {
             // TODO: handle non exist plugin
         }
         Plugin plugin = plugins[index];
-        setMessage(plugin.getVersion());
+        if(!RenPyPrivate.hasPrivateFiles(getApplicationContext(), plugin.getPrivateRenPyVersion())) {
+            downloadPrivateFiles(plugin);
+        }
         
         Thread.sleep(3000);
+    }
+    
+    private void downloadPrivateFiles(Plugin plugin) throws IOException {
+        setMessage(getString(R.string.downloading_renpy_private_files, plugin.getVersion()));
+        File cache = new File(Files.getCacheFolder(getApplicationContext()), plugin.getPrivateRenPyVersion());
+        try (BufferedInputStream inputStream = new BufferedInputStream(Source.getSource()
+                .open("plugins/" + plugin.getPrivateRenPyDownloadPath()));
+             BufferedOutputStream outputStream = new BufferedOutputStream(
+                 new FileOutputStream(cache))) {
+            byte[] buf = new byte[8192];
+            int len;
+            while((len = inputStream.read(buf)) != -1) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.flush();
+        }
     }
     
     private void setMessage(String message) {

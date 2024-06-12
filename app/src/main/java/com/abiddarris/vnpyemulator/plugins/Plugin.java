@@ -40,6 +40,14 @@ public class Plugin {
         return components[0];
     }
     
+    public String getPrivateRenPyVersion() {
+        return components[1];
+    }
+    
+    public String getPrivateRenPyDownloadPath() {
+        return components[2];
+    }
+    
     public static Plugin[] getPlugins(Context context) throws IOException {
         Source source = Source.getSource();
         File cache = Files.getCacheFolder(context);

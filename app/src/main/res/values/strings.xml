@@ -32,4 +32,5 @@
     <string name="name_cannot_be_blank">Name cannot be blank</string>
     <string name="name_already_used">Name already used</string>
     <string name="fetch_plugin_title">Fetching Plugins</string>
+    <string name="downloading_renpy_private_files">"Downloading Ren'Py Private Files for %s"</string>
 </resources>
