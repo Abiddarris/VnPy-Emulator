@@ -125,3 +125,11 @@ task copyDebug {
         copy("$buildDir/outputs/apk/debug", dest)
     }
 }
+
+task copyRelease {
+    dependsOn 'assembleRelease'
+    
+    doLast {
+        copy("$buildDir/outputs/apk/release", dest)
+    }
+}
