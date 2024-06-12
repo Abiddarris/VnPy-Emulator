@@ -70,6 +70,10 @@ public class Game extends JSONObject {
         return optString(PLUGIN_VERSION, null);
     }
     
+    public String getRenPyVersion() {
+        return optString(RENPY_VERSION, null);
+    }
+    
     public static void updateGame(Context context, Game game) throws IOException {
         List<Game> games = new ArrayList<>();
         loadGames(context)

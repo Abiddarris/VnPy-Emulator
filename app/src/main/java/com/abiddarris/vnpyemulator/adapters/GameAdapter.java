@@ -17,8 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
-import android.content.Intent;
-import com.abiddarris.vnpyemulator.files.Files;
+import com.abiddarris.vnpyemulator.MainActivity;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.view.LayoutInflater;
@@ -29,9 +28,8 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter.GameViewHolder;
 import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
-import com.abiddarris.vnpyemulator.dialogs.DialogUtils;
 import com.abiddarris.vnpyemulator.games.Game;
-import com.abiddarris.vnpyemulator.pythons.FetchPythonTask;
+import com.abiddarris.vnpyemulator.plugins.FetchPluginsRunnable;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -40,7 +38,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 import org.json.JSONException;
-import org.renpy.android.PythonSDLActivity;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
 
@@ -89,9 +86,12 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     }
     
     private void open(Game game) {
-        String pythonVersion = game.optString(PYTHON_VERSION, null);
-        if(pythonVersion != null) {
-            var gamePath = game.getGamePath();
+        String plugin = game.getPlugin();
+        if(plugin == null) {
+            ((MainActivity)context).getTaskModel()
+                .execute(new FetchPluginsRunnable(game));
+        }
+           /*var gamePath = game.getGamePath();
             copyGameMainScript(gamePath, game.getGameScript());
             
             var intent = new Intent(context, PythonSDLActivity.class)
@@ -102,11 +102,10 @@ public class GameAdapter extends Adapter<GameViewHolder> {
             context.startActivity(intent);
             
             return;
-        }
         
         DialogUtils.runTask(context.getSupportFragmentManager(),
              context.getString(R.string.fetching_python_title), false, 
-             new FetchPythonTask(game));
+             new FetchPythonTask(game));*/
     }
     
     private void copyGameMainScript(String gamePath, String scriptName) {
