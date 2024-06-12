@@ -78,6 +78,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    
 }
 
 dependencies {
@@ -91,3 +92,36 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
+
+def dest = rootProject.file("releases/download/0.2.0-beta")
+
+def copy(dest) {
+    def dir = file(dest)
+    dir.listFiles().each(file -> {
+        def fileName = file.getName()
+        if(!fileName.endsWith('.apk')) {
+            return
+        }
+        
+        def abi = fileName.split("-")[2] 
+        try(def input = new BufferedInputStream(new FileInputStream(file));
+            def output = new BufferedInputStream(
+                new FileOutputStream(new File(dest, "VnPy-Emulator-Plugin-6.99.12.4.2187-${abi}.apk")));){
+            
+            def buf = new byte[8192]    
+            def len;
+            while((len = input.read(buf)) != -1) {
+                output.write(buf, 0, len);
+            }
+            output.flush();
+        }
+    })
+}
+
+task copyDebug {
+    doLast {
+        copy("$buildDir/outputs/apk/debug")
+    }
+}
+
+copyDebug.mustRunAfter('assembleDebug')
