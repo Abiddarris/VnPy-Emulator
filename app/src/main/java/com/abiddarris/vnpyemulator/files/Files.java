@@ -39,6 +39,13 @@ public class Files {
         return file == null ? null : file;
     }
     
+    public static File getRenPyPrivateFolder(Context context) {
+        File privateFolder = new File(getVnPyEmulatorFolder(context), "private");
+        createDirectory(privateFolder);
+        
+        return privateFolder;
+    }
+    
     public static File getCacheFolder(Context context) {
     	File cacheFolder = new File(getVnPyEmulatorFolder(context), ".cache");
         if(!cacheFolder.exists()) {
@@ -67,5 +74,11 @@ public class Files {
     
     public static File getPythonVersionCache(Context context) {
     	return new File(getExternalCache(context), "pyversioncache");
+    }
+    
+    private static void createDirectory(File file) {
+        if(!file.exists()) {
+            file.mkdirs();
+        }
     }
 }
