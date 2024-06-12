@@ -39,6 +39,15 @@ public class Files {
         return file == null ? null : file;
     }
     
+    public static File getCacheFolder(Context context) {
+    	File cacheFolder = new File(getVnPyEmulatorFolder(context), ".cache");
+        if(!cacheFolder.exists()) {
+            cacheFolder.mkdirs();
+        }
+        
+        return cacheFolder;
+    }
+    
     public static File getPythonFolders(Context context) {
         var folder = new File(context.getExternalFilesDir(null), "python");
         if(!folder.exists()) {
