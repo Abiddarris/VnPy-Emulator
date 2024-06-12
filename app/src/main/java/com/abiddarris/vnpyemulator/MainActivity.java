@@ -83,6 +83,10 @@ public class MainActivity extends PermissionActivity {
         return false;
     }
     
+    public TaskViewModel getTaskModel() {
+        return model;
+    }
+    
     public void refresh() {
         runOnUiThread(() -> {
             adapter.refresh();
