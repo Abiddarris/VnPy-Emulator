@@ -33,4 +33,5 @@
     <string name="name_already_used">Name already used</string>
     <string name="fetch_plugin_title">Fetching Plugins</string>
     <string name="downloading_renpy_private_files">"Downloading Ren'Py Private Files for %s"</string>
+    <string name="unpacking_renpy_private_files">"Unpacking Ren'Py private files..."</string>
 </resources>

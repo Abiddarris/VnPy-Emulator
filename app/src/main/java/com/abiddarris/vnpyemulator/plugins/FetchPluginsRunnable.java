@@ -34,6 +34,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.kamranzafar.jtar.TarInputStream;
+import java.util.zip.GZIPInputStream;
+import java.io.FileInputStream;
+import org.kamranzafar.jtar.TarEntry;
 
 public class FetchPluginsRunnable extends TaskDialog {
     
@@ -87,6 +91,33 @@ public class FetchPluginsRunnable extends TaskDialog {
             }
             outputStream.flush();
         }
+        unpackRenPyPrivateFiles(cache, RenPyPrivate.getPrivateFiles(getApplicationContext(), plugin.getPrivateRenPyVersion()));
+    }
+    
+    private void unpackRenPyPrivateFiles(File cache, File dest) throws IOException {
+        setMessage(getString(R.string.unpacking_renpy_private_files));
+        dest.mkdirs();
+        
+        var is = new TarInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(cache))));
+        TarEntry entry;
+        while((entry = is.getNextEntry()) != null) {
+            var destination = new File(dest, entry.getName());
+            if(entry.isDirectory()) {
+                destination.mkdirs();
+                continue;
+            } 
+            var os = new BufferedOutputStream(new FileOutputStream(destination));
+            byte[] buf = new byte[8192];
+            int len;
+            while((len = is.read(buf)) != -1) {
+                os.write(buf,0,len);
+            }
+            os.flush();
+            os.close();
+        }
+        is.close();
+        
+        cache.delete();
     }
     
     private void setMessage(String message) {

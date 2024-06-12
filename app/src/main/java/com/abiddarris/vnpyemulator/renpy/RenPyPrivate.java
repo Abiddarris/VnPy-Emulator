@@ -24,8 +24,10 @@ import java.io.File;
 public class RenPyPrivate {
     
     public static boolean hasPrivateFiles(Context context, String renPyVersion) {
-        File file = new File(Files.getRenPyPrivateFolder(context), renPyVersion);
-        return file.isDirectory();
+        return getPrivateFiles(context, renPyVersion).isDirectory();
     }
     
+    public static File getPrivateFiles(Context context, String renPyVersion) {
+        return new File(Files.getRenPyPrivateFolder(context), renPyVersion);
+    }
 }
