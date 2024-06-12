@@ -18,9 +18,26 @@
 package com.abiddarris.vnpyemulator.files;
 
 import android.content.Context;
+import android.os.Build;
 import java.io.File;
 
 public class Files {
+    
+    @SuppressWarnings("deprecation")
+    public static File getVnPyEmulatorFolder(Context context) {
+        File[] files = null;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && "samsung".equalsIgnoreCase(Build.MANUFACTURER)) {
+            files = context.getExternalMediaDirs();
+            
+            for(var file : files) {
+                if(file != null) {
+                    return file;
+                }
+            } 
+        }
+        File file = context.getExternalFilesDir(null);
+        return file == null ? null : file;
+    }
     
     public static File getPythonFolders(Context context) {
         var folder = new File(context.getExternalFilesDir(null), "python");
