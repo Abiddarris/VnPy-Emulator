@@ -95,8 +95,8 @@ dependencies {
 
 def dest = rootProject.file("releases/download/0.2.0-beta")
 
-def copy(dest) {
-    def dir = file(dest)
+def copy(src, dest) {
+    def dir = file(src)
     dir.listFiles().each(file -> {
         def fileName = file.getName()
         if(!fileName.endsWith('.apk')) {
@@ -105,7 +105,7 @@ def copy(dest) {
         
         def abi = fileName.split("-")[2] 
         try(def input = new BufferedInputStream(new FileInputStream(file));
-            def output = new BufferedInputStream(
+            def output = new BufferedOutputStream(
                 new FileOutputStream(new File(dest, "VnPy-Emulator-Plugin-6.99.12.4.2187-${abi}.apk")));){
             
             def buf = new byte[8192]    
@@ -119,9 +119,9 @@ def copy(dest) {
 }
 
 task copyDebug {
+    dependsOn 'assembleDebug'
+    
     doLast {
-        copy("$buildDir/outputs/apk/debug")
+        copy("$buildDir/outputs/apk/debug", dest)
     }
 }
-
-copyDebug.mustRunAfter('assembleDebug')
