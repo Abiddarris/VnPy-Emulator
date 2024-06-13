@@ -17,36 +17,36 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.sources;
 
-import android.net.Uri;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.stream.Stream;
 
-/**
- * Provide an {@code InputStream} from github repo
- *
- * @Author Abiddarris
- */
-public class GithubSource implements Source {
+final class HttpConnection implements Connection {
     
-    /**
-     * Hardcoded URL
-     */
-    private static final Uri PARENT = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.1.0");
+    private HttpURLConnection connection;
+   
+    HttpConnection(HttpURLConnection connection) {
+        this.connection = connection;
+    }
     
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Connection openConnection(String fileName) throws IOException {
-        return new HttpConnection((HttpURLConnection)new URL(PARENT.buildUpon()
-            .appendPath(fileName)
-            .build()
-            .toString())
-            .openConnection());
+    public InputStream getInputStream() throws IOException {
+        return connection.getInputStream();
+    }
+    
+    @Override
+    public long getSize() throws IOException {
+        return connection.getContentLengthLong();
+    }
+    
+    @Override
+    public boolean isExists() throws IOException {
+        return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
+    }
+    
+    @Override
+    public void close() throws IOException {
+        connection.disconnect();
     }
     
 }
