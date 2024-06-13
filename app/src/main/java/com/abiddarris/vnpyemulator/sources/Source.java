@@ -52,9 +52,7 @@ public interface Source {
             .getInputStream();
     }
     
-    public default Connection openConnection(String fileName) throws IOException {
-        return null;
-    }
+    public abstract Connection openConnection(String fileName) throws IOException;
     
     public static Source getSource() {
         return source;
