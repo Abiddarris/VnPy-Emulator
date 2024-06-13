@@ -46,7 +46,15 @@ public interface Source {
      * @throws IOException If unable to open
      * @return {@code InputStream}
      */
-    InputStream open(String fileName) throws IOException;
+    @Deprecated
+    public default InputStream open(String fileName) throws IOException {
+        return openConnection(fileName)
+            .getInputStream();
+    }
+    
+    public default Connection openConnection(String fileName) throws IOException {
+        return null;
+    }
     
     public static Source getSource() {
         return source;
