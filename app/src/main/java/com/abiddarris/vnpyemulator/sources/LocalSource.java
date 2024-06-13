@@ -15,37 +15,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.patches;
+package com.abiddarris.vnpyemulator.sources;
 
-import android.net.Uri;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.stream.Stream;
 
 /**
- * Provide an {@code InputStream} from github repo
- *
- * @Author Abiddarris
+ * Source implementation that provides file from local storage
  */
-public class GithubSource implements Source {
+public class LocalSource implements Source {
     
     /**
-     * Hardcoded URL
+     * Hardcoded path
      */
-    private static final Uri PARENT = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.1.0");
+    private static final File PATCH_FOLDER = new File("/storage/emulated/0/Home/Abiddarris/Programming/My Project/Android Application/VnPy Emulator");
     
     /**
      * {@inheritDoc}
      */
     @Override
     public InputStream open(String fileName) throws IOException {
-        return new URL(PARENT.buildUpon()
-            .appendPath(fileName)
-            .build()
-            .toString())
-            .openStream();
+        return new FileInputStream(new File(PATCH_FOLDER, fileName));
     }
     
 }

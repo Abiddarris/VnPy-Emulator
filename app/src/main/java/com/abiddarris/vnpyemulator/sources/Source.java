@@ -15,29 +15,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.patches;
+package com.abiddarris.vnpyemulator.sources;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Source implementation that provides file from local storage
+ * Class that provides file for patching and downloading
+ * python for running renpy games
  */
-public class LocalSource implements Source {
+public interface Source {
     
     /**
-     * Hardcoded path
+     * For testing purpose, {@link #getSource()} will provide
+     * stream on internal storage.
      */
-    private static final File PATCH_FOLDER = new File("/storage/emulated/0/Home/Abiddarris/Programming/My Project/Android Application/VnPy Emulator");
+    static final boolean LOCAL = false;
     
     /**
-     * {@inheritDoc}
+     * Store singleton of source
      */
-    @Override
-    public InputStream open(String fileName) throws IOException {
-        return new FileInputStream(new File(PATCH_FOLDER, fileName));
+    static Source source = LOCAL ? new LocalSource() : new GithubSource();
+    
+    /**
+     * Open an {@code InputStream} relative from folder containing 
+     * patches folder and python
+     *
+     * @param fileName File path relative from folder containing 
+     *        patches folder and python
+     * @throws IOException If unable to open
+     * @return {@code InputStream}
+     */
+    InputStream open(String fileName) throws IOException;
+    
+    public static Source getSource() {
+        return source;
     }
-    
 }
