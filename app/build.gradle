@@ -15,7 +15,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         applicationId 'com.abiddarris.vnpyemulator'
-        minSdk 16
+        minSdk 21
         targetSdk 33
         versionCode 1
         versionName "v0.1.0-beta"
