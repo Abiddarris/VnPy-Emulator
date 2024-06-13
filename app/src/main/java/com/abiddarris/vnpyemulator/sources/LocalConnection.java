@@ -22,22 +22,38 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * Source implementation that provides file from local storage
- */
-public class LocalSource implements Source {
+final class LocalConnection implements Connection {
     
-    /**
-     * Hardcoded path
-     */
-    private static final File PATCH_FOLDER = new File("/storage/emulated/0/Home/Abiddarris/Programming/My Project/Android Application/VnPy Emulator");
+    private File file;
+    private FileInputStream stream;
     
-    /**
-     * {@inheritDoc}
-     */
+    LocalConnection(File file) {
+        this.file = file;
+    }
+    
     @Override
-    public Connection openConnection(String fileName) throws IOException {
-        return new LocalConnection(new File(PATCH_FOLDER, fileName));
+    public long getSize() throws IOException {
+        return file.length();
+    }
+    
+    @Override
+    public boolean isExists() throws IOException {
+        return file.exists();
+    }
+    
+    @Override
+    public InputStream getInputStream() throws IOException {
+        if(stream == null) {
+            stream = new FileInputStream(file);
+        }
+        return stream;
+    }
+    
+    @Override
+    public void close() throws IOException {
+        if(stream != null) {
+            stream.close();
+        }
     }
     
 }
