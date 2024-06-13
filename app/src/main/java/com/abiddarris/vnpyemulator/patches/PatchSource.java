@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import com.abiddarris.vnpyemulator.sources.Source;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

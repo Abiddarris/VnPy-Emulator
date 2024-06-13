@@ -23,21 +23,20 @@ import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.FetchPluginsDialog;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
-import com.abiddarris.vnpyemulator.patches.Source;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
+import com.abiddarris.vnpyemulator.sources.Source;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.kamranzafar.jtar.TarInputStream;
 import java.util.zip.GZIPInputStream;
-import java.io.FileInputStream;
 import org.kamranzafar.jtar.TarEntry;
+import org.kamranzafar.jtar.TarInputStream;
 
 public class FetchPluginsRunnable extends TaskDialog {
     
@@ -70,6 +69,7 @@ public class FetchPluginsRunnable extends TaskDialog {
             // TODO: handle non exist plugin
         }
         Plugin plugin = plugins[index];
+        
         if(!RenPyPrivate.hasPrivateFiles(getApplicationContext(), plugin.getPrivateRenPyVersion())) {
             downloadPrivateFiles(plugin);
         }
