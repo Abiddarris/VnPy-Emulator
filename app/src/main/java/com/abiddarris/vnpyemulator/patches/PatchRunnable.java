@@ -17,7 +17,6 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import com.abiddarris.vnpyemulator.MainActivity;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.content.Context;
@@ -29,6 +28,7 @@ import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
+import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
 import com.abiddarris.vnpyemulator.dialogs.IncompatiblePatchDialog;
@@ -36,6 +36,7 @@ import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectPatchVersionDialog;
 import com.abiddarris.vnpyemulator.dialogs.SetGameNameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
+import com.abiddarris.vnpyemulator.renpy.RenPyParser;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
