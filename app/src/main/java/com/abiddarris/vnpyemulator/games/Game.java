@@ -18,6 +18,7 @@
 package com.abiddarris.vnpyemulator.games;
 
 import android.content.Context;
+import com.abiddarris.common.utils.Exceptions;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -72,6 +73,14 @@ public class Game extends JSONObject {
     
     public String getRenPyVersion() {
         return optString(RENPY_VERSION, null);
+    }
+    
+    public void setPlugin(String version) {
+        try {
+            putOpt(PLUGIN_VERSION, version);
+        } catch (JSONException e) {
+            throw Exceptions.toUncheckException(e);
+        }
     }
     
     public static void updateGame(Context context, Game game) throws IOException {
