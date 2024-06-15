@@ -48,10 +48,7 @@ public class Game extends JSONObject {
    
     @Deprecated
     public static final String RENPY_VERSION = "renpy_version";
-   
-    @Deprecated
-    public static final String PYTHON_VERSION = "python_version";
-    
+ 
     private static final String PLUGIN_VERSION = "plugin_version";
     private static final String RENPY_PRIVATE_VERSION = "renpy_private_version";
     
