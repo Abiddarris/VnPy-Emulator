@@ -86,6 +86,7 @@ public class FetchPluginsRunnable extends TaskDialog {
         installPlugin();
         
         game.setPlugin(plugin.getVersion());
+        game.setRenPyPrivateVersion(plugin.getPrivateRenPyVersion());
         
         Game.updateGame(getApplicationContext(), game);
     }
