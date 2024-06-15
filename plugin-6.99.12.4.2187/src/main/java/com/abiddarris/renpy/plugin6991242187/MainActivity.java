@@ -1,8 +1,10 @@
 package com.abiddarris.renpy.plugin6991242187;
 
+import android.content.Intent;
 import android.os.Bundle;
 import com.abiddarris.plugin.PermissionActivity;
 import com.google.android.material.color.DynamicColors;
+import org.renpy.android.PythonSDLActivity;
 
 public class MainActivity extends PermissionActivity {
     
@@ -12,4 +14,15 @@ public class MainActivity extends PermissionActivity {
         
         super.onCreate(savedInstanceState);
     }
+    
+    @Override
+    protected void permissionGranted() {
+        super.permissionGranted();
+        
+        Intent intent = new Intent(this, PythonSDLActivity.class);
+        intent.putExtras(getIntent());
+        
+        startActivity(intent);
+    }
+    
 }
