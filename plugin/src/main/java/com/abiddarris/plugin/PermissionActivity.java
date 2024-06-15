@@ -1,6 +1,7 @@
 package com.abiddarris.plugin;
 
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.abiddarris.common.android.utils.Permissions;
 
@@ -10,7 +11,18 @@ public class PermissionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        Permissions.requestManageExternalStoragePermission(
-            this, getString(R.string.external_storage_permission_required_message));
+        if(Permissions.isManageExternalStorageGranted(this)) {
+            permissionGranted();
+            return;
+        }
+        Permissions.requestManageExternalStoragePermission(this, 
+            getString(R.string.external_storage_permission_required_message), (granted) -> {
+                if(granted) {
+                    permissionGranted();
+                }
+            });
+    }
+    
+    protected void permissionGranted() {
     }
 }
