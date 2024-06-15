@@ -17,10 +17,15 @@
  ***********************************************************************************/
 package com.abiddarris.plugin;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import com.abiddarris.common.android.pm.Packages;
 
 public class PluginLoader {
+    
+    public static final String GAME_PATH = "game_path";
+    public static final String RENPY_PRIVATE_PATH = "renpy_private_path";
     
     public static boolean hasPlugin(Context context, String version) {
         return Packages.isInstalled(context, getPackage(version));
@@ -28,6 +33,18 @@ public class PluginLoader {
     
     public static String getPackage(String version) {
     	return String.format("com.abiddarris.renpy.plugin%s", version.replace(".", ""));
+    }
+    
+    public static Intent getIntentForPlugin(Context context, String plugin,
+            String pythonPath, String gamePath) {
+        String packageName = getPackage(plugin);
+        
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(packageName, packageName + ".MainActivity"));
+        intent.putExtra(RENPY_PRIVATE_PATH, pythonPath);
+        intent.putExtra(GAME_PATH, gamePath);
+        
+        return intent;
     }
     
 }
