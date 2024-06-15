@@ -23,6 +23,7 @@ public class MainActivity extends PermissionActivity {
         intent.putExtras(getIntent());
         
         startActivity(intent);
+        finish();
     }
     
 }
