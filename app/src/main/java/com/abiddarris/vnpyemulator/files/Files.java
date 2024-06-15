@@ -64,18 +64,6 @@ public class Files {
     	return folder;
     }
     
-    public static File getExternalCache(Context context) {
-    	var folder = context.getExternalCacheDir();
-        if(!folder.exists()) {
-        	folder.mkdirs();
-        }
-        return folder;
-    }
-    
-    public static File getPythonVersionCache(Context context) {
-    	return new File(getExternalCache(context), "pyversioncache");
-    }
-    
     private static void createDirectory(File file) {
         if(!file.exists()) {
             file.mkdirs();
