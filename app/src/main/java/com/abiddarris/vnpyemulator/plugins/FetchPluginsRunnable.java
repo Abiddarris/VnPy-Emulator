@@ -19,6 +19,7 @@ package com.abiddarris.vnpyemulator.plugins;
 
 import android.os.Build;
 import androidx.fragment.app.DialogFragment;
+import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.R;
@@ -44,6 +45,7 @@ import org.kamranzafar.jtar.TarInputStream;
 public class FetchPluginsRunnable extends TaskDialog {
     
     private Game game;
+    private File pluginApk;
     
     public FetchPluginsRunnable(Game game) {
         this.game = game;
@@ -81,7 +83,7 @@ public class FetchPluginsRunnable extends TaskDialog {
             downloadPrivateFiles(plugin);
         }
         
-        Thread.sleep(3000);
+        installPlugin();
     }
     
     private void downloadPrivateFiles(Plugin plugin) throws IOException {
@@ -145,10 +147,10 @@ public class FetchPluginsRunnable extends TaskDialog {
     }
     
     private void downloadPlugin(Connection connection, String name) throws IOException {
-        File output = new File(Files.getCacheFolder(getApplicationContext()), name);
+        pluginApk = new File(Files.getCacheFolder(getApplicationContext()), name);
         BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
         try (BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(output))) {
+                new FileOutputStream(pluginApk))) {
             byte[] buf = new byte[8192];
             int len;
             while((len = inputStream.read(buf)) != -1) {
@@ -157,10 +159,26 @@ public class FetchPluginsRunnable extends TaskDialog {
             outputStream.flush();
         }
     }  
+    
+    private void installPlugin() throws IOException {
+        if(pluginApk == null) return;
+        
+        setMessage(getString(R.string.installing_plugin));
+        
+        Packages.installPackage(getDialog().getActivity(), pluginApk);
+    }
       
     private void setMessage(String message) {
         FetchPluginsDialog dialog = getDialog();
         dialog.setMessage(message);
+    }
+    
+    @Override
+    public void onFinally() {
+    	super.onFinally();
+        
+        if(pluginApk != null) 
+            pluginApk.delete();
     }
     
 }

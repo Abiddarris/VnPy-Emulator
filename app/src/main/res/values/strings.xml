@@ -35,4 +35,5 @@
     <string name="downloading_renpy_private_files">"Downloading Ren'Py Private Files for %s"</string>
     <string name="unpacking_renpy_private_files">"Unpacking Ren'Py private files..."</string>
     <string name="downloading_plugin">Downloading plugin for %s</string>
+    <string name="installing_plugin">Installing plugin...</string>
 </resources>
