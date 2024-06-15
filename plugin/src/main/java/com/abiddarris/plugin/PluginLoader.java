@@ -23,9 +23,11 @@ import com.abiddarris.common.android.pm.Packages;
 public class PluginLoader {
     
     public static boolean hasPlugin(Context context, String version) {
-        return Packages.isInstalled(context, 
-            String.format("com.abiddarris.renpy.plugin%s", version.replace(".", ""))
-        );
+        return Packages.isInstalled(context, getPackage(version));
+    }
+    
+    public static String getPackage(String version) {
+    	return String.format("com.abiddarris.renpy.plugin%s", version.replace(".", ""));
     }
     
 }
