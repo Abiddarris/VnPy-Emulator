@@ -23,6 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.abiddarris.plugin.PluginArguments;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,9 +34,6 @@ import org.renpy.iap.Store;
 
 public class PythonSDLActivity extends SDLActivity {
 
-    public static final String GAME_PATH = "game_path";
-    public static final String PYTHON_PATH = "python_path";
-    
     /**
      * This exists so python code can access this activity.
      */
@@ -146,9 +145,10 @@ public class PythonSDLActivity extends SDLActivity {
 
         mActivity = this;
 
-        String path = getIntent().getStringExtra(GAME_PATH);
-        String python = getIntent().getStringExtra(PYTHON_PATH);
-
+        PluginArguments arguments = new PluginArguments(getIntent());
+        String path = arguments.getGamePath();
+        String python = arguments.getRenpyPrivatePath();
+        
         nativeSetEnv("ANDROID_ARGUMENT", path);
         nativeSetEnv("ANDROID_PRIVATE", python);
         nativeSetEnv("ANDROID_PUBLIC",  path);
