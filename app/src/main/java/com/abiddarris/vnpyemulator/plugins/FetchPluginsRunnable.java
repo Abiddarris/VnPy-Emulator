@@ -84,6 +84,10 @@ public class FetchPluginsRunnable extends TaskDialog {
         }
         
         installPlugin();
+        
+        game.setPlugin(plugin.getVersion());
+        
+        Game.updateGame(getApplicationContext(), game);
     }
     
     private void downloadPrivateFiles(Plugin plugin) throws IOException {
