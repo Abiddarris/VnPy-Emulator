@@ -53,6 +53,7 @@ public class Game extends JSONObject {
     public static final String PYTHON_VERSION = "python_version";
     
     private static final String PLUGIN_VERSION = "plugin_version";
+    private static final String RENPY_PRIVATE_VERSION = "renpy_private_version";
     
     Game(JSONObject object) throws JSONException {
         this(object.toString());
@@ -82,6 +83,18 @@ public class Game extends JSONObject {
     
     public String getRenPyVersion() {
         return optString(RENPY_VERSION, null);
+    }
+    
+    public String getRenPyPrivateVersion() {
+        return optString(RENPY_PRIVATE_VERSION, null);
+    }
+    
+    public void setRenPyPrivateVersion(String version) {
+        try {
+            putOpt(RENPY_PRIVATE_VERSION, version);
+        } catch (JSONException e) {
+            throw Exceptions.toUncheckException(e);
+        }
     }
     
     public void setPlugin(String version) {
