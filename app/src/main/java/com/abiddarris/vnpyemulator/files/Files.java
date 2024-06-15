@@ -55,15 +55,6 @@ public class Files {
         return cacheFolder;
     }
     
-    public static File getPythonFolders(Context context) {
-        var folder = new File(context.getExternalFilesDir(null), "python");
-        if(!folder.exists()) {
-            folder.mkdirs();
-        }
-        
-    	return folder;
-    }
-    
     private static void createDirectory(File file) {
         if(!file.exists()) {
             file.mkdirs();
