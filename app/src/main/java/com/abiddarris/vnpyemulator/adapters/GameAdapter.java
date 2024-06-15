@@ -17,7 +17,9 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
+import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.MainActivity;
+import com.abiddarris.vnpyemulator.files.Files;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.view.LayoutInflater;
@@ -90,22 +92,18 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         if(plugin == null) {
             ((MainActivity)context).getTaskModel()
                 .execute(new FetchPluginsRunnable(game));
-        }
-           /*var gamePath = game.getGamePath();
-            copyGameMainScript(gamePath, game.getGameScript());
-            
-            var intent = new Intent(context, PythonSDLActivity.class)
-                .putExtra(PythonSDLActivity.GAME_PATH, gamePath)
-                .putExtra(PythonSDLActivity.PYTHON_PATH, new File(
-                    Files.getPythonFolders(context), pythonVersion).getAbsolutePath());
-            
-            context.startActivity(intent);
-            
             return;
+        }
+        String renpyPrivateVersion = game.getRenPyPrivateVersion();
+        String renpyPrivateVersionPath = new File(Files.getRenPyPrivateFolder(context), renpyPrivateVersion)
+                .getAbsolutePath();
+        String gamePath = game.getGamePath();
         
-        DialogUtils.runTask(context.getSupportFragmentManager(),
-             context.getString(R.string.fetching_python_title), false, 
-             new FetchPythonTask(game));*/
+        copyGameMainScript(gamePath, game.getGameScript());
+            
+        var intent = PluginLoader.getIntentForPlugin(context, plugin, renpyPrivateVersionPath, gamePath);
+        
+        context.startActivity(intent);
     }
     
     private void copyGameMainScript(String gamePath, String scriptName) {
