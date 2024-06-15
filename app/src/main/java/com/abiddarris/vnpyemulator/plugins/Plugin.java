@@ -48,6 +48,10 @@ public class Plugin {
         return components[2];
     }
     
+    public String getPluginDownloadPath(String abi) {
+        return String.format(components[3], abi);
+    }
+    
     public static Plugin[] getPlugins(Context context) throws IOException {
         Source source = Source.getSource();
         File cache = Files.getCacheFolder(context);

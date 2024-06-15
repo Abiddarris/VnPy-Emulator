@@ -17,13 +17,16 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.plugins;
 
+import android.os.Build;
 import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.tasks.TaskDialog;
+import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.FetchPluginsDialog;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
+import com.abiddarris.vnpyemulator.sources.Connection;
 import com.abiddarris.vnpyemulator.sources.Source;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -69,6 +72,10 @@ public class FetchPluginsRunnable extends TaskDialog {
             // TODO: handle non exist plugin
         }
         Plugin plugin = plugins[index];
+        
+        if(!PluginLoader.hasPlugin(getApplicationContext(), plugin.getVersion())) {
+            downloadPlugin(plugin);
+        }
         
         if(!RenPyPrivate.hasPrivateFiles(getApplicationContext(), plugin.getPrivateRenPyVersion())) {
             downloadPrivateFiles(plugin);
@@ -120,6 +127,37 @@ public class FetchPluginsRunnable extends TaskDialog {
         cache.delete();
     }
     
+    private void downloadPlugin(Plugin plugin) throws IOException {
+        setMessage(getString(R.string.downloading_plugin, plugin.getVersion()));
+        
+        Source source = Source.getSource();
+        for(String abi : Build.SUPPORTED_ABIS) {
+            String path = plugin.getPluginDownloadPath(abi);
+        	try (Connection connection = source.openConnection(path)){
+                if(connection.isExists()) {
+                    downloadPlugin(connection, plugin.getVersion() + ".apk");
+                    return;
+                }
+            }
+        }
+        
+        // TODO: add abi not supported
+    }
+    
+    private void downloadPlugin(Connection connection, String name) throws IOException {
+        File output = new File(Files.getCacheFolder(getApplicationContext()), name);
+        BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
+        try (BufferedOutputStream outputStream = new BufferedOutputStream(
+                new FileOutputStream(output))) {
+            byte[] buf = new byte[8192];
+            int len;
+            while((len = inputStream.read(buf)) != -1) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.flush();
+        }
+    }  
+      
     private void setMessage(String message) {
         FetchPluginsDialog dialog = getDialog();
         dialog.setMessage(message);
