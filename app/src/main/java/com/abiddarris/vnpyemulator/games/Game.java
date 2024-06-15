@@ -37,10 +37,19 @@ import org.json.JSONObject;
  */
 public class Game extends JSONObject {
     
+    @Deprecated
     public static final String GAME_FOLDER_PATH = "folder_path";
+   
+    @Deprecated
     public static final String GAME_NAME = "name";
+    
+    @Deprecated
     public static final String GAME_SCRIPT = "script";
+   
+    @Deprecated
     public static final String RENPY_VERSION = "renpy_version";
+   
+    @Deprecated
     public static final String PYTHON_VERSION = "python_version";
     
     private static final String PLUGIN_VERSION = "plugin_version";
