@@ -36,4 +36,6 @@
     <string name="unpacking_renpy_private_files">"Unpacking Ren'Py private files..."</string>
     <string name="downloading_plugin">Downloading plugin for %s</string>
     <string name="installing_plugin">Installing plugin...</string>
+    <string name="plugin_not_supported">Plugin not supported</string>
+    <string name="plugin_not_supported_message">Unable to find plugin that supported this device %s</string>
 </resources>

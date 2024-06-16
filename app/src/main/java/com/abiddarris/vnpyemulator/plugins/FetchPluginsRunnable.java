@@ -19,6 +19,7 @@ package com.abiddarris.vnpyemulator.plugins;
 
 import android.os.Build;
 import androidx.fragment.app.DialogFragment;
+import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.plugin.PluginLoader;
@@ -36,6 +37,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -77,7 +79,9 @@ public class FetchPluginsRunnable extends TaskDialog {
         Plugin plugin = plugins[index];
         
         if(!PluginLoader.hasPlugin(getApplicationContext(), plugin.getVersion())) {
-            downloadPlugin(plugin);
+            if(!downloadPlugin(plugin)) {
+                return;
+            }
         }
         
         if(!RenPyPrivate.hasPrivateFiles(getApplicationContext(), plugin.getPrivateRenPyVersion())) {
@@ -138,7 +142,7 @@ public class FetchPluginsRunnable extends TaskDialog {
         cache.delete();
     }
     
-    private void downloadPlugin(Plugin plugin) throws IOException {
+    private boolean downloadPlugin(Plugin plugin) throws IOException {
         setMessage(getString(R.string.downloading_plugin, plugin.getVersion()));
         
         Source source = Source.getSource();
@@ -147,12 +151,16 @@ public class FetchPluginsRunnable extends TaskDialog {
         	try (Connection connection = source.openConnection(path)){
                 if(connection.isExists()) {
                     downloadPlugin(connection, plugin.getVersion() + ".apk");
-                    return;
+                    return true;
                 }
             }
         }
         
-        // TODO: add abi not supported
+        SimpleDialog.show(getFragmentManager(),
+             getString(R.string.plugin_not_supported),
+             getString(R.string.plugin_not_supported_message, Arrays.toString(Build.SUPPORTED_ABIS)));
+        
+        return false;
     }
     
     private void downloadPlugin(Connection connection, String name) throws IOException {
