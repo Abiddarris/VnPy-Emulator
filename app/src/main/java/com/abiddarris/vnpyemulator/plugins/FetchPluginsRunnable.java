@@ -17,9 +17,12 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.plugins;
 
+import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
+
 import android.os.Build;
 import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
+import com.abiddarris.common.android.pm.InstallationResult;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.plugin.PluginLoader;
@@ -88,7 +91,9 @@ public class FetchPluginsRunnable extends TaskDialog {
             downloadPrivateFiles(plugin);
         }
         
-        installPlugin();
+        if(!installPlugin()) {
+            return;
+        }
         
         game.setPlugin(plugin.getVersion());
         game.setRenPyPrivateVersion(plugin.getPrivateRenPyVersion());
@@ -177,12 +182,17 @@ public class FetchPluginsRunnable extends TaskDialog {
         }
     }  
     
-    private void installPlugin() throws IOException {
-        if(pluginApk == null) return;
+    private boolean installPlugin() throws IOException {
+        if(pluginApk == null) return true;
         
         setMessage(getString(R.string.installing_plugin));
         
-        Packages.installPackage(getDialog().getActivity(), pluginApk);
+        InstallationResult result = Packages.installPackage(getDialog().getActivity(), pluginApk);
+        if(result.getStatus() != STATUS_SUCCESS) {
+            return false;
+        }
+        
+        return true;
     }
       
     private void setMessage(String message) {
