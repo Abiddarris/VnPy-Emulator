@@ -29,6 +29,7 @@ import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.FetchPluginsDialog;
+import com.abiddarris.vnpyemulator.dialogs.SelectPluginVersionDialog;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
@@ -77,7 +78,16 @@ public class FetchPluginsRunnable extends TaskDialog {
         
         int index = versions.indexOf(game.getRenPyVersion());
         if(index == -1) {
-            // TODO: handle non exist plugin
+            var dialog = new SelectPluginVersionDialog();
+            dialog.saveVariable(SelectPluginVersionDialog.MESSAGE,
+                getString(R.string.plugin_not_available, game.getRenPyVersion()));
+            dialog.setItems(versions.toArray(String[]::new), -1);
+            
+            index = dialog.showForResultAndBlock(getFragmentManager());
+            
+            if(index == -1) {
+                return;
+            }
         }
         Plugin plugin = plugins[index];
         

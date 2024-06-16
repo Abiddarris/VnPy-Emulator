@@ -32,4 +32,6 @@
     <string name="installing_plugin">Installing plugin...</string>
     <string name="plugin_not_supported">Plugin not supported</string>
     <string name="plugin_not_supported_message">Unable to find plugin that supported this device %s</string>
+    <string name="plugin_not_available">"Unfortunately plugin for Ren'Py version %s is not available yet. Please select closest plugin version"</string>
+    <string name="select_plugin_version">Select Plugin Version</string>
 </resources>
