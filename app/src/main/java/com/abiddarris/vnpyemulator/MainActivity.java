@@ -31,6 +31,7 @@ import com.abiddarris.plugin.PermissionActivity;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
+import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import java.io.File;
 import java.io.IOException;
@@ -81,6 +82,10 @@ public class MainActivity extends PermissionActivity {
         }
         
         return false;
+    }
+    
+    public void open(Game game) {
+        adapter.open(game);
     }
     
     public TaskViewModel getTaskModel() {

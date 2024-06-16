@@ -87,7 +87,7 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     	this.games = Game.loadGames(context);
     }
     
-    private void open(Game game) {
+    public void open(Game game) {
         String plugin = game.getPlugin();
         if(plugin == null) {
             ((MainActivity)context).getTaskModel()

@@ -22,6 +22,7 @@ import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.plugin.PluginLoader;
+import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.FetchPluginsDialog;
 import com.abiddarris.vnpyemulator.files.Files;
@@ -89,6 +90,9 @@ public class FetchPluginsRunnable extends TaskDialog {
         game.setRenPyPrivateVersion(plugin.getPrivateRenPyVersion());
         
         Game.updateGame(getApplicationContext(), game);
+        
+        MainActivity activity = getActivity();
+        activity.open(game);
     }
     
     private void downloadPrivateFiles(Plugin plugin) throws IOException {
