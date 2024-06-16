@@ -89,7 +89,7 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     
     public void open(Game game) {
         String plugin = game.getPlugin();
-        if(plugin == null) {
+        if(plugin == null || !PluginLoader.hasPlugin(context, plugin)) {
             ((MainActivity)context).getTaskModel()
                 .execute(new FetchPluginsRunnable(game));
             return;
