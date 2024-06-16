@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.sources;
 
+import android.os.Build;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -36,7 +37,7 @@ final class HttpConnection implements Connection {
     
     @Override
     public long getSize() throws IOException {
-        return connection.getContentLengthLong();
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ? connection.getContentLengthLong() : connection.getContentLength();
     }
     
     @Override
