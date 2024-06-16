@@ -7,13 +7,7 @@
     <string name="apply_patch_dialog_title">Applying Patch...</string>
     <string name="patching">Patching...</string>
     <string name="error">Error</string>
-    <string name="fetching_python_title">Fetching python versions</string>
     <string name="fetching">Fetching</string>
-    <string name="python_required">Python required</string>
-    <string name="python_required_message">Python is required to run %s.</string>
-    <string name="select_python_version">Select Python version</string>
-    <string name="select_python_message">Select Python version that will be used when running %s</string>
-    <string name="downloading_python">Downloading python</string>
     <string name="folder_not_exists">Folder does not exist</string>
     <string name="not_a_folder">Is not a folder</string>
     <string name="patch_error">Error while patching</string>
