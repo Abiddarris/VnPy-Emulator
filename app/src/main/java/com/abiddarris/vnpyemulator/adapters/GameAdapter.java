@@ -17,9 +17,6 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
-import com.abiddarris.plugin.PluginLoader;
-import com.abiddarris.vnpyemulator.MainActivity;
-import com.abiddarris.vnpyemulator.files.Files;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.view.LayoutInflater;
@@ -27,9 +24,12 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+import com.abiddarris.plugin.PluginLoader;
+import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter.GameViewHolder;
 import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
+import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.plugins.FetchPluginsRunnable;
 import java.io.BufferedInputStream;
