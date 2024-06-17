@@ -36,7 +36,7 @@ public class GithubSource implements Source {
     /**
      * Hardcoded URL
      */
-    private static final Uri RAW_URL = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.1.0");
+    private static final Uri RAW_URL = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.2.0-beta");
     
     private static final Uri BASE_URL = Uri.parse("https://github.com/Abiddarris/VnPy-Emulator");
     
