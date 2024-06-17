@@ -25,6 +25,9 @@ public class PluginArguments {
     private String gamePath;
     private String renpyPrivatePath;
     
+    public PluginArguments() {
+    }
+    
     public PluginArguments(Intent intent) {
         Bundle bundle = intent.getExtras();
         
@@ -38,5 +41,17 @@ public class PluginArguments {
         
     public String getRenpyPrivatePath() {
         return this.renpyPrivatePath;
+    }
+    
+    public PluginArguments setGamePath(String gamePath) {
+        this.gamePath = gamePath;
+        
+        return this;
+    }
+    
+    public PluginArguments setRenPyPrivatePath(String renPyPrivatePath) {
+        this.renpyPrivatePath = renPyPrivatePath;
+        
+        return this;
     }
 }
