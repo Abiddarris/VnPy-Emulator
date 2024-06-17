@@ -32,6 +32,7 @@ import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.plugins.FetchPluginsRunnable;
+import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -89,13 +90,13 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     
     public void open(Game game) {
         String plugin = game.getPlugin();
-        if(plugin == null || !PluginLoader.hasPlugin(context, plugin)) {
+        String renpyPrivateVersion = game.getRenPyPrivateVersion();
+        if(plugin == null || !PluginLoader.hasPlugin(context, plugin) || !RenPyPrivate.hasPrivateFiles(context, renpyPrivateVersion)) {
             ((MainActivity)context).getTaskModel()
                 .execute(new FetchPluginsRunnable(game));
             return;
         }
-        String renpyPrivateVersion = game.getRenPyPrivateVersion();
-        String renpyPrivateVersionPath = new File(Files.getRenPyPrivateFolder(context), renpyPrivateVersion)
+        String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(context, renpyPrivateVersion)
                 .getAbsolutePath();
         String gamePath = game.getGamePath();
         
