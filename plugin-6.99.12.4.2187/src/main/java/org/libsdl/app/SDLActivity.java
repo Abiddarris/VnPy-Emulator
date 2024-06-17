@@ -32,7 +32,7 @@ import java.util.List;
 /**
     SDL Activity
 */
-@SuppressLint("StaticFieldLeak")
+@SuppressLint({"StaticFieldLeak", "ObsoleteSdkInt"})
 public class SDLActivity extends Activity {
     private static final String TAG = "SDL";
 
@@ -946,6 +946,7 @@ class SDLMain implements Runnable {
 
     Because of this, that's where we set up the SDL thread
 */
+@SuppressLint("ObsoleteSdkInt")
 class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     View.OnKeyListener, View.OnTouchListener, SensorEventListener  {
 
