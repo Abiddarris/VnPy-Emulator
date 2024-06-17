@@ -1,7 +1,6 @@
 package org.renpy.android;
 
-import org.libsdl.app.SDLActivity;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,18 +21,17 @@ import android.view.View.OnSystemUiVisibilityChangeListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import com.abiddarris.plugin.PluginArguments;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-
+import org.libsdl.app.SDLActivity;
 import org.renpy.iap.Store;
 
+@SuppressLint("StaticFieldLeak")
 public class PythonSDLActivity extends SDLActivity {
-
+    
     /**
      * This exists so python code can access this activity.
      */
