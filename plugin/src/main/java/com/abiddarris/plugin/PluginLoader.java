@@ -35,14 +35,13 @@ public class PluginLoader {
     	return String.format("com.abiddarris.renpy.plugin%s", version.replace(".", ""));
     }
     
-    public static Intent getIntentForPlugin(Context context, String plugin,
-            String pythonPath, String gamePath) {
+    public static Intent getIntentForPlugin(String plugin, PluginArguments argument) {
         String packageName = getPackage(plugin);
         
         Intent intent = new Intent();
         intent.setComponent(new ComponentName(packageName, packageName + ".MainActivity"));
-        intent.putExtra(RENPY_PRIVATE_PATH, pythonPath);
-        intent.putExtra(GAME_PATH, gamePath);
+        intent.putExtra(RENPY_PRIVATE_PATH, argument.getRenpyPrivatePath());
+        intent.putExtra(GAME_PATH, argument.getGamePath());
         
         return intent;
     }
