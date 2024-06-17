@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 import org.libsdl.app.SDLActivity;
 import org.renpy.iap.Store;
 
@@ -253,7 +254,7 @@ public class PythonSDLActivity extends SDLActivity {
         }
 
         if (active) {
-            wakeLock.acquire();
+            wakeLock.acquire(TimeUnit.HOURS.toMillis(1));
         } else {
             wakeLock.release();
         }
