@@ -1,11 +1,13 @@
 package org.renpy.android;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.app.Activity;
 import android.util.Log;
 
+@SuppressLint("StaticFieldLeak")
 public class Action {
 
     static Context context;
