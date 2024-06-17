@@ -35,14 +35,18 @@ public class GithubSource implements Source {
     /**
      * Hardcoded URL
      */
-    private static final Uri PARENT = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.1.0");
+    private static final Uri RAW_URL = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.1.0");
+    
+    private static final Uri BASE_URL = Uri.parse("https://github.com/Abiddarris/VnPy-Emulator");
     
     /**
      * {@inheritDoc}
      */
     @Override
     public Connection openConnection(String fileName) throws IOException {
-        return new HttpConnection((HttpURLConnection)new URL(PARENT.buildUpon()
+        Uri base = fileName.startsWith("releases/") ? BASE_URL : RAW_URL;
+        
+        return new HttpConnection((HttpURLConnection)new URL(base.buildUpon()
             .appendPath(fileName)
             .build()
             .toString())
