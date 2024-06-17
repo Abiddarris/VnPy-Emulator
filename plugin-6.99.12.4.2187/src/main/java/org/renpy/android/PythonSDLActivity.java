@@ -213,7 +213,7 @@ public class PythonSDLActivity extends SDLActivity {
     public void setWakeLock(boolean active) {
         if (wakeLock == null) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "Screen On");
+            wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK, "plugin6991242187:Screen On");
             wakeLock.setReferenceCounted(false);
         }
 
