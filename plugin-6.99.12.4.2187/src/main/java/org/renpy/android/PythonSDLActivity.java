@@ -53,7 +53,9 @@ public class PythonSDLActivity extends SDLActivity {
      * can stick it in one of the other cells..
      */
     public LinearLayout mVbox;
-
+    
+    private File gameScript;
+    
     protected String[] getLibraries() {
         return new String[] {
             "png16",
@@ -138,16 +140,26 @@ public class PythonSDLActivity extends SDLActivity {
         super.onResume();
         setupMainWindowDisplayMode();
     }
-
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        if(gameScript != null) {
+            gameScript.delete();
+        }
+    }
+    
     public native void nativeSetEnv(String variable, String value);
 
     private void copyGameMainScript(String gamePath, String scriptName) {
     	try {
-            var src = new File(gamePath, scriptName);
-            var dest = new File(gamePath, "main.py");
+            gameScript = new File(gamePath, "main.py");
+            gameScript.deleteOnExit();
             
+            var src = new File(gamePath, scriptName);
             var inputStream = new BufferedInputStream(new FileInputStream(src));
-            var outputStream = new BufferedOutputStream(new FileOutputStream(dest));
+            var outputStream = new BufferedOutputStream(new FileOutputStream(gameScript));
             var buf = new byte[8192];
             int len;
             while((len = inputStream.read(buf)) != -1) {
