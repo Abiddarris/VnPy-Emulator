@@ -22,9 +22,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import com.abiddarris.plugin.PluginArguments;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import org.libsdl.app.SDLActivity;
 import org.renpy.iap.Store;
@@ -138,6 +141,26 @@ public class PythonSDLActivity extends SDLActivity {
 
     public native void nativeSetEnv(String variable, String value);
 
+    private void copyGameMainScript(String gamePath, String scriptName) {
+    	try {
+            var src = new File(gamePath, scriptName);
+            var dest = new File(gamePath, "main.py");
+            
+            var inputStream = new BufferedInputStream(new FileInputStream(src));
+            var outputStream = new BufferedOutputStream(new FileOutputStream(dest));
+            var buf = new byte[8192];
+            int len;
+            while((len = inputStream.read(buf)) != -1) {
+                outputStream.write(buf, 0, len);
+            }
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void preparePython() {
         Log.v("python", "Starting preparePython.");
 
@@ -147,6 +170,8 @@ public class PythonSDLActivity extends SDLActivity {
         String path = arguments.getGamePath();
         String python = arguments.getRenpyPrivatePath();
         
+        copyGameMainScript(path, arguments.getGameScript());
+            
         nativeSetEnv("ANDROID_ARGUMENT", path);
         nativeSetEnv("ANDROID_PRIVATE", python);
         nativeSetEnv("ANDROID_PUBLIC",  path);
