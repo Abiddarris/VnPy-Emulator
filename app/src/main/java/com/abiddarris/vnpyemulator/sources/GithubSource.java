@@ -18,6 +18,7 @@
 package com.abiddarris.vnpyemulator.sources;
 
 import android.net.Uri;
+import android.net.Uri.Builder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -44,13 +45,22 @@ public class GithubSource implements Source {
      */
     @Override
     public Connection openConnection(String fileName) throws IOException {
+        if(fileName.startsWith("/")) {
+            fileName = fileName.substring(1);
+        }
         Uri base = fileName.startsWith("releases/") ? BASE_URL : RAW_URL;
+        if(fileName.endsWith("/")) {
+            fileName = fileName.substring(0, fileName.length() - 1);
+        }
+        String[] parts = fileName.split("/");
         
-        return new HttpConnection((HttpURLConnection)new URL(base.buildUpon()
-            .appendPath(fileName)
-            .build()
-            .toString())
-            .openConnection());
+        Builder builder = base.buildUpon();
+        Stream.of(parts)
+            .forEach(builder::appendPath);
+        Uri uri = builder.build();
+        
+        return new HttpConnection((HttpURLConnection)
+            new URL(uri.toString()).openConnection());
     }
     
 }
