@@ -26,6 +26,7 @@ public class PluginLoader {
     
     public static final String GAME_PATH = "game_path";
     public static final String RENPY_PRIVATE_PATH = "renpy_private_path";
+    public static final String GAME_SCRIPT = "game_script";
     
     public static boolean hasPlugin(Context context, String version) {
         return Packages.isInstalled(context, getPackage(version));
@@ -42,6 +43,7 @@ public class PluginLoader {
         intent.setComponent(new ComponentName(packageName, packageName + ".MainActivity"));
         intent.putExtra(RENPY_PRIVATE_PATH, argument.getRenpyPrivatePath());
         intent.putExtra(GAME_PATH, argument.getGamePath());
+        intent.putExtra(GAME_SCRIPT, argument.getGameScript());
         
         return intent;
     }

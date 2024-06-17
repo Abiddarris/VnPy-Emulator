@@ -23,6 +23,7 @@ import android.os.Bundle;
 public class PluginArguments {
     
     private String gamePath;
+    private String gameScript;
     private String renpyPrivatePath;
     
     public PluginArguments() {
@@ -33,6 +34,7 @@ public class PluginArguments {
         
         gamePath = bundle.getString(PluginLoader.GAME_PATH);
         renpyPrivatePath = bundle.getString(PluginLoader.RENPY_PRIVATE_PATH);
+        gameScript = bundle.getString(PluginLoader.GAME_SCRIPT);
     }
     
     public String getGamePath() {
@@ -43,6 +45,10 @@ public class PluginArguments {
         return this.renpyPrivatePath;
     }
     
+    public String getGameScript() {
+        return gameScript;
+    }
+    
     public PluginArguments setGamePath(String gamePath) {
         this.gamePath = gamePath;
         
@@ -51,6 +57,12 @@ public class PluginArguments {
     
     public PluginArguments setRenPyPrivatePath(String renPyPrivatePath) {
         this.renpyPrivatePath = renPyPrivatePath;
+        
+        return this;
+    }
+    
+    public PluginArguments setGameScript(String gameScript) {
+        this.gameScript = gameScript;
         
         return this;
     }
