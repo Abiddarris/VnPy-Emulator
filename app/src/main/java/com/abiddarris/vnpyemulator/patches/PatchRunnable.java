@@ -19,13 +19,11 @@ package com.abiddarris.vnpyemulator.patches;
 
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
-import android.content.Context;
 import android.util.Log;
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelStoreOwner;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.tasks.TaskDialog;
-import com.abiddarris.common.android.tasks.TaskViewModel;
+import com.abiddarris.common.stream.NullOutputStream;
 import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.MainActivity;
@@ -44,7 +42,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -124,7 +121,7 @@ public class PatchRunnable extends TaskDialog {
             inputStream.close();
             inputStream = new BufferedInputStream(new FileInputStream(target));
             
-            var originalFileHash = Hash.createHashingFrom(inputStream, OutputStream.nullOutputStream());
+            var originalFileHash = Hash.createHashingFrom(inputStream, new NullOutputStream());
             
             inputStream.close();
             if(originalFileHash.equals(patchHash)) {
