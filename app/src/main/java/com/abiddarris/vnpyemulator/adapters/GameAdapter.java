@@ -17,7 +17,6 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
-import com.abiddarris.plugin.PluginArguments;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.view.LayoutInflater;
@@ -25,6 +24,7 @@ import android.view.ViewGroup;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+import com.abiddarris.plugin.PluginArguments;
 import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
@@ -99,35 +99,13 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         }
         String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(context, renpyPrivateVersion)
                 .getAbsolutePath();
-        String gamePath = game.getGamePath();
         
-        copyGameMainScript(gamePath, game.getGameScript());
-            
         var intent = PluginLoader.getIntentForPlugin(plugin, new PluginArguments()
             .setRenPyPrivatePath(renpyPrivateVersionPath)
-            .setGamePath(gamePath));
+            .setGamePath(game.getGamePath())
+            .setGameScript(game.getGameScript()));
         
         context.startActivity(intent);
-    }
-    
-    private void copyGameMainScript(String gamePath, String scriptName) {
-    	try {
-            var src = new File(gamePath, scriptName);
-            var dest = new File(gamePath, "main.py");
-            
-            var inputStream = new BufferedInputStream(new FileInputStream(src));
-            var outputStream = new BufferedOutputStream(new FileOutputStream(dest));
-            var buf = new byte[8192];
-            int len;
-            while((len = inputStream.read(buf)) != -1) {
-                outputStream.write(buf, 0, len);
-            }
-            outputStream.flush();
-            outputStream.close();
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     public static class GameViewHolder extends ViewHolder {
