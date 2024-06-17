@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
+import com.abiddarris.plugin.PluginArguments;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.view.LayoutInflater;
@@ -102,7 +103,9 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         
         copyGameMainScript(gamePath, game.getGameScript());
             
-        var intent = PluginLoader.getIntentForPlugin(context, plugin, renpyPrivateVersionPath, gamePath);
+        var intent = PluginLoader.getIntentForPlugin(plugin, new PluginArguments()
+            .setRenPyPrivatePath(renpyPrivateVersionPath)
+            .setGamePath(gamePath));
         
         context.startActivity(intent);
     }
