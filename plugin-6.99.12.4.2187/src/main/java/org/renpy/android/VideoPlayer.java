@@ -52,18 +52,18 @@ public class VideoPlayer implements SurfaceHolder.Callback, MediaPlayer.OnErrorL
 	        } else {
 	            player.setDataSource(f.getFD());
 	        }
+            
+            f.close();
 
-			f.close();
+            Log.i("VP", "Set input stream.");
 
-	        Log.i("VP", "Set input stream.");
+            player.prepare();
 
-			player.prepare();
+            Log.i("VP", "Prepared, duration = " + player.getDuration());
 
-			Log.i("VP", "Prepared, duration = " + player.getDuration());
+            player.start();
 
-			player.start();
-
-			Log.i("VP", "Started playing");
+            Log.i("VP", "Started playing");
 
 
 		} catch (Exception e) {
