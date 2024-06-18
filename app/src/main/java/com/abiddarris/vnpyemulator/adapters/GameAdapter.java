@@ -58,7 +58,18 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     
     @Override
     public GameViewHolder onCreateViewHolder(ViewGroup group, int type) {
-        return new GameViewHolder(LayoutGameBinding.inflate(inflater, group, false));
+        var holder = new GameViewHolder(LayoutGameBinding.inflate(inflater, group, false));
+        
+        context.registerForContextMenu(holder.binding.getRoot());
+        
+        return holder;
+    }
+    
+    @Override
+    public void onViewRecycled(GameViewHolder holder) {
+        super.onViewRecycled(holder);
+        
+        context.unregisterForContextMenu(holder.binding.getRoot());
     }
     
     @Override
@@ -66,6 +77,8 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         Game game = games.get(index);
         holder.binding.root
             .setOnClickListener(v -> open(game));
+        holder.binding.getRoot()
+            .setTag(index);
         
         try {
             holder.binding.gameName.setText(
@@ -119,4 +132,5 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         }
         
     }
+
 }

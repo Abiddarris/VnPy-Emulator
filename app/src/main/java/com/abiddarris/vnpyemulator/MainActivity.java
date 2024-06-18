@@ -18,8 +18,13 @@
 package com.abiddarris.vnpyemulator;
 
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -43,6 +48,7 @@ public class MainActivity extends PermissionActivity {
     private ActivityMainBinding binding;
     private TaskViewModel model;
     private GameAdapter adapter;
+    private View currentItem;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +90,22 @@ public class MainActivity extends PermissionActivity {
             return true;
         }
         
+        return false;
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo info) {
+        super.onCreateContextMenu(menu, view, info);
+        
+        getMenuInflater().inflate(R.menu.layout_game_menu, menu);
+        currentItem = view;
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.delete) {
+            return true;
+        }
         return false;
     }
     
