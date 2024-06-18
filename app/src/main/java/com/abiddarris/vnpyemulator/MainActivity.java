@@ -72,8 +72,10 @@ public class MainActivity extends PermissionActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.add_new_game) {
             new AddNewGameDialog()
-                .showForResult(getSupportFragmentManager(), message -> 
-                    model.execute(new PatchRunnable(message)));
+                .showForResult(getSupportFragmentManager(), path -> {
+                    if(path != null)
+                        model.execute(new PatchRunnable(path));
+                });
             return true; 
         }
         
