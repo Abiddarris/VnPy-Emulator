@@ -1012,6 +1012,7 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
     // Called when the surface is resized
     @Override
+    @SuppressLint("SwitchIntDef")
     public void surfaceChanged(SurfaceHolder holder,
                                int format, int width, int height) {
         Log.v("SDL", "surfaceChanged()");
