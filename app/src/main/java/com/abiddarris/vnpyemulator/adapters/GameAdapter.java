@@ -98,6 +98,10 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         return games.size();
     }
     
+    public Game get(int index) {
+        return games.get(index);
+    }
+    
     public void refresh() {
     	this.games = Game.loadGames(context);
     }

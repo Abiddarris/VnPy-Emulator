@@ -35,4 +35,6 @@
     <string name="plugin_not_available">"Unfortunately plugin for Ren'Py version %s is not available yet. Please select closest plugin version"</string>
     <string name="select_plugin_version">Select Plugin Version</string>
     <string name="delete">Delete</string>
+    <string name="delete_game">Delete game</string>
+    <string name="delete_game_message">Are you sure want to delete %s? This operation cannot be undone!</string>
 </resources>

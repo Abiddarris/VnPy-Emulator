@@ -36,6 +36,7 @@ import com.abiddarris.plugin.PermissionActivity;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
+import com.abiddarris.vnpyemulator.dialogs.DeleteGameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import java.io.File;
@@ -104,6 +105,10 @@ public class MainActivity extends PermissionActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.delete) {
+            Game game = adapter.get((int)currentItem.getTag());
+            
+            DeleteGameDialog.getInstance(game)
+                .show(getSupportFragmentManager(), null);
             return true;
         }
         return false;
