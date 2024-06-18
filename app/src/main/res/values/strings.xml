@@ -4,8 +4,8 @@
     <string name="icon_name">VnPy Emulator</string>
     <string name="add_new_game">Add new game</string>
     <string name="location_to_game">Location to game (Absolute path)</string>
-    <string name="apply_patch_dialog_title">Applying Patch...</string>
-    <string name="patching">Patching...</string>
+    <string name="apply_patch_dialog_title">Applying Patch&#8230;</string>
+    <string name="patching">Patching&#8230;</string>
     <string name="error">Error</string>
     <string name="fetching">Fetching</string>
     <string name="folder_not_exists">Folder does not exist</string>
@@ -27,9 +27,9 @@
     <string name="name_already_used">Name already used</string>
     <string name="fetch_plugin_title">Fetching Plugins</string>
     <string name="downloading_renpy_private_files">"Downloading Ren'Py Private Files for %s"</string>
-    <string name="unpacking_renpy_private_files">"Unpacking Ren'Py private files..."</string>
+    <string name="unpacking_renpy_private_files">"Unpacking Ren'Py private files&#8230;"</string>
     <string name="downloading_plugin">Downloading plugin for %s</string>
-    <string name="installing_plugin">Installing plugin...</string>
+    <string name="installing_plugin">Installing plugin&#8230;</string>
     <string name="plugin_not_supported">Plugin not supported</string>
     <string name="plugin_not_supported_message">Unable to find plugin that supported this device %s</string>
     <string name="plugin_not_available">"Unfortunately plugin for Ren'Py version %s is not available yet. Please select closest plugin version"</string>
