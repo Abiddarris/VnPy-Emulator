@@ -55,6 +55,16 @@ public class Files {
         return cacheFolder;
     }
     
+    /**
+     * Returns {@code File} where information about games are stored.
+     *
+     * @param context Context
+     * @return {@code File} where information about games are stored.
+     */
+    public static File getGamesFile(Context context) {
+        return new File(context.getFilesDir(), "game");
+    }
+    
     private static void createDirectory(File file) {
         if(!file.exists()) {
             file.mkdirs();

@@ -102,62 +102,32 @@ public class Game extends JSONObject {
         }
     }
     
+    @Deprecated
     public static void updateGame(Context context, Game game) throws IOException {
-        List<Game> games = new ArrayList<>();
-        loadGames(context)
-            .stream()
-            .filter(g -> !game.getName().equals(g.getName()))
-            .forEach(games::add);
-        
-        games.add(game);
-        
-        saveGames(context, games);
+        GameLoader.getGames(context);
+        GameLoader.saveGames(context);
     }
     
+    @Deprecated
     public static void storeGame(Context context, Game game) throws IOException {
-        var games = loadGames(context);
-        
-        games.add(game);
-        
-        saveGames(context, games);
+        GameLoader.addGame(context, game);
+        GameLoader.saveGames(context);
     }
     
+    @Deprecated
     public static List<Game> loadGames(Context context) {
-        var list = new LinkedList<Game>();
-        File gameFile = getGameFile(context);
-        try (BufferedReader reader = new BufferedReader(new FileReader(gameFile))){
-            char[] cbuf = new char[(int)gameFile.length()];
-            
-            reader.read(cbuf);
-            
-            var array = new JSONArray(new String(cbuf));
-            for(int i = 0; i < array.length(); ++i) {
-            	list.add(new Game(
-                        array.getJSONObject(i)));
-            }
-        } catch (IOException | JSONException e) {
+        try {
+            return GameLoader.loadGames(context);
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        return list;
+        return null;
     }
     
+    @Deprecated
     public static void saveGames(Context context, List<Game> games) throws IOException {
-    	var array = new JSONArray();
-            
-        games.forEach(array::put);
-        try (var writer = new BufferedWriter(new FileWriter(getGameFile(context)))) {
-            writer.write(array.toString());
-            writer.flush();
-    	} 
+    	GameLoader.saveGames(context);
     }
     
-    /**
-     * Returns {@code File} where information about games are stored.
-     *
-     * @param context Context
-     * @return {@code File} where information about games are stored.
-     */
-    private static File getGameFile(Context context) {
-        return new File(context.getFilesDir(), "game");
-    }
+   
 }
