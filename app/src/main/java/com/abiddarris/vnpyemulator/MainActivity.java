@@ -70,15 +70,16 @@ public class MainActivity extends PermissionActivity {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.add_new_game:
-                new AddNewGameDialog()
-                    .showForResult(getSupportFragmentManager(), message -> 
-                        model.execute(new PatchRunnable(message)));
-                return true; 
-            case R.id.about :
-                startActivity(AboutActivity.newAboutActivity(this, "ABOUT", "ATTRIBUTION"));
-                return true;
+        if(item.getItemId() == R.id.add_new_game) {
+            new AddNewGameDialog()
+                .showForResult(getSupportFragmentManager(), message -> 
+                    model.execute(new PatchRunnable(message)));
+            return true; 
+        }
+        
+        if(item.getItemId() == R.id.about) {
+            startActivity(AboutActivity.newAboutActivity(this, "ABOUT", "ATTRIBUTION"));
+            return true;
         }
         
         return false;
