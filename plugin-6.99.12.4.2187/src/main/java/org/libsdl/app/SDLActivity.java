@@ -682,6 +682,7 @@ public class SDLActivity extends Activity {
     /**
      * This method is called by SDL using JNI.
      */
+    @SuppressLint("PrivateApi")
     public InputStream openAPKExtensionInputStream(String fileName) throws IOException {
         // Get a ZipResourceFile representing a merger of both the main and patch files
         if (expansionFile == null) {
