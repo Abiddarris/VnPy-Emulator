@@ -19,6 +19,7 @@ package com.abiddarris.vnpyemulator.games;
 
 import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.tasks.TaskDialog;
+import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.dialogs.DeletingGameDialog;
 
 public class DeleteGameTask extends TaskDialog {
@@ -41,8 +42,17 @@ public class DeleteGameTask extends TaskDialog {
     
     @Override
     public void execute() throws Exception {
+        int index = GameLoader.getGames(getApplicationContext())
+            .indexOf(game);
+        
         GameLoader.deleteGame(getApplicationContext(), game);
         GameLoader.saveGames(getApplicationContext());
+        
+        MainActivity activity = getActivity();
+        activity.runOnUiThread(() -> {
+            activity.getAdapter()
+                .notifyItemRemoved(index);
+        });
     }
     
 }

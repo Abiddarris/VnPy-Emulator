@@ -122,6 +122,10 @@ public class MainActivity extends PermissionActivity {
         return model;
     }
     
+    public GameAdapter getAdapter() {
+        return adapter;
+    }
+    
     public void refresh() {
         runOnUiThread(() -> {
             adapter.refresh();
