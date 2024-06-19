@@ -104,11 +104,15 @@ public class MainActivity extends PermissionActivity {
     
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        Game game = adapter.get((int)currentItem.getTag());
         if(item.getItemId() == R.id.delete) {
-            Game game = adapter.get((int)currentItem.getTag());
-            
             DeleteGameDialog.getInstance(game)
                 .show(getSupportFragmentManager(), null);
+            return true;
+        } 
+        
+        if(item.getItemId() == R.id.open) {
+            open(game);
             return true;
         }
         return false;
