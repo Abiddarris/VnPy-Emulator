@@ -127,4 +127,16 @@ public final class GameLoader {
         
         games.add(game);
     }
+    
+    /**
+     * Delete a game.
+     *
+     * @param context Context
+     * @throws NullPointerException if {@code context} is null
+     */
+    public static void deleteGame(Context context, Game game) throws IOException {
+        Preconditions.checkNonNull(game, "Game cannot be null");
+        
+        games.remove(game);
+    }
 }
