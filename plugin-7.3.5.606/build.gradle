@@ -8,7 +8,7 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    namespace 'com.abiddarris.renpy.plugin6991242187'
+    namespace 'com.abiddarris.renpy.plugin735606'
     compileSdk 33
     buildToolsVersion '34.0.4'
     
@@ -21,10 +21,10 @@ android {
     defaultConfig {
         multiDexEnabled true
         applicationId 'com.abiddarris.renpy.plugin6991242187'
-        minSdk 16
-        targetSdk 33
+        minSdk 19
+        targetSdk 31
         versionCode 1
-        versionName "v6.99.12.4.2187.0"
+        versionName "v7.3.5.606.0"
         
         vectorDrawables { 
             useSupportLibrary true
@@ -55,16 +55,11 @@ android {
     
     splits {
         abi {
-            enable true
-            reset()
-            
-            include "armeabi", "x86"
-        }
-    }
+            enable true;
+            reset();
 
-    packagingOptions {
-        doNotStrip "jniLibs/armeabi/*.so"
-        doNotStrip "jniLibs/x86/*.so"
+            include "x86_64", "armeabi-v7a", "arm64-v8a"
+        }
     }
 
     compileOptions {
@@ -83,8 +78,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':plugin')
-    
-    implementation 'org.kamranzafar:jtar:2.3'
     
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -105,7 +98,7 @@ def copy(src, dest) {
         def abi = fileName.split("-")[2] 
         try(def input = new BufferedInputStream(new FileInputStream(file));
             def output = new BufferedOutputStream(
-                new FileOutputStream(new File(dest, "VnPy-Emulator-Plugin-6.99.12.4.2187-${abi}.apk")));){
+                new FileOutputStream(new File(dest, "VnPy-Emulator-Plugin-7.3.5.606-${abi}.apk")));){
             
             def buf = new byte[8192]    
             def len;
