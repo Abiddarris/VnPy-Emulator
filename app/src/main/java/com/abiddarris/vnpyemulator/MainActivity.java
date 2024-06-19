@@ -35,6 +35,7 @@ import com.abiddarris.common.android.utils.Permissions;
 import com.abiddarris.plugin.PermissionActivity;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
+import com.abiddarris.vnpyemulator.dialogs.AboutGameInformationDialog;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
 import com.abiddarris.vnpyemulator.dialogs.DeleteGameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
@@ -115,6 +116,13 @@ public class MainActivity extends PermissionActivity {
             open(game);
             return true;
         }
+        
+        if(item.getItemId() == R.id.about) {
+            AboutGameInformationDialog.newInstance(game)
+                .show(getSupportFragmentManager(), null);
+            return true;
+        }
+        
         return false;
     }
     
