@@ -20,7 +20,7 @@ android {
     
     defaultConfig {
         multiDexEnabled true
-        applicationId 'com.abiddarris.renpy.plugin6991242187'
+        applicationId 'com.abiddarris.renpy.plugin735606'
         minSdk 19
         targetSdk 31
         versionCode 1
