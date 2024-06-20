@@ -66,13 +66,6 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     }
     
     @Override
-    public void onViewRecycled(GameViewHolder holder) {
-        super.onViewRecycled(holder);
-        
-        context.unregisterForContextMenu(holder.binding.getRoot());
-    }
-    
-    @Override
     public void onBindViewHolder(GameViewHolder holder, int index) {
         Game game = games.get(index);
         holder.binding.root
