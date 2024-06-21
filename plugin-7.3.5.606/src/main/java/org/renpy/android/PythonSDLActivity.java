@@ -17,7 +17,6 @@ import android.view.View.OnSystemUiVisibilityChangeListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import com.abiddarris.plugin.PluginArguments;
-import com.abiddarris.plugin.game.PythonSDLActivityDefinition;
 import com.abiddarris.plugin.game.RenPyGame;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -28,7 +27,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import org.libsdl.app.SDLActivity;
 
-public class PythonSDLActivity extends SDLActivity implements PythonSDLActivityDefinition {
+public class PythonSDLActivity extends SDLActivity {
 
     /**
      * This exists so python code can access this activity.
