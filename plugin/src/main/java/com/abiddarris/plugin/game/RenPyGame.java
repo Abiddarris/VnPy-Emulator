@@ -24,24 +24,25 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
 import android.view.KeyEvent;
+import org.renpy.android.PythonSDLActivity;
 
 public class RenPyGame {
     
     private static RenPyGame game;
     
-    private PythonSDLActivityDefinition definition;
+    private PythonSDLActivity activity;
     
-    private RenPyGame(PythonSDLActivityDefinition definition) {
-        this.definition = definition;
+    private RenPyGame(PythonSDLActivity activity) {
+        this.activity = activity;
     }
     
     public void setContentView(View view) {
-        
+      
     }
     
-    public static RenPyGame getInstance(PythonSDLActivityDefinition definition) {
+    public static RenPyGame getInstance(PythonSDLActivity activity) {
         if(game == null) {
-        	game = new RenPyGame(definition);
+        	game = new RenPyGame(activity);
         }
         return game;
     }
