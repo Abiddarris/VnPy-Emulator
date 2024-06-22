@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
 import android.view.KeyEvent;
+import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
 
 public class RenPyGame {
@@ -37,7 +38,28 @@ public class RenPyGame {
     }
     
     public void setContentView(View view) {
-      
+        var button = new Button(activity);
+        
+        var keyboard = new VirtualKeyboard(activity);
+        keyboard.setEdit(true);
+        keyboard.addButton("space", KeyEvent.KEYCODE_SPACE);
+        keyboard.addView(button);
+        keyboard.setKeyListener((event, keycode) -> {
+            switch(event) {
+                case DOWN :
+                    SDLActivity.onNativeKeyDown(keycode);
+                    break;
+                case UP :
+                    SDLActivity.onNativeKeyUp(keycode);
+            }
+        });
+        
+        button.setOnClickListener(v -> {
+            keyboard.setEdit(!keyboard.isEdit());
+        });
+        
+        activity.mFrameLayout
+            .addView(keyboard, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
     
     public static RenPyGame getInstance(PythonSDLActivity activity) {
