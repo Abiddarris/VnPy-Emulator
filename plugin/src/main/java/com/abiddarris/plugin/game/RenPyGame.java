@@ -59,7 +59,12 @@ public class RenPyGame {
         
         binding.edit.setOnClickListener(v -> {
             keyboard.setEdit(!keyboard.isEdit());
+             
+            int visibility = keyboard.isEdit() ? View.VISIBLE : View.GONE;
+            binding.add.setVisibility(visibility);    
         });
+        
+        binding.add.setOnClickListener(v -> keyboard.addButton());
         
         activity.mFrameLayout
             .addView(keyboard, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
