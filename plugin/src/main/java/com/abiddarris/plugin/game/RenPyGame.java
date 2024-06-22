@@ -22,8 +22,10 @@ import static android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
 import android.view.KeyEvent;
+import com.abiddarris.plugin.R;
 import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
 
@@ -38,7 +40,8 @@ public class RenPyGame {
     }
     
     public void setContentView(View view) {
-        var button = new Button(activity);
+        var button = new ImageButton(activity);
+        button.setImageResource(R.drawable.ic_edit);
         
         var keyboard = new VirtualKeyboard(activity);
         keyboard.setEdit(true);
