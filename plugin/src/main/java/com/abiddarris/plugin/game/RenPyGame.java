@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
 import android.view.KeyEvent;
 import com.abiddarris.plugin.R;
+import com.abiddarris.plugin.databinding.LayoutOptionsBinding;
 import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
 
@@ -40,13 +41,12 @@ public class RenPyGame {
     }
     
     public void setContentView(View view) {
-        var button = new ImageButton(activity);
-        button.setImageResource(R.drawable.ic_edit);
+        var binding = LayoutOptionsBinding.inflate(activity.getLayoutInflater());
         
         var keyboard = new VirtualKeyboard(activity);
         keyboard.setEdit(true);
         keyboard.addButton("space", KeyEvent.KEYCODE_SPACE);
-        keyboard.addView(button);
+        keyboard.addView(binding.getRoot());
         keyboard.setKeyListener((event, keycode) -> {
             switch(event) {
                 case DOWN :
@@ -57,7 +57,7 @@ public class RenPyGame {
             }
         });
         
-        button.setOnClickListener(v -> {
+        binding.edit.setOnClickListener(v -> {
             keyboard.setEdit(!keyboard.isEdit());
         });
         
