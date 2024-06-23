@@ -1,5 +1,6 @@
 package org.libsdl.app;
 
+import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import android.text.InputType;
 /**
     SDL Activity
 */
-public class SDLActivity extends Activity {
+public class SDLActivity extends AppCompatActivity {
     private static final String TAG = "SDL";
 
     // Keep track of the paused state
