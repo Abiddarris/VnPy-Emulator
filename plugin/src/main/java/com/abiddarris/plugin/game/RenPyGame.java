@@ -45,7 +45,6 @@ public class RenPyGame {
         
         var keyboard = new VirtualKeyboard(activity);
         keyboard.setEdit(true);
-        keyboard.addButton("space", KeyEvent.KEYCODE_SPACE);
         keyboard.addView(binding.getRoot());
         keyboard.setKeyListener((event, keycode) -> {
             switch(event) {
