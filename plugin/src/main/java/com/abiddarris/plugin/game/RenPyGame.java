@@ -44,7 +44,6 @@ public class RenPyGame {
         var binding = LayoutOptionsBinding.inflate(activity.getLayoutInflater());
         
         var keyboard = new VirtualKeyboard(activity);
-        keyboard.setEdit(true);
         keyboard.addView(binding.getRoot());
         keyboard.setKeyListener((event, keycode) -> {
             switch(event) {
