@@ -39,6 +39,13 @@ public class Files {
         return file == null ? null : file;
     }
     
+    public static File getKeyboardFolder(Context context) {
+        File keyboardFolder = new File(getVnPyEmulatorFolder(context), "keyboards");
+        createDirectory(keyboardFolder);
+        
+        return keyboardFolder;
+    }
+    
     public static File getRenPyPrivateFolder(Context context) {
         File privateFolder = new File(getVnPyEmulatorFolder(context), "private");
         createDirectory(privateFolder);
