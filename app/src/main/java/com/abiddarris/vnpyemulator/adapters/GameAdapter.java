@@ -17,13 +17,16 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.adapters;
 
+import static com.abiddarris.vnpyemulator.files.Files.getKeyboardFolder;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
 import com.abiddarris.plugin.PluginArguments;
 import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.MainActivity;
@@ -34,6 +37,9 @@ import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.plugins.FetchPluginsRunnable;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
+
+import org.json.JSONException;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -41,7 +47,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
-import org.json.JSONException;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
 
@@ -113,7 +118,8 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         var intent = PluginLoader.getIntentForPlugin(plugin, new PluginArguments()
             .setRenPyPrivatePath(renpyPrivateVersionPath)
             .setGamePath(game.getGamePath())
-            .setGameScript(game.getGameScript()));
+            .setGameScript(game.getGameScript())
+            .setKeyboardFolderPath(getKeyboardFolder(context).getAbsolutePath()));
         
         context.startActivity(intent);
     }
