@@ -21,8 +21,11 @@ import static android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
 
 import android.view.View;
 import android.widget.FrameLayout;
+
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboardOptions;
+import com.abiddarris.plugin.PluginArguments;
+
 import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
 
@@ -30,15 +33,28 @@ public class RenPyGame {
     
     private static RenPyGame game;
     
+    private PluginArguments arguments;
     private PythonSDLActivity activity;
     
     private RenPyGame(PythonSDLActivity activity) {
         this.activity = activity;
     }
     
+    public PluginArguments getArguments() {
+        if(arguments == null) {
+            arguments = new PluginArguments(activity.getIntent());
+        }
+        
+        return arguments;
+    }
+    
     public void setContentView(View view) {
         var keyboard = new VirtualKeyboard(activity);
         var options = new VirtualKeyboardOptions(activity, keyboard);
+        options.setKeyboardFolderPath(
+            getArguments()
+                .getKeyboardFolderPath()
+        );
         
         keyboard.setKeyListener((event, keycode) -> {
             switch(event) {
