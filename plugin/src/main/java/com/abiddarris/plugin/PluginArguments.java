@@ -17,6 +17,8 @@
  ***********************************************************************************/
 package com.abiddarris.plugin;
 
+import static com.abiddarris.plugin.PluginLoader.KEYBOARD_FOLDER_PATH;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -25,6 +27,7 @@ public class PluginArguments {
     private String gamePath;
     private String gameScript;
     private String renpyPrivatePath;
+    private String keyboardFolderPath;
     
     public PluginArguments() {
     }
@@ -35,6 +38,7 @@ public class PluginArguments {
         gamePath = bundle.getString(PluginLoader.GAME_PATH);
         renpyPrivatePath = bundle.getString(PluginLoader.RENPY_PRIVATE_PATH);
         gameScript = bundle.getString(PluginLoader.GAME_SCRIPT);
+        keyboardFolderPath = bundle.getString(KEYBOARD_FOLDER_PATH);
     }
     
     public String getGamePath() {
@@ -47,6 +51,10 @@ public class PluginArguments {
     
     public String getGameScript() {
         return gameScript;
+    }
+    
+    public String getKeyboardFolderPath() {
+        return keyboardFolderPath;
     }
     
     public PluginArguments setGamePath(String gamePath) {
@@ -63,6 +71,12 @@ public class PluginArguments {
     
     public PluginArguments setGameScript(String gameScript) {
         this.gameScript = gameScript;
+        
+        return this;
+    }
+    
+    public PluginArguments setKeyboardFolderPath(String keyboardFolderPath) {
+        this.keyboardFolderPath = keyboardFolderPath;
         
         return this;
     }
