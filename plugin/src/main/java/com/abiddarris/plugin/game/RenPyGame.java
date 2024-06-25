@@ -20,13 +20,9 @@ package com.abiddarris.plugin.game;
 import static android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
 
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
-import android.view.KeyEvent;
-import com.abiddarris.plugin.R;
-import com.abiddarris.plugin.databinding.LayoutOptionsBinding;
+import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboardOptions;
 import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
 
@@ -41,10 +37,9 @@ public class RenPyGame {
     }
     
     public void setContentView(View view) {
-        var binding = LayoutOptionsBinding.inflate(activity.getLayoutInflater());
-        
         var keyboard = new VirtualKeyboard(activity);
-        keyboard.addView(binding.getRoot());
+        var options = new VirtualKeyboardOptions(activity, keyboard);
+        
         keyboard.setKeyListener((event, keycode) -> {
             switch(event) {
                 case DOWN :
@@ -54,15 +49,6 @@ public class RenPyGame {
                     SDLActivity.onNativeKeyUp(keycode);
             }
         });
-        
-        binding.edit.setOnClickListener(v -> {
-            keyboard.setEdit(!keyboard.isEdit());
-             
-            int visibility = keyboard.isEdit() ? View.VISIBLE : View.GONE;
-            binding.add.setVisibility(visibility);    
-        });
-        
-        binding.add.setOnClickListener(v -> keyboard.addButton());
         
         activity.mFrameLayout
             .addView(keyboard, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
