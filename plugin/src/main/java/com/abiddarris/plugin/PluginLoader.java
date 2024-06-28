@@ -28,6 +28,7 @@ public class PluginLoader {
     public static final String RENPY_PRIVATE_PATH = "renpy_private_path";
     public static final String GAME_SCRIPT = "game_script";
     public static final String KEYBOARD_FOLDER_PATH = "keyboard_folder_path";
+    public static final String ERROR_PORT = "error_port";
     
     public static boolean hasPlugin(Context context, String version) {
         return Packages.isInstalled(context, getPackage(version));
@@ -46,6 +47,7 @@ public class PluginLoader {
         intent.putExtra(GAME_PATH, argument.getGamePath());
         intent.putExtra(GAME_SCRIPT, argument.getGameScript());
         intent.putExtra(KEYBOARD_FOLDER_PATH, argument.getKeyboardFolderPath());
+        intent.putExtra(ERROR_PORT, argument.getErrorPort());
         
         return intent;
     }
