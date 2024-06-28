@@ -115,10 +115,13 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(context, renpyPrivateVersion)
                 .getAbsolutePath();
         
+        MainActivity activity = (MainActivity)context;
+        
         var intent = PluginLoader.getIntentForPlugin(plugin, new PluginArguments()
             .setRenPyPrivatePath(renpyPrivateVersionPath)
             .setGamePath(game.getGamePath())
             .setGameScript(game.getGameScript())
+            .setErrorPort(activity.getPort())
             .setKeyboardFolderPath(getKeyboardFolder(context).getAbsolutePath()));
         
         context.startActivity(intent);
