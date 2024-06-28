@@ -17,7 +17,13 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator;
 
+import static com.abiddarris.common.logs.Level.DEBUG;
+
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -25,29 +31,41 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.abiddarris.common.android.about.AboutActivity;
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
 import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.common.android.utils.Permissions;
+import com.abiddarris.common.logs.Logger;
+import com.abiddarris.common.logs.Logs;
 import com.abiddarris.plugin.PermissionActivity;
 import com.abiddarris.vnpyemulator.adapters.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AboutGameInformationDialog;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
 import com.abiddarris.vnpyemulator.dialogs.DeleteGameDialog;
+import com.abiddarris.vnpyemulator.errors.ErrorHandlerService;
+import com.abiddarris.vnpyemulator.errors.ErrorHandlerService.ErrorHandlerBinder;
+import com.abiddarris.vnpyemulator.errors.OnErrorOccurs;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.patches.PatchRunnable;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends PermissionActivity {
+public class MainActivity extends PermissionActivity implements ServiceConnection, OnErrorOccurs {
    
     private ActivityMainBinding binding;
+    private ExceptionDialog errorDialog;
+    private ErrorHandlerService service;
+    private Logger log = Logs.newLogger(DEBUG, this);
     private TaskViewModel model;
     private GameAdapter adapter;
     private View currentItem;
@@ -55,6 +73,14 @@ public class MainActivity extends PermissionActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        if(!bindService(
+            new Intent(this, ErrorHandlerService.class),
+            this, BIND_AUTO_CREATE)) {
+           Toast.makeText(this, "Cannot start ErrorHandlerService", Toast
+                .LENGTH_LONG)
+                .show();
+        }
         
         model = TaskViewModel.getInstance(this);
         
@@ -67,6 +93,21 @@ public class MainActivity extends PermissionActivity {
         
         binding.games.setLayoutManager(new LinearLayoutManager(this));
         binding.games.setAdapter(adapter);
+    }
+    
+    @Override
+    protected void setupErrorHandler() {
+        //Do nothing
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        
+        if(errorDialog != null) {
+            errorDialog.show(getSupportFragmentManager(), null);
+            errorDialog = null;
+        }
     }
     
     @Override
@@ -124,6 +165,34 @@ public class MainActivity extends PermissionActivity {
         }
         
         return false;
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        
+        unbindService(this);
+    }
+    
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder binder) {
+        service = ((ErrorHandlerBinder)binder)
+            .getService();
+        service.setOnErrorOccurs(this);
+    }
+    
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+    }
+    
+    @Override
+    public void onErrorOccurs(String applicationName, Throwable throwable) {
+        errorDialog = new ExceptionDialog();
+        errorDialog.setThrowable(throwable);
+    }
+    
+    public int getPort() {
+        return service.getPort();
     }
     
     public void open(Game game) {
