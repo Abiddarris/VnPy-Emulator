@@ -140,6 +140,7 @@ public class PythonSDLActivity extends SDLActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         game = RenPyGame.getInstance(this);
+        game.onCreate(savedInstanceState);
         
         super.onCreate(savedInstanceState);
     }
