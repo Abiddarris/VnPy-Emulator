@@ -19,17 +19,26 @@ package com.abiddarris.plugin.game;
 
 import static android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
 
+import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
+
+import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.core.app.NotificationChannelCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboardOptions;
 import com.abiddarris.plugin.PluginArguments;
+import com.abiddarris.plugin.R;
 
 import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
 
 public class RenPyGame {
+    
+    public static final String GAME_OVERLAY_ID = "game_overlay";
     
     private static RenPyGame game;
     
@@ -47,6 +56,16 @@ public class RenPyGame {
         
         return arguments;
     }
+    
+    public void onCreate(Bundle savedInstanceState) {
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(activity);
+        notificationManager.createNotificationChannel(
+            new NotificationChannelCompat.Builder(GAME_OVERLAY_ID, IMPORTANCE_DEFAULT)
+                .setName(activity.getString(R.string.game_overlay_channel_title))
+                .setDescription(activity.getString(R.string.game_overlay_channel_desc))
+                .build()
+        );
+    }    
     
     public void setContentView(View view) {
         var keyboard = new VirtualKeyboard(activity);
