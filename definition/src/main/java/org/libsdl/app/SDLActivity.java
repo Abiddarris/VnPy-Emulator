@@ -17,9 +17,9 @@
  ***********************************************************************************/
 package org.libsdl.app;
 
-import android.app.Activity;
+import androidx.appcompat.app.AppCompatActivity;
 
-public class SDLActivity extends Activity {
+public class SDLActivity extends AppCompatActivity {
     public static native void onNativeKeyDown(int keycode);
     public static native void onNativeKeyUp(int keycode);
 }
