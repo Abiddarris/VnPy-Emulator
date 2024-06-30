@@ -3,4 +3,5 @@
     <string name="external_storage_permission_required_message">This app requires Manage External Storage permission for emulating game outside of app internal storage.</string>
     <string name="game_overlay_channel_title">Game overlay</string>
     <string name="game_overlay_channel_desc">Notification channel to show notification that will show game overlay</string>
+    <string name="notification_text">Click to show virtual keyboard</string>
 </resources>
