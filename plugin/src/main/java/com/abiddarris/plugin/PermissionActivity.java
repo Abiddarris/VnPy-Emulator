@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.abiddarris.common.android.utils.Permissions;
+import com.google.android.material.color.DynamicColors;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -16,6 +17,8 @@ public class PermissionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        DynamicColors.applyToActivitiesIfAvailable(getApplication());
         
         setupErrorHandler();
         
