@@ -17,12 +17,20 @@
  ***********************************************************************************/
 package com.abiddarris.plugin.game;
 
-import android.content.pm.ApplicationInfo;
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
 
 import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
 
 import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -41,11 +49,12 @@ import com.abiddarris.plugin.R;
 import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
 
-public class RenPyGame implements DefaultLifecycleObserver {
+public class RenPyGame extends BroadcastReceiver implements DefaultLifecycleObserver {
     
     public static final String GAME_OVERLAY_ID = "game_overlay";
   
     private static final int NOTIFICATION_ID = 7890;
+    private static final String ACTION_SHOW_GAME_OVERLAY = "showGameOverlay";
     
     private static RenPyGame game;
     
@@ -54,6 +63,7 @@ public class RenPyGame implements DefaultLifecycleObserver {
     
     private Notification notification;
     private NotificationManagerCompat notificationManager;
+    private VirtualKeyboard keyboard;
     
     private RenPyGame(PythonSDLActivity activity) {
         this.activity = activity;
@@ -80,11 +90,16 @@ public class RenPyGame implements DefaultLifecycleObserver {
             .addObserver(this);
         
         ApplicationInfo info = activity.getApplicationInfo();
+        PendingIntent intent = PendingIntent.getBroadcast(
+            activity, 0, 
+            new Intent(ACTION_SHOW_GAME_OVERLAY),
+            FLAG_IMMUTABLE);
         
         notification = new NotificationCompat.Builder(activity, GAME_OVERLAY_ID)
             .setOngoing(true)
             .setShowWhen(false)
             .setSmallIcon(info.icon)
+            .setContentIntent(intent)
             .setContentTitle(activity.getString(info.labelRes))
             .setContentText(activity.getString(R.string.notification_text))
             .build();
@@ -94,6 +109,7 @@ public class RenPyGame implements DefaultLifecycleObserver {
     public void onResume(LifecycleOwner owner) {
         DefaultLifecycleObserver.super.onResume(owner);
         
+        activity.registerReceiver(this, new IntentFilter(ACTION_SHOW_GAME_OVERLAY));
         notificationManager.notify(NOTIFICATION_ID, notification);
     }
     
@@ -102,10 +118,18 @@ public class RenPyGame implements DefaultLifecycleObserver {
         DefaultLifecycleObserver.super.onPause(owner);
         
         notificationManager.cancel(NOTIFICATION_ID);
+        activity.unregisterReceiver(this);
+    }
+    
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        keyboard.setVisibility(VISIBLE);
     }
     
     public void setContentView(View view) {
-        var keyboard = new VirtualKeyboard(activity);
+        keyboard = new VirtualKeyboard(activity);
+        keyboard.setVisibility(GONE);
+        
         var options = new VirtualKeyboardOptions(activity, keyboard);
         options.setKeyboardFolderPath(
             getArguments()
