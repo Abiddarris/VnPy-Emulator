@@ -34,6 +34,7 @@ import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
@@ -127,13 +128,17 @@ public class RenPyGame extends BroadcastReceiver implements DefaultLifecycleObse
     }
     
     public void setContentView(View view) {
+        ImageButton hideButton = new ImageButton(activity);
+        hideButton.setImageResource(R.drawable.ic_hide);
+        hideButton.setOnClickListener(v -> keyboard.setVisibility(GONE));
+        
         keyboard = new VirtualKeyboard(activity);
         keyboard.setVisibility(GONE);
         
         var options = new VirtualKeyboardOptions(activity, keyboard);
+        options.addView(hideButton, 0);
         options.setKeyboardFolderPath(
-            getArguments()
-                .getKeyboardFolderPath()
+            getArguments().getKeyboardFolderPath()
         );
         
         keyboard.setKeyListener((event, keycode) -> {
