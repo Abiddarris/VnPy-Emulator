@@ -17,15 +17,9 @@
  ***********************************************************************************/
 package com.abiddarris.plugin;
 
-import static android.util.Base64.DEFAULT;
-import static android.util.Base64.encodeToString;
-
 import com.abiddarris.common.utils.BaseRunnable;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
@@ -43,13 +37,13 @@ public class ErrorSenderRunnable implements BaseRunnable {
     @Override
     public void execute() throws Exception {
         try (Socket socket = new Socket("localhost", port)) {
-            DataOutputStream stream = new DataOutputStream(
+            ObjectOutputStream stream = new ObjectOutputStream(
                 new BufferedOutputStream(
                     socket.getOutputStream()
                 )
             );
             stream.writeUTF(" ");
-            stream.writeUTF(generateString());
+            stream.writeObject(throwable);
             stream.flush();
         }
     }
@@ -69,13 +63,4 @@ public class ErrorSenderRunnable implements BaseRunnable {
         return done;
     }
     
-    private String generateString() throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (ObjectOutputStream stream = new ObjectOutputStream(outputStream)){
-            stream.writeObject(throwable);
-            stream.flush();
-        }
-        
-        return encodeToString(outputStream.toByteArray(), DEFAULT);
-    }
 }

@@ -17,15 +17,9 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.errors;
 
-import static android.util.Base64.DEFAULT;
-import static android.util.Base64.decode;
-
 import com.abiddarris.common.utils.BaseRunnable;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
@@ -41,22 +35,14 @@ public class ConnectionRunnable implements BaseRunnable {
     
     @Override
     public void execute() throws Exception {
-        try (DataInputStream stream = new DataInputStream(
-            new BufferedInputStream(socket.getInputStream())
-        )){
-            String applicationName = stream.readUTF();
-            Throwable throwable = getThrowable(stream.readUTF());
+        try (BufferedInputStream stream = new BufferedInputStream(socket.getInputStream())) {
+            ObjectInputStream objectStream = new ObjectInputStream(stream);
+            String applicationName = objectStream.readUTF();
+            Throwable throwable = (Throwable)objectStream.readObject();
             
             service.getOnErrorOccurs()
                 .onErrorOccurs(applicationName, throwable);
         }
     }
-    
-    private Throwable getThrowable(String base64) throws IOException, ClassNotFoundException {
-        byte[] datas = decode(base64, DEFAULT);
-        try (ObjectInputStream stream = new ObjectInputStream(
-                new ByteArrayInputStream(datas))) {
-            return (Throwable) stream.readObject();
-        }
-    }
+
 }
