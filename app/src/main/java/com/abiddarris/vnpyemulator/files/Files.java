@@ -72,6 +72,12 @@ public class Files {
         return new File(context.getFilesDir(), "game");
     }
     
+    public static File getLogFile(Context context) {
+        File log = new File(getVnPyEmulatorFolder(context), "log.txt");
+        
+        return log;
+    }
+    
     private static void createDirectory(File file) {
         if(!file.exists()) {
             file.mkdirs();
