@@ -17,14 +17,19 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator;
 
+import static com.abiddarris.common.logs.Logs.setLogFactory;
+import static com.abiddarris.vnpyemulator.files.Files.getLogFile;
+
 import android.app.Application;
 
 import com.abiddarris.common.android.logs.factory.AndroidLogFactory;
-import com.abiddarris.common.logs.Logs;
+import com.abiddarris.common.logs.factory.FileLogFactory;
+import com.abiddarris.common.logs.factory.MultipleLogFactory;
 import com.google.android.material.color.DynamicColors;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,7 +42,15 @@ public class VnPyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         
-        Logs.setLogFactory(new AndroidLogFactory());
+        try {
+            setLogFactory(new MultipleLogFactory(
+                new AndroidLogFactory(),
+                new FileLogFactory(getLogFile(this))
+            ));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        
         
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             getExternalFilesDir(null).mkdirs();
