@@ -21,7 +21,13 @@ import android.view.View.OnSystemUiVisibilityChangeListener;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
 import com.abiddarris.plugin.PluginArguments;
+import com.abiddarris.plugin.game.RenPyGame;
+
+import org.libsdl.app.SDLActivity;
+import org.renpy.iap.Store;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,8 +36,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
-import org.libsdl.app.SDLActivity;
-import org.renpy.iap.Store;
 
 @SuppressLint("StaticFieldLeak")
 public class PythonSDLActivity extends SDLActivity {
@@ -54,6 +58,8 @@ public class PythonSDLActivity extends SDLActivity {
      * can stick it in one of the other cells..
      */
     public LinearLayout mVbox;
+    
+    private RenPyGame game;
     
     private File gameScript;
     
@@ -92,9 +98,18 @@ public class PythonSDLActivity extends SDLActivity {
         mVbox.setOrientation(LinearLayout.VERTICAL);
         mVbox.addView(mFrameLayout, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, (float) 1.0));
 
+        game.setContentView(view);
+        
         super.setContentView(mVbox);
     }
 
+    @Override
+    protected void onCreate(Bundle bundle) {
+        game = RenPyGame.getInstance(this);
+        game.onCreate(bundle);
+        
+        super.onCreate(bundle);
+    }
 
     private void setupMainWindowDisplayMode() {
         View decorView = setSystemUiVisibilityMode();
