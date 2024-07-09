@@ -20,6 +20,7 @@ import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -33,7 +34,7 @@ import java.util.List;
     SDL Activity
 */
 @SuppressLint({"StaticFieldLeak", "ObsoleteSdkInt"})
-public class SDLActivity extends Activity {
+public class SDLActivity extends AppCompatActivity {
     private static final String TAG = "SDL";
 
     // Keep track of the paused state
