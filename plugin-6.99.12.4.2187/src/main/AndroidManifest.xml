@@ -37,7 +37,6 @@
         
         <activity 
             android:name="org.renpy.android.PythonSDLActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:launchMode="singleTop"
             android:screenOrientation="sensorLandscape"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|smallestScreenSize"/>
