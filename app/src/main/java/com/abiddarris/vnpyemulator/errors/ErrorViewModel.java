@@ -41,6 +41,7 @@ public class ErrorViewModel extends ViewModel
         implements ServiceConnection, OnErrorOccurs, LifecycleEventObserver {
    
     private boolean show;
+    private boolean serviceRegistered;
     private Logger debug = Logs.newLogger(Level.DEBUG, this);
     private ExceptionDialog errorDialog;
     private ErrorHandlerService service;
@@ -56,7 +57,7 @@ public class ErrorViewModel extends ViewModel
         if(!firstTime)
             return;
         
-        activity.bindService(
+        serviceRegistered = activity.bindService(
             new Intent(activity, ErrorHandlerService.class),
             this, BIND_AUTO_CREATE
         );
@@ -89,7 +90,8 @@ public class ErrorViewModel extends ViewModel
     protected void onCleared() {
         super.onCleared();
         
-        activity.unbindService(this);
+        if(serviceRegistered)
+            activity.unbindService(this);
     }
     
     @Override
