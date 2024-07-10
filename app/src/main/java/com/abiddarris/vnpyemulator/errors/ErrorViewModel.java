@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.errors;
 
+import android.annotation.SuppressLint;
 import static android.content.Context.BIND_AUTO_CREATE;
 
 import android.content.ComponentName;
@@ -44,7 +45,11 @@ public class ErrorViewModel extends ViewModel
     private boolean serviceRegistered;
     private Logger debug = Logs.newLogger(Level.DEBUG, this);
     private ExceptionDialog errorDialog;
+    
+    @SuppressLint("StaticFieldLeak")
     private ErrorHandlerService service;
+    
+    @SuppressLint("StaticFieldLeak")
     private MainActivity activity;
     
     public void attach(MainActivity activity) {
