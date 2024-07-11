@@ -1,6 +1,10 @@
 package org.libsdl.app;
 
 import androidx.appcompat.app.AppCompatActivity;
+import com.abiddarris.common.logs.Level;
+import com.abiddarris.common.logs.StreamLogger;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -320,9 +324,9 @@ public class SDLActivity extends AppCompatActivity {
 
     /* The native thread has finished */
     public static void handleNativeExit() {
-    	System.exit(0);
-//    	SDLActivity.mSDLThread = null;
-//        mSingleton.finish();
+    	SDLActivity.mSDLThread = null;
+        
+        mSingleton.finish();
     }
 
 
@@ -934,8 +938,22 @@ class SDLMain implements Runnable {
     @Override
     public void run() {
         // Runs SDL_main()
-        SDLActivity.nativeInit(SDLActivity.mSingleton.getArguments());
+        StreamLogger logger = null;
+        try {
+            logger= new StreamLogger(
+                Level.DEBUG, "sdl", new FileOutputStream(
+                    new File(SDLActivity.mSingleton.getExternalFilesDir(null), "log.txt")
+                )
+            );
+            SDLActivity.nativeInit(SDLActivity.mSingleton.getArguments());
 
+        } catch(Exception e){
+            logger.log(e);
+        } finally{
+            // Native thread has finished
+            logger.log("SDL THREAD FINISHED WITH " + SDLActivity.mExitCalledFromJava);
+        }                  
+        
         //Log.v("SDL", "SDL thread terminated");
     }
 }
