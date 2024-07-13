@@ -21,6 +21,7 @@ import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static android.widget.FrameLayout.LayoutParams.MATCH_PARENT;
+import static android.widget.Toast.LENGTH_LONG;
 
 import static androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT;
 
@@ -35,6 +36,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
@@ -79,6 +81,9 @@ public class RenPyGame extends BroadcastReceiver implements DefaultLifecycleObse
     }
     
     public void onCreate(Bundle savedInstanceState) {
+        Toast.makeText(activity, R.string.show_vkeyboard_help, LENGTH_LONG)
+            .show();
+        
         notificationManager = NotificationManagerCompat.from(activity);
         notificationManager.createNotificationChannel(
             new NotificationChannelCompat.Builder(GAME_OVERLAY_ID, IMPORTANCE_DEFAULT)
