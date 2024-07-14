@@ -18,7 +18,13 @@
 package com.abiddarris.vnpyemulator.games;
 
 import android.content.Context;
+
 import com.abiddarris.common.utils.Exceptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,9 +34,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Class that hold {@code Game} information and managed it
@@ -46,9 +49,8 @@ public class Game extends JSONObject {
     @Deprecated
     public static final String GAME_SCRIPT = "script";
    
-    @Deprecated
-    public static final String RENPY_VERSION = "renpy_version";
- 
+    private static final String RENPY_VERSION = "real_renpy_version";
+    private static final String PATCH_VERSION = "renpy_version";
     private static final String PLUGIN_VERSION = "plugin_version";
     private static final String RENPY_PRIVATE_VERSION = "renpy_private_version";
     
@@ -82,6 +84,10 @@ public class Game extends JSONObject {
         return optString(RENPY_VERSION, null);
     }
     
+    public String getPatchVersion() {
+        return optString(PATCH_VERSION, null);
+    }
+    
     public String getRenPyPrivateVersion() {
         return optString(RENPY_PRIVATE_VERSION, null);
     }
@@ -97,6 +103,22 @@ public class Game extends JSONObject {
     public void setPlugin(String version) {
         try {
             putOpt(PLUGIN_VERSION, version);
+        } catch (JSONException e) {
+            throw Exceptions.toUncheckException(e);
+        }
+    }
+    
+    public void setRenPyVersion(String version) {
+        set(RENPY_VERSION, version);
+    }
+    
+    public void setPatchVersion(String patchVersion) {
+        set(PATCH_VERSION, patchVersion);
+    }
+    
+    private void set(String key, String value) {
+        try {
+            putOpt(key, value);
         } catch (JSONException e) {
             throw Exceptions.toUncheckException(e);
         }

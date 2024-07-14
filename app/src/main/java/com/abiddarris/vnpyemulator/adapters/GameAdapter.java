@@ -79,10 +79,12 @@ public class GameAdapter extends Adapter<GameViewHolder> {
             .setTag(index);
         
         try {
+            String renpyVersion = game.getRenPyVersion();
+            
             holder.binding.gameName.setText(
                 game.getString(GAME_NAME));
             holder.binding.renpyVersion.setText(
-                game.getString(RENPY_VERSION));
+                renpyVersion != null ? renpyVersion : context.getString(R.string.unknown));
         } catch (JSONException e) {
             e.printStackTrace();
             

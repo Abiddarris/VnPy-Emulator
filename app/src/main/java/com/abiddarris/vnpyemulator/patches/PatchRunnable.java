@@ -20,7 +20,9 @@ package com.abiddarris.vnpyemulator.patches;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
 import android.util.Log;
+
 import androidx.fragment.app.DialogFragment;
+
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.common.stream.NullOutputStream;
@@ -35,6 +37,7 @@ import com.abiddarris.vnpyemulator.dialogs.SelectPatchVersionDialog;
 import com.abiddarris.vnpyemulator.dialogs.SetGameNameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.renpy.RenPyParser;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -87,6 +90,7 @@ public class PatchRunnable extends TaskDialog {
             
             version = null;
         }
+        String renPyVersion = version;
         
         String[] versions = source.getVersions();
         if(!Arrays.asList(versions).contains(version)) {
@@ -168,7 +172,8 @@ public class PatchRunnable extends TaskDialog {
         game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
         game.put(GAME_SCRIPT, script.getName());
         game.put(GAME_NAME, gameName);
-        game.put(RENPY_VERSION, version);
+        game.setPatchVersion(version);
+        game.setRenPyVersion(renPyVersion);
         
         Game.storeGame(getApplicationContext(), game);
     }

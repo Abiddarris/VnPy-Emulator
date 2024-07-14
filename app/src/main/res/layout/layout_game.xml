@@ -17,20 +17,20 @@
 <com.google.android.material.card.MaterialCardView
      xmlns:android="http://schemas.android.com/apk/res/android"
      xmlns:app="http://schemas.android.com/apk/res-auto"
-     android:focusable="true"
-     android:id="@+id/root"
-     android:clickable="true"
-     android:layout_margin="@dimen/layout_game_padding"
-     android:background="?attr/selectableItemBackground"
      android:layout_height="wrap_content"
      android:layout_width="match_parent"
-     style="?attr/materialCardViewFilledStyle">
+     android:background="?attr/selectableItemBackground"
+     android:clickable="true"
+     android:layout_margin="@dimen/layout_game_padding"
+     style="?attr/materialCardViewFilledStyle"
+     android:focusable="true"
+     android:id="@+id/root">
 
     <RelativeLayout
-         android:layout_margin="@dimen/layout_game_padding"
          android:layout_height="wrap_content"
-         android:layout_width="match_parent">
-         
+         android:layout_width="match_parent"
+         android:layout_margin="@dimen/layout_game_padding">
+
         <TextView
              android:layout_height="wrap_content"
              android:layout_width="wrap_content"
