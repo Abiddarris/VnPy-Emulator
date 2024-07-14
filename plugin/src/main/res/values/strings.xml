@@ -5,4 +5,5 @@
     <string name="game_overlay_channel_desc">Notification channel to show notification that will show game overlay</string>
     <string name="notification_text">Click to show virtual keyboard</string>
     <string name="show_vkeyboard_help">Click notification above to show virtual keyboard</string>
+    <string name="quit_message">Are you sure to close the game?</string>
 </resources>

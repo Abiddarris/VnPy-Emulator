@@ -137,11 +137,18 @@ public class RenPyGame extends BroadcastReceiver implements DefaultLifecycleObse
         hideButton.setImageResource(R.drawable.ic_hide);
         hideButton.setOnClickListener(v -> keyboard.setVisibility(GONE));
         
+        ImageButton closeButton = new ImageButton(activity);
+        closeButton.setImageResource(R.drawable.ic_close);
+        closeButton.setOnClickListener(v ->
+             new CloseGameConfirmationDialog()
+                .show(activity.getSupportFragmentManager(), null));
+        
         keyboard = new VirtualKeyboard(activity);
         keyboard.setVisibility(GONE);
         
         var options = new VirtualKeyboardOptions(activity, keyboard);
         options.addView(hideButton, 0);
+        options.addView(closeButton, 1);
         options.setKeyboardFolderPath(
             getArguments().getKeyboardFolderPath()
         );
