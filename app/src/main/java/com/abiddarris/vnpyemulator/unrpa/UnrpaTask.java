@@ -67,11 +67,10 @@ public class UnrpaTask extends TaskDialog {
                     unrpa.init(stream2);
                 
                     unpack(unrpa);
-                
-                    if(deleteAfterUnpack) {
-                        archive.delete();
-                    }
                 }
+            }
+            if(deleteAfterUnpack) {
+                archive.delete();
             }
         }
     }
