@@ -41,4 +41,5 @@
     <string name="about_message">Name: %s\nLocation: %s</string>
     <string name="unknown">Unknown</string>
     <string name="unpack_archive">Unpack archive</string>
+    <string name="finding_archives">Finding Archives&#8230;</string>
 </resources>

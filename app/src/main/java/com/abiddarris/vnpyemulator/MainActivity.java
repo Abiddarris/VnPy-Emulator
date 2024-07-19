@@ -42,6 +42,7 @@ import com.abiddarris.vnpyemulator.dialogs.DeleteGameDialog;
 import com.abiddarris.vnpyemulator.errors.ErrorViewModel;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.patches.PatchRunnable;
+import com.abiddarris.vnpyemulator.unrpa.FindRpaTask;
 
 
 public class MainActivity extends PermissionActivity {
@@ -130,6 +131,13 @@ public class MainActivity extends PermissionActivity {
         if(item.getItemId() == R.id.about) {
             AboutGameInformationDialog.newInstance(game)
                 .show(getSupportFragmentManager(), null);
+            return true;
+        }
+        
+        if(item.getItemId() == R.id.unpack_archive) {
+            model.execute(
+                new FindRpaTask(game.getGamePath())
+            );
             return true;
         }
         
