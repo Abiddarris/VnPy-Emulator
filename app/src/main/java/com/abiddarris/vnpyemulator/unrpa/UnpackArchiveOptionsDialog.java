@@ -22,6 +22,7 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
+import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.DialogUnpackArchiveBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -39,6 +40,7 @@ public class UnpackArchiveOptionsDialog extends BaseDialogFragment<Void> {
     
     public static UnpackArchiveOptionsDialog newInstance(String basePath, File[] archives) {
         var dialog = new UnpackArchiveOptionsDialog();
+        dialog.saveVariable(BASE_PATH, basePath);
         dialog.saveVariable(ARCHIVES, 
             Stream.of(archives)
                 .map(file -> new Archive(basePath, file))
@@ -63,7 +65,17 @@ public class UnpackArchiveOptionsDialog extends BaseDialogFragment<Void> {
         builder.setTitle(R.string.unpack_archive)
             .setView(binding.getRoot())
             .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(R.string.unpack, null);
+            .setPositiveButton(R.string.unpack, (dialog, which) -> {
+                TaskViewModel.getInstance(getActivity())
+                    .execute(new UnrpaTask(
+                        Stream.of(adapter.getArchives())
+                            .filter(Archive::isChecked)
+                            .map(Archive::getFile)
+                            .toArray(File[]::new),
+                        getVariable(BASE_PATH),
+                        binding.deleteAfterUnpacking.isChecked()
+                    ));
+            });
     }
     
     @Override

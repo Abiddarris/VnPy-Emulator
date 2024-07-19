@@ -17,37 +17,19 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.unrpa;
 
-import java.io.File;
+import android.os.Bundle;
+import com.abiddarris.common.android.dialogs.ProgressDialog;
+import com.abiddarris.vnpyemulator.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class Archive {
+public class UnpackArchiveDialog extends ProgressDialog {
 
-    private File file;
-    private String name;
-    private boolean checked = true;
-
-    public Archive(String basePath, File file) {
-        this.file = file;
+    @Override
+    protected void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
+        super.onCreateDialog(builder, savedInstanceState);
         
-        name = file.getAbsolutePath()
-            .substring(basePath.length());
-        if(name.startsWith("/")) {
-            name = name.substring(1);
-        }
-    }
-    
-    public File getFile() {
-        return file;
-    }
-
-    public boolean isChecked() {
-        return this.checked;
-    }
-
-    public void setChecked(boolean checked) {
-        this.checked = checked;
-    }
-    
-    public String getName() {
-        return name;
+        setCancelable(false);
+        
+        builder.setTitle(R.string.unpacking_archive);
     }
 }
