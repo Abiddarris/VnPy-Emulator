@@ -54,6 +54,7 @@ public class FindRpaTask extends TaskDialog {
             .filter(File::isFile)
             .toArray(File[]::new);
         
-        
+        UnpackArchiveOptionsDialog.newInstance(gameFolder.getPath(), archives)
+            .show(getFragmentManager(), null);
     }
 }

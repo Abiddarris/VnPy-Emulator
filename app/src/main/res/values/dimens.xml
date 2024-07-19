@@ -2,4 +2,5 @@
 <resources>
     <dimen name="layout_game_padding">10dp</dimen>
     <dimen name="layout_game_name_size">20sp</dimen>
+    <dimen name="layout_archive_padding">5dp</dimen>
 </resources>
