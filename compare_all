@@ -1,0 +1,8 @@
+old_path=$PWD 
+cd ../unrpyc-files/ 
+
+for file in "../just yuri"/*; do
+./compare.sh "$file"
+done
+
+cd "$old_path"
