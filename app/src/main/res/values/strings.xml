@@ -45,4 +45,5 @@
     <string name="delete_archives_after_unpacking">Delete archives after unpacking</string>
     <string name="unpack">Unpack</string>
     <string name="unpacking_archive">Unpacking archive</string>
+    <string name="edit_game">Edit Game</string>
 </resources>

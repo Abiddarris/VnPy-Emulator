@@ -17,7 +17,8 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import static com.abiddarris.vnpyemulator.games.Game.*;
+import static com.abiddarris.vnpyemulator.games.Game.GAME_FOLDER_PATH;
+import static com.abiddarris.vnpyemulator.games.Game.GAME_SCRIPT;
 
 import android.util.Log;
 
@@ -31,11 +32,12 @@ import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
+import com.abiddarris.vnpyemulator.dialogs.EditGameDialog;
 import com.abiddarris.vnpyemulator.dialogs.IncompatiblePatchDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectPatchVersionDialog;
-import com.abiddarris.vnpyemulator.dialogs.SetGameNameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
+import com.abiddarris.vnpyemulator.games.GameLoader;
 import com.abiddarris.vnpyemulator.renpy.RenPyParser;
 
 import java.io.BufferedInputStream;
@@ -47,7 +49,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PatchRunnable extends TaskDialog {
@@ -159,23 +160,19 @@ public class PatchRunnable extends TaskDialog {
             
             name.setObject(baseName + String.format(" (%s)", ++i));
         }
-        
-        var dialog = new SetGameNameDialog();
-        dialog.setDisallowedNames(games.stream()
-            .map(Game::getName)
-            .collect(Collectors.toList()));
-        dialog.setText(name.getObject());
-      
-        String gameName = dialog.showForResultAndBlock(getFragmentManager());
-        
-        var game = new Game();
+
+        Game game = new Game();
         game.put(GAME_FOLDER_PATH, folderToPatch.getPath());
         game.put(GAME_SCRIPT, script.getName());
-        game.put(GAME_NAME, gameName);
+        game.setName(name.getObject());
         game.setPatchVersion(version);
         game.setRenPyVersion(renPyVersion);
-        
-        Game.storeGame(getApplicationContext(), game);
+
+        EditGameDialog.editNewGame(game)
+                .showForResultAndBlock(getFragmentManager());;
+
+        GameLoader.addGame(getApplicationContext(), game);
+        GameLoader.saveGames(getApplicationContext());
     }
     
     private String removeExtension(String name) {

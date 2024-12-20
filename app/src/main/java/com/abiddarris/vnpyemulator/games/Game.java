@@ -107,15 +107,19 @@ public class Game extends JSONObject {
             throw Exceptions.toUncheckException(e);
         }
     }
-    
+
+    public void setName(String name) {
+        set(GAME_NAME, name);
+    }
+
     public void setRenPyVersion(String version) {
         set(RENPY_VERSION, version);
     }
-    
+
     public void setPatchVersion(String patchVersion) {
         set(PATCH_VERSION, patchVersion);
     }
-    
+
     private void set(String key, String value) {
         try {
             putOpt(key, value);
@@ -123,19 +127,19 @@ public class Game extends JSONObject {
             throw Exceptions.toUncheckException(e);
         }
     }
-    
+
     @Deprecated
     public static void updateGame(Context context, Game game) throws IOException {
         GameLoader.getGames(context);
         GameLoader.saveGames(context);
     }
-    
+
     @Deprecated
     public static void storeGame(Context context, Game game) throws IOException {
         GameLoader.addGame(context, game);
         GameLoader.saveGames(context);
     }
-    
+
     @Deprecated
     public static List<Game> loadGames(Context context) {
         try {
@@ -145,11 +149,10 @@ public class Game extends JSONObject {
         }
         return null;
     }
-    
+
     @Deprecated
     public static void saveGames(Context context, List<Game> games) throws IOException {
     	GameLoader.saveGames(context);
     }
-    
-   
+
 }

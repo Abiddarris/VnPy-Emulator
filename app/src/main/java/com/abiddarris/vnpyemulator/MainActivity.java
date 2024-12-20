@@ -39,10 +39,14 @@ import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.dialogs.AboutGameInformationDialog;
 import com.abiddarris.vnpyemulator.dialogs.AddNewGameDialog;
 import com.abiddarris.vnpyemulator.dialogs.DeleteGameDialog;
+import com.abiddarris.vnpyemulator.dialogs.EditGameDialog;
 import com.abiddarris.vnpyemulator.errors.ErrorViewModel;
 import com.abiddarris.vnpyemulator.games.Game;
+import com.abiddarris.vnpyemulator.games.GameLoader;
 import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import com.abiddarris.vnpyemulator.unrpa.FindRpaTask;
+
+import java.io.IOException;
 
 
 public class MainActivity extends PermissionActivity {
@@ -121,7 +125,22 @@ public class MainActivity extends PermissionActivity {
             DeleteGameDialog.getInstance(game)
                 .show(getSupportFragmentManager(), null);
             return true;
-        } 
+        }
+
+        if (item.getItemId() == R.id.edit) {
+            EditGameDialog.editGame(game)
+                    .showForResult(getSupportFragmentManager(), result -> {
+                        if (result) {
+                            try {
+                                GameLoader.saveGames(this);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            adapter.notifyGameModified(game);
+                        }
+                    });
+            return true;
+        }
         
         if(item.getItemId() == R.id.open) {
             open(game);

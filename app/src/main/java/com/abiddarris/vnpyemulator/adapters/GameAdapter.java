@@ -128,7 +128,11 @@ public class GameAdapter extends Adapter<GameViewHolder> {
         
         context.startActivity(intent);
     }
-    
+
+    public void notifyGameModified(Game game) {
+        notifyItemChanged(games.indexOf(game));
+    }
+
     public static class GameViewHolder extends ViewHolder {
         
         private LayoutGameBinding binding;
