@@ -38,6 +38,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -48,6 +49,7 @@ import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard;
 import com.abiddarris.common.android.virtualkeyboard.VirtualKeyboardOptions;
 import com.abiddarris.plugin.PluginArguments;
 import com.abiddarris.plugin.R;
+import com.abiddarris.plugin.databinding.LayoutVirtualKeyboardBinding;
 
 import org.libsdl.app.SDLActivity;
 import org.renpy.android.PythonSDLActivity;
@@ -66,8 +68,8 @@ public class RenPyGame extends BroadcastReceiver implements DefaultLifecycleObse
     
     private Notification notification;
     private NotificationManagerCompat notificationManager;
-    private VirtualKeyboard keyboard;
-    
+    private LayoutVirtualKeyboardBinding ui;
+
     private RenPyGame(PythonSDLActivity activity) {
         this.activity = activity;
     }
@@ -129,31 +131,19 @@ public class RenPyGame extends BroadcastReceiver implements DefaultLifecycleObse
     
     @Override
     public void onReceive(Context context, Intent intent) {
-        keyboard.setVisibility(VISIBLE);
+        ui.keyboard.setVisibility(VISIBLE);
     }
     
     public void setContentView(View view) {
-        ImageButton hideButton = new ImageButton(activity);
-        hideButton.setImageResource(R.drawable.ic_hide);
-        hideButton.setOnClickListener(v -> keyboard.setVisibility(GONE));
-        
-        ImageButton closeButton = new ImageButton(activity);
-        closeButton.setImageResource(R.drawable.ic_close);
-        closeButton.setOnClickListener(v ->
+        ui = LayoutVirtualKeyboardBinding.inflate(activity.getLayoutInflater());
+        ui.hideButton.setOnClickListener(v -> ui.keyboard.setVisibility(GONE));
+        ui.closeButton.setOnClickListener(v ->
              new CloseGameConfirmationDialog()
                 .show(activity.getSupportFragmentManager(), null));
-        
-        keyboard = new VirtualKeyboard(activity);
-        keyboard.setVisibility(GONE);
-        
-        var options = new VirtualKeyboardOptions(activity, keyboard);
-        options.addView(hideButton, 0);
-        options.addView(closeButton, 1);
-        options.setKeyboardFolderPath(
+        ui.keyboardOptions.setKeyboardFolderPath(
             getArguments().getKeyboardFolderPath()
         );
-        
-        keyboard.setKeyListener((event, keycode) -> {
+        ui.keyboard.setKeyListener((event, keycode) -> {
             switch(event) {
                 case DOWN :
                     SDLActivity.onNativeKeyDown(keycode);
@@ -164,7 +154,7 @@ public class RenPyGame extends BroadcastReceiver implements DefaultLifecycleObse
         });
         
         activity.mFrameLayout
-            .addView(keyboard, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+            .addView(ui.keyboard, new FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
     }
     
     public static RenPyGame getInstance(PythonSDLActivity activity) {

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/keyboard"
+    android:visibility="gone">
+
+    <com.abiddarris.common.android.virtualkeyboard.VirtualKeyboardOptions
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/keyboard_options">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/hide_button"
+            app:icon="@drawable/ic_hide"
+            style="?attr/materialIconButtonFilledStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/close_button"
+            app:icon="@drawable/ic_close"
+            style="?attr/materialIconButtonFilledStyle"/>
+
+    </com.abiddarris.common.android.virtualkeyboard.VirtualKeyboardOptions>
+
+</com.abiddarris.common.android.virtualkeyboard.VirtualKeyboard>
