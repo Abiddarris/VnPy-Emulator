@@ -42,6 +42,7 @@ public class PluginLoader {
         String packageName = getPackage(plugin);
         
         Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setComponent(new ComponentName(packageName, packageName + ".MainActivity"));
         intent.putExtra(RENPY_PRIVATE_PATH, argument.getRenpyPrivatePath());
         intent.putExtra(GAME_PATH, argument.getGamePath());
