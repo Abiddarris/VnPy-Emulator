@@ -48,7 +48,7 @@ public class GameListFragment extends AdvanceFragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.main_activity_menu, menu);
+        inflater.inflate(R.menu.fragment_game_list, menu);
     }
 
     @Override
