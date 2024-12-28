@@ -30,7 +30,7 @@ public interface Source {
      * For testing purpose, {@link #getSource()} will provide
      * stream on internal storage.
      */
-    static final boolean LOCAL = false;
+    static final boolean LOCAL = true;
     
     /**
      * Store singleton of source

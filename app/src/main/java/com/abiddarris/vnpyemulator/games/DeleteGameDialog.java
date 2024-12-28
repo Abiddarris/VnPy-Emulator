@@ -18,12 +18,15 @@
 package com.abiddarris.vnpyemulator.games;
 
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
+
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class DeleteGameDialog extends BaseDialogFragment<Void> {
+public class DeleteGameDialog extends BaseDialogFragment<Boolean> {
     
     private static final String GAME = "game";
     
@@ -43,11 +46,12 @@ public class DeleteGameDialog extends BaseDialogFragment<Void> {
         builder.setTitle(R.string.delete_game)
             .setMessage(getString(R.string.delete_game_message, game.getName()))
             .setNegativeButton(android.R.string.cancel, null)
-            .setPositiveButton(android.R.string.ok, (d, d2) -> {
-                MainActivity activity = (MainActivity)getActivity();
-                activity.getTaskModel()
-                    .execute(new DeleteGameTask(game));
-            });
+            .setPositiveButton(android.R.string.ok, (d, d2) -> sendResult(true));
     }
-    
+
+    @Nullable
+    @Override
+    protected Boolean getDefaultResult() {
+        return false;
+    }
 }

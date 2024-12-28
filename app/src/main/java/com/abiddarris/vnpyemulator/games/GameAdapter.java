@@ -23,7 +23,7 @@ import static com.abiddarris.vnpyemulator.games.Game.*;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
@@ -43,14 +43,14 @@ import java.util.List;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
 
-    private AppCompatActivity context;
+    private Fragment fragment;
     private List<Game> games;
     private LayoutInflater inflater;
     
-    public GameAdapter(AppCompatActivity context) {
-    	this.context = context;
+    public GameAdapter(Fragment fragment) {
+    	this.fragment = fragment;
         
-        inflater = LayoutInflater.from(context);
+        inflater = fragment.getLayoutInflater();
         refresh();
     }
     
@@ -58,7 +58,7 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     public GameViewHolder onCreateViewHolder(ViewGroup group, int type) {
         var holder = new GameViewHolder(LayoutGameBinding.inflate(inflater, group, false));
         
-        context.registerForContextMenu(holder.binding.getRoot());
+        fragment.registerForContextMenu(holder.binding.getRoot());
         
         return holder;
     }
@@ -77,7 +77,7 @@ public class GameAdapter extends Adapter<GameViewHolder> {
             holder.binding.gameName.setText(
                 game.getString(GAME_NAME));
             holder.binding.renpyVersion.setText(
-                renpyVersion != null ? renpyVersion : context.getString(R.string.unknown));
+                renpyVersion != null ? renpyVersion : fragment.getString(R.string.unknown));
 
             Glide.with(holder.binding.getRoot())
                     .load(game.getIconPath())
@@ -101,30 +101,30 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     }
     
     public void refresh() {
-    	this.games = Game.loadGames(context);
+    	this.games = Game.loadGames(fragment.getContext());
     }
     
     public void open(Game game) {
         String plugin = game.getPlugin();
         String renpyPrivateVersion = game.getRenPyPrivateVersion();
-        if(plugin == null || !PluginLoader.hasPlugin(context, plugin) || !RenPyPrivate.hasPrivateFiles(context, renpyPrivateVersion)) {
-            ((MainActivity)context).getTaskModel()
+        if(plugin == null || !PluginLoader.hasPlugin(fragment.getContext(), plugin) || !RenPyPrivate.hasPrivateFiles(fragment.getContext(), renpyPrivateVersion)) {
+            ((GameListFragment)fragment).getTaskModel()
                 .execute(new FetchPluginsRunnable(game));
             return;
         }
-        String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(context, renpyPrivateVersion)
+        String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(fragment.getContext(), renpyPrivateVersion)
                 .getAbsolutePath();
         
-        MainActivity activity = (MainActivity)context;
+        MainActivity activity = (MainActivity) fragment.getActivity();
         
         var intent = PluginLoader.getIntentForPlugin(plugin, new PluginArguments()
             .setRenPyPrivatePath(renpyPrivateVersionPath)
             .setGamePath(game.getGamePath())
             .setGameScript(game.getGameScript())
             .setErrorPort(activity.getPort())
-            .setKeyboardFolderPath(getKeyboardFolder(context).getAbsolutePath()));
+            .setKeyboardFolderPath(getKeyboardFolder(fragment.getContext()).getAbsolutePath()));
         
-        context.startActivity(intent);
+        fragment.startActivity(intent);
     }
 
     public void notifyGameModified(Game game) {

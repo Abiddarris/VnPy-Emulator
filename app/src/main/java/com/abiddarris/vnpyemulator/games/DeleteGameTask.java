@@ -47,9 +47,9 @@ public class DeleteGameTask extends TaskDialog {
         GameLoader.deleteGame(getApplicationContext(), game);
         GameLoader.saveGames(getApplicationContext());
         
-        MainActivity activity = getActivity();
-        activity.runOnUiThread(() -> {
-            activity.getAdapter()
+        GameListFragment fragment = (GameListFragment)getOwner();
+        fragment.getActivity().runOnUiThread(() -> {
+            fragment.getAdapter()
                 .notifyItemRemoved(index);
         });
     }

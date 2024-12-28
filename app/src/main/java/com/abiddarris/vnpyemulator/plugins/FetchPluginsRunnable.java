@@ -30,6 +30,7 @@ import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
+import com.abiddarris.vnpyemulator.games.GameListFragment;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import com.abiddarris.vnpyemulator.sources.Connection;
 import com.abiddarris.vnpyemulator.sources.Source;
@@ -108,8 +109,7 @@ public class FetchPluginsRunnable extends TaskDialog {
         
         Game.updateGame(getApplicationContext(), game);
         
-        MainActivity activity = getActivity();
-        activity.open(game);
+        ((GameListFragment)getOwner()).open(game);
     }
     
     private void downloadPrivateFiles(Plugin plugin) throws IOException {

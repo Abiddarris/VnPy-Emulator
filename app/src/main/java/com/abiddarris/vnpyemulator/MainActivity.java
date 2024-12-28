@@ -20,33 +20,15 @@ package com.abiddarris.vnpyemulator;
 import static com.abiddarris.common.logs.Level.DEBUG;
 
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
-import com.abiddarris.common.android.about.AboutActivity;
-import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.common.logs.Logger;
 import com.abiddarris.common.logs.Logs;
 import com.abiddarris.plugin.PermissionActivity;
-import com.abiddarris.vnpyemulator.games.GameAdapter;
 import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
-import com.abiddarris.vnpyemulator.games.AboutGameInformationDialog;
-import com.abiddarris.vnpyemulator.games.AddNewGameDialog;
-import com.abiddarris.vnpyemulator.games.DeleteGameDialog;
-import com.abiddarris.vnpyemulator.games.EditGameDialog;
 import com.abiddarris.vnpyemulator.errors.ErrorViewModel;
-import com.abiddarris.vnpyemulator.games.Game;
-import com.abiddarris.vnpyemulator.games.GameLoader;
-import com.abiddarris.vnpyemulator.patches.PatchRunnable;
-import com.abiddarris.vnpyemulator.unrpa.FindRpaTask;
-
-import java.io.IOException;
+import com.abiddarris.vnpyemulator.games.GameListFragment;
 
 
 public class MainActivity extends PermissionActivity {
@@ -54,15 +36,10 @@ public class MainActivity extends PermissionActivity {
     private ActivityMainBinding binding;
     private ErrorViewModel errorViewModel;
     private Logger log = Logs.newLogger(DEBUG, this);
-    private TaskViewModel model;
-    private GameAdapter adapter;
-    private View currentItem;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        model = TaskViewModel.getInstance(this);
        
         errorViewModel = new ViewModelProvider(this)
             .get(ErrorViewModel.class);
@@ -72,117 +49,20 @@ public class MainActivity extends PermissionActivity {
         
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
-   
-        adapter = new GameAdapter(this);
-        
-        binding.games.setLayoutManager(new LinearLayoutManager(this));
-        binding.games.setAdapter(adapter);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, GameListFragment.class, null)
+                .commit();
     }
     
     @Override
     protected void setupErrorHandler() {
         //Do nothing
     }
-    
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
-       
-        return true;
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.add_new_game) {
-            new AddNewGameDialog()
-                .showForResult(getSupportFragmentManager(), path -> {
-                    if(path != null)
-                        model.execute(new PatchRunnable(path));
-                });
-            return true; 
-        }
-        
-        if(item.getItemId() == R.id.about) {
-            startActivity(AboutActivity.newAboutActivity(this, "ABOUT", "ATTRIBUTION"));
-            return true;
-        }
-        
-        return false;
-    }
-    
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View view, ContextMenuInfo info) {
-        super.onCreateContextMenu(menu, view, info);
-        
-        getMenuInflater().inflate(R.menu.layout_game_menu, menu);
-        currentItem = view;
-    }
-    
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        Game game = adapter.get((int)currentItem.getTag());
-        if(item.getItemId() == R.id.delete) {
-            DeleteGameDialog.getInstance(game)
-                .show(getSupportFragmentManager(), null);
-            return true;
-        }
 
-        if (item.getItemId() == R.id.edit) {
-            EditGameDialog.editGame(game)
-                    .showForResult(getSupportFragmentManager(), result -> {
-                        if (result) {
-                            try {
-                                GameLoader.saveGames(this);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            adapter.notifyGameModified(game);
-                        }
-                    });
-            return true;
-        }
-        
-        if(item.getItemId() == R.id.open) {
-            open(game);
-            return true;
-        }
-        
-        if(item.getItemId() == R.id.about) {
-            AboutGameInformationDialog.newInstance(game)
-                .show(getSupportFragmentManager(), null);
-            return true;
-        }
-        
-        if(item.getItemId() == R.id.unpack_archive) {
-            model.execute(
-                new FindRpaTask(game.getGamePath())
-            );
-            return true;
-        }
-        
-        return false;
-    }
-  
     public int getPort() {
         return errorViewModel.getPort();
     }
-    
-    public void open(Game game) {
-        adapter.open(game);
-    }
-    
-    public TaskViewModel getTaskModel() {
-        return model;
-    }
-    
-    public GameAdapter getAdapter() {
-        return adapter;
-    }
-    
-    public void refresh() {
-        runOnUiThread(() -> {
-            adapter.refresh();
-            adapter.notifyDataSetChanged();
-        });
-    }
+
 }

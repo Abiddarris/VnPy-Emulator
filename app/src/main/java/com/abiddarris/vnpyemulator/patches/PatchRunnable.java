@@ -33,6 +33,7 @@ import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.games.EditGameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
+import com.abiddarris.vnpyemulator.games.GameListFragment;
 import com.abiddarris.vnpyemulator.games.GameLoader;
 import com.abiddarris.vnpyemulator.renpy.RenPyParser;
 
@@ -212,8 +213,8 @@ public class PatchRunnable extends TaskDialog {
     public void onFinally() {
         super.onFinally();
         
-        MainActivity activity = getActivity();
-        activity.refresh();
+        GameListFragment fragment = (GameListFragment) getOwner();
+        fragment.refresh();
     }
 
     private void showScriptNotFoundError() {
