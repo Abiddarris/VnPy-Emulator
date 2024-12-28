@@ -20,7 +20,6 @@ package com.abiddarris.vnpyemulator.games;
 import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.vnpyemulator.MainActivity;
-import com.abiddarris.vnpyemulator.dialogs.DeletingGameDialog;
 
 public class DeleteGameTask extends TaskDialog {
     

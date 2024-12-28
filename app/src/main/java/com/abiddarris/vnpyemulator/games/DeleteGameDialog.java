@@ -15,22 +15,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.games;
 
 import android.os.Bundle;
-import com.abiddarris.common.android.dialogs.ProgressDialog;
+import com.abiddarris.common.android.dialogs.BaseDialogFragment;
+import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class DeletingGameDialog extends ProgressDialog {
+public class DeleteGameDialog extends BaseDialogFragment<Void> {
+    
+    private static final String GAME = "game";
+    
+    public static DeleteGameDialog getInstance(Game game) {
+        var dialog = new DeleteGameDialog();
+        dialog.saveVariable(GAME, game);
+        
+        return dialog;
+    }
     
     @Override
     protected void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
         super.onCreateDialog(builder, savedInstanceState);
         
-        setCancelable(false);
-        setMessage(getString(R.string.delete_game_message) + "\u2026");
+        Game game = getVariable(GAME);
         
-        builder.setTitle(R.string.delete_game);
+        builder.setTitle(R.string.delete_game)
+            .setMessage(getString(R.string.delete_game_message, game.getName()))
+            .setNegativeButton(android.R.string.cancel, null)
+            .setPositiveButton(android.R.string.ok, (d, d2) -> {
+                MainActivity activity = (MainActivity)getActivity();
+                activity.getTaskModel()
+                    .execute(new DeleteGameTask(game));
+            });
     }
+    
 }

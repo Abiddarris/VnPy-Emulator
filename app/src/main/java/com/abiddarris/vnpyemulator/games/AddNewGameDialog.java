@@ -16,13 +16,10 @@
  *
  ***********************************************************************************/
 
-package com.abiddarris.vnpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.games;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import androidx.annotation.MainThread;
 import androidx.appcompat.app.AlertDialog;

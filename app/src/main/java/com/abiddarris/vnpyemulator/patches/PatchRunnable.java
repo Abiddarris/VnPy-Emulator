@@ -32,7 +32,7 @@ import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.dialogs.ApplyPatchDialog;
-import com.abiddarris.vnpyemulator.dialogs.EditGameDialog;
+import com.abiddarris.vnpyemulator.games.EditGameDialog;
 import com.abiddarris.vnpyemulator.dialogs.IncompatiblePatchDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectMainPythonDialog;
 import com.abiddarris.vnpyemulator.dialogs.SelectPatchVersionDialog;

@@ -15,14 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.games;
 
 import android.os.Bundle;
-import com.abiddarris.common.android.dialogs.BaseDialogFragment;
+
 import com.abiddarris.common.android.dialogs.FragmentDialog;
 import com.abiddarris.common.android.fragments.TextFragment;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.games.Game;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class AboutGameInformationDialog extends FragmentDialog<Void> {

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.games;
 
 import static com.abiddarris.common.android.utils.TextListener.*;
 import static com.abiddarris.common.stream.InputStreams.writeAllTo;
@@ -33,7 +33,6 @@ import androidx.activity.result.contract.ActivityResultContracts.OpenDocument;
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.DialogEditGameBinding;
-import com.abiddarris.vnpyemulator.games.Game;
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
