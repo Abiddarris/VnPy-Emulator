@@ -20,6 +20,7 @@ package com.abiddarris.vnpyemulator.adapters;
 import static com.abiddarris.vnpyemulator.files.Files.getKeyboardFolder;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -37,6 +38,9 @@ import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.plugins.FetchPluginsRunnable;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.RequestManager;
 
 import org.json.JSONException;
 
@@ -85,6 +89,11 @@ public class GameAdapter extends Adapter<GameViewHolder> {
                 game.getString(GAME_NAME));
             holder.binding.renpyVersion.setText(
                 renpyVersion != null ? renpyVersion : context.getString(R.string.unknown));
+
+            Glide.with(holder.binding.getRoot())
+                    .load(game.getIconPath())
+                    .fallback(R.drawable.ic_launcher)
+                    .into(holder.binding.icon);
         } catch (JSONException e) {
             e.printStackTrace();
             

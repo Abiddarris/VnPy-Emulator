@@ -19,6 +19,8 @@ package com.abiddarris.vnpyemulator.games;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.abiddarris.common.utils.Exceptions;
 
 import org.json.JSONArray;
@@ -53,7 +55,8 @@ public class Game extends JSONObject {
     private static final String PATCH_VERSION = "renpy_version";
     private static final String PLUGIN_VERSION = "plugin_version";
     private static final String RENPY_PRIVATE_VERSION = "renpy_private_version";
-    
+    private static final String ICON_PATH = "icon";
+
     Game(JSONObject object) throws JSONException {
         this(object.toString());
     }
@@ -91,7 +94,16 @@ public class Game extends JSONObject {
     public String getRenPyPrivateVersion() {
         return optString(RENPY_PRIVATE_VERSION, null);
     }
-    
+
+    @Nullable
+    public String getIconPath() {
+        return optString(ICON_PATH, null);
+    }
+
+    public void setIconPath(String path) {
+        set(ICON_PATH, path);
+    }
+
     public void setRenPyPrivateVersion(String version) {
         try {
             putOpt(RENPY_PRIVATE_VERSION, version);
