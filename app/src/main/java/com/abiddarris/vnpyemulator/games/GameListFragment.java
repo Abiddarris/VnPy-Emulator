@@ -1,3 +1,19 @@
+/***********************************************************************************
+ * Copyright (C) 2024 Abiddarris
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ ***********************************************************************************/
 package com.abiddarris.vnpyemulator.games;
 
 import android.os.Bundle;
@@ -18,6 +34,7 @@ import com.abiddarris.common.android.fragments.AdvanceFragment;
 import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.FragmentGameListBinding;
+import com.abiddarris.vnpyemulator.download.DownloadFragment;
 import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import com.abiddarris.vnpyemulator.unrpa.FindRpaTask;
 
@@ -34,6 +51,8 @@ public class GameListFragment extends AdvanceFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+
+        requireActivity().setTitle(R.string.icon_name);
 
         model = TaskViewModel.getInstance(this);
 
@@ -64,6 +83,15 @@ public class GameListFragment extends AdvanceFragment {
 
         if(item.getItemId() == R.id.about) {
             startActivity(AboutActivity.newAboutActivity(getContext(), "ABOUT", "ATTRIBUTION"));
+            return true;
+        }
+
+        if (item.getItemId() == R.id.download) {
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, DownloadFragment.class, null)
+                    .addToBackStack(null)
+                    .commit();
             return true;
         }
 

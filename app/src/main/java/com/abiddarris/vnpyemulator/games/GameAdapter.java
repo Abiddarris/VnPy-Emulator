@@ -20,6 +20,7 @@ package com.abiddarris.vnpyemulator.games;
 import static com.abiddarris.vnpyemulator.files.Files.getKeyboardFolder;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -39,11 +40,13 @@ import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.util.List;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
 
     private Fragment fragment;
+    private int cardViewColor;
     private List<Game> games;
     private LayoutInflater inflater;
     
@@ -79,16 +82,28 @@ public class GameAdapter extends Adapter<GameViewHolder> {
             holder.binding.renpyVersion.setText(
                 renpyVersion != null ? renpyVersion : fragment.getString(R.string.unknown));
 
+            holder.binding.root.setCardBackgroundColor(getColor(game));
+
             Glide.with(holder.binding.getRoot())
                     .load(game.getIconPath())
                     .fallback(R.drawable.ic_launcher)
                     .into(holder.binding.icon);
         } catch (JSONException e) {
             e.printStackTrace();
-            
+
             holder.binding.gameName.setText(R.string.error);
             holder.binding.renpyVersion.setText(R.string.error);
         }
+    }
+
+    private int getColor(Game game) {
+        int res = new File(game.getGamePath()).exists() ? R.attr.colorSurfaceVariant : R.attr.colorOnError;
+        TypedValue value = new TypedValue();
+
+        fragment.getActivity()
+                .getTheme()
+                .resolveAttribute(res, value, true);
+        return value.data;
     }
 
     @Override
