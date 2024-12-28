@@ -22,7 +22,6 @@ import static com.abiddarris.common.files.Files.getFilesTree;
 import androidx.fragment.app.DialogFragment;
 
 import com.abiddarris.common.android.tasks.TaskDialog;
-import com.abiddarris.vnpyemulator.dialogs.FindRpaDialog;
 
 import java.io.File;
 import java.util.List;
