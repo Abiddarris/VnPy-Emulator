@@ -15,12 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.adapters;
+package com.abiddarris.vnpyemulator.games;
 
 import static com.abiddarris.vnpyemulator.files.Files.getKeyboardFolder;
 import static com.abiddarris.vnpyemulator.games.Game.*;
 
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -32,24 +31,14 @@ import com.abiddarris.plugin.PluginArguments;
 import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.adapters.GameAdapter.GameViewHolder;
+import com.abiddarris.vnpyemulator.games.GameAdapter.GameViewHolder;
 import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
-import com.abiddarris.vnpyemulator.files.Files;
-import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.plugins.FetchPluginsRunnable;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.RequestManager;
 
 import org.json.JSONException;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 public class GameAdapter extends Adapter<GameViewHolder> {

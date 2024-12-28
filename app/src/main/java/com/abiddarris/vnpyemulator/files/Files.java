@@ -61,6 +61,15 @@ public class Files {
         
         return cacheFolder;
     }
+
+    public static File getIconFolder(Context context) {
+        File iconFolder = new File(getVnPyEmulatorFolder(context), "icons");
+        if(!iconFolder.exists()) {
+            iconFolder.mkdirs();
+        }
+
+        return iconFolder;
+    }
     
     /**
      * Returns {@code File} where information about games are stored.
