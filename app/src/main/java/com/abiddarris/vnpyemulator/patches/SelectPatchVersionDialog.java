@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.patches;
 
 import android.os.Bundle;
 import com.abiddarris.common.android.dialogs.SingleChoiceDialog;

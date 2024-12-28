@@ -15,41 +15,33 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.dialogs;
+package com.abiddarris.vnpyemulator.patches;
 
 import android.os.Bundle;
-import android.widget.Toast;
+import androidx.annotation.Nullable;
+import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.common.android.dialogs.SingleChoiceDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class SelectMainPythonDialog extends SingleChoiceDialog {
+public class IncompatiblePatchDialog extends BaseDialogFragment<Boolean> {
     
-    private static final String ITEMS = "items";
-    
-    public static SelectMainPythonDialog newDialog(String[] items) {
-        var bundle = new Bundle();
-        bundle.putStringArray(ITEMS, items);
-        
-        var dialog = new SelectMainPythonDialog();
-        dialog.setArguments(bundle);
-        
-        return dialog;
-    }
+    public static final String FILE_NAME = "fileName";
     
     @Override
     protected void onCreateDialog(MaterialAlertDialogBuilder builder, Bundle savedInstanceState) {
         super.onCreateDialog(builder, savedInstanceState);
-
-        builder.setTitle(R.string.select_python_script)
-            .setMessage(R.string.select_python_script_message)
-            .setPositiveButton(R.string.select, null)
-            .setNegativeButton(android.R.string.cancel, null);
         
-        if(savedInstanceState == null) {
-            var items = getArguments().getStringArray(ITEMS);
-            setItems(items, -1);
-        }
+        String fileName = getVariable(FILE_NAME);
+        
+        builder.setTitle(R.string.incompatible_patch)
+            .setMessage(getString(R.string.incompatible_patch_message, fileName))
+            .setPositiveButton(R.string.apply_anyway, (dialog, which) -> sendResult(true))
+            .setNegativeButton(R.string.abort, null);
     }
-    
+
+    @Nullable
+    @Override
+    protected Boolean getDefaultResult() {
+        return false;
+    }
 }
