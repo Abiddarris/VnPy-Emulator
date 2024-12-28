@@ -28,8 +28,6 @@ import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.dialogs.FetchPluginsDialog;
-import com.abiddarris.vnpyemulator.dialogs.SelectPluginVersionDialog;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
