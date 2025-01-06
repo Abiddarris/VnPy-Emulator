@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,17 @@ package com.abiddarris.vnpyemulator.plugins;
 
 import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
 
+import static com.abiddarris.common.stream.InputStreams.writeAllTo;
+
 import android.os.Build;
+
 import androidx.fragment.app.DialogFragment;
+
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.pm.InstallationResult;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.plugin.PluginLoader;
-import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.games.Game;
@@ -34,6 +37,10 @@ import com.abiddarris.vnpyemulator.games.GameListFragment;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import com.abiddarris.vnpyemulator.sources.Connection;
 import com.abiddarris.vnpyemulator.sources.Source;
+
+import org.kamranzafar.jtar.TarEntry;
+import org.kamranzafar.jtar.TarInputStream;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -41,12 +48,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
-import org.kamranzafar.jtar.TarEntry;
-import org.kamranzafar.jtar.TarInputStream;
 
 public class FetchPluginsRunnable extends TaskDialog {
     
@@ -70,9 +76,9 @@ public class FetchPluginsRunnable extends TaskDialog {
     @Override
     public void execute() throws Exception {
         setMessage(getString(R.string.fetching));
-        Plugin[] plugins = Plugin.getPlugins(getApplicationContext());
+        PluginGroup[] plugins = PluginSource.getPlugins(getApplicationContext());
         List<String> versions = Stream.of(plugins) 
-            .map(Plugin::getVersion)
+            .map(PluginGroup::getVersion)
             .collect(Collectors.toList());
         
         int index = versions.indexOf(game.getRenPyVersion());
@@ -88,51 +94,83 @@ public class FetchPluginsRunnable extends TaskDialog {
                 return;
             }
         }
-        Plugin plugin = plugins[index];
-        
-        if(!PluginLoader.hasPlugin(getApplicationContext(), plugin.getVersion())) {
-            if(!downloadPlugin(plugin)) {
-                return;
-            }
+        PluginGroup pluginGroup = plugins[index];
+        Plugin plugin = getPreferedPlugin(pluginGroup);
+        if (plugin == null) {
+            return;
         }
         
-        if(!RenPyPrivate.hasPrivateFiles(getApplicationContext(), plugin.getPrivateRenPyVersion())) {
-            downloadPrivateFiles(plugin);
+        if(!PluginLoader.hasPlugin(getApplicationContext(), pluginGroup.getVersion())) {
+            downloadPlugin(pluginGroup, plugin);
+        }
+        
+        if(!RenPyPrivate.hasPrivateFiles(getApplicationContext(), pluginGroup.getVersion())) {
+            downloadPrivateFiles(pluginGroup, plugin);
         }
         
         if(!installPlugin()) {
             return;
         }
         
-        game.setPlugin(plugin.getVersion());
-        game.setRenPyPrivateVersion(plugin.getPrivateRenPyVersion());
+        game.setPlugin(pluginGroup.getVersion());
+        game.setRenPyPrivateVersion(pluginGroup.getVersion());
         
         Game.updateGame(getApplicationContext(), game);
         
         ((GameListFragment)getOwner()).open(game);
     }
-    
-    private void downloadPrivateFiles(Plugin plugin) throws IOException {
-        setMessage(getString(R.string.downloading_renpy_private_files, plugin.getVersion()));
-        File cache = new File(Files.getCacheFolder(getApplicationContext()), plugin.getPrivateRenPyVersion());
-        try (BufferedInputStream inputStream = new BufferedInputStream(Source.getSource()
-                .open("plugins/" + plugin.getPrivateRenPyDownloadPath()));
-             BufferedOutputStream outputStream = new BufferedOutputStream(
-                 new FileOutputStream(cache))) {
-            byte[] buf = new byte[8192];
-            int len;
-            while((len = inputStream.read(buf)) != -1) {
-                outputStream.write(buf, 0, len);
+
+    private Plugin getPreferedPlugin(PluginGroup pluginGroup) {
+        Plugin[] plugins = pluginGroup.getPlugins();
+        for(String abi : Build.SUPPORTED_ABIS) {
+            Plugin[] supportedPlugins = List.of(plugins)
+                    .stream()
+                    .filter(plugin -> plugin.getAbi().equals(abi))
+                    .toArray(Plugin[]::new);
+            if (supportedPlugins.length == 0) {
+                continue;
             }
-            outputStream.flush();
+            Arrays.sort(supportedPlugins, Comparator.comparing(plugin -> Integer.valueOf(plugin.getVersion())));
+
+            return supportedPlugins[supportedPlugins.length - 1];
         }
-        unpackRenPyPrivateFiles(cache, RenPyPrivate.getPrivateFiles(getApplicationContext(), plugin.getPrivateRenPyVersion()));
+        SimpleDialog.show(getFragmentManager(),
+                getString(R.string.plugin_not_supported),
+                getString(R.string.plugin_not_supported_message, Arrays.toString(Build.SUPPORTED_ABIS)));
+
+        return null;
     }
-    
+
+    private void downloadPlugin(PluginGroup pluginGroup, Plugin plugin) throws IOException {
+        setMessage(getString(R.string.downloading_plugin, pluginGroup.getVersion()));
+        try (Connection connection = plugin.downloadPlugin()) {
+            pluginApk = new File(Files.getCacheFolder(getApplicationContext()), pluginGroup.getName() + ".apk");
+
+            BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
+            try (BufferedOutputStream outputStream = new BufferedOutputStream(
+                    new FileOutputStream(pluginApk))) {
+                writeAllTo(inputStream, outputStream);
+            }
+        }
+    }
+
+    private void downloadPrivateFiles(PluginGroup group, Plugin plugin) throws IOException {
+        setMessage(getString(R.string.downloading_renpy_private_files, group.getVersion()));
+
+        File cache = new File(Files.getCacheFolder(getApplicationContext()), group.getVersion());
+        try (Connection connection = plugin.downloadPrivateFiles();
+             BufferedOutputStream outputStream = new BufferedOutputStream(
+                     new FileOutputStream(cache))) {
+            writeAllTo(connection.getInputStream(), outputStream);
+        }
+
+        unpackRenPyPrivateFiles(cache, RenPyPrivate.getPrivateFiles(getApplicationContext(), group.getVersion()));
+    }
+
     private void unpackRenPyPrivateFiles(File cache, File dest) throws IOException {
         setMessage(getString(R.string.unpacking_renpy_private_files));
         dest.mkdirs();
-        
+
         var is = new TarInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(cache))));
         TarEntry entry;
         while((entry = is.getNextEntry()) != null) {
@@ -140,7 +178,7 @@ public class FetchPluginsRunnable extends TaskDialog {
             if(entry.isDirectory()) {
                 destination.mkdirs();
                 continue;
-            } 
+            }
             var os = new BufferedOutputStream(new FileOutputStream(destination));
             byte[] buf = new byte[8192];
             int len;
@@ -151,56 +189,18 @@ public class FetchPluginsRunnable extends TaskDialog {
             os.close();
         }
         is.close();
-        
+
         cache.delete();
     }
-    
-    private boolean downloadPlugin(Plugin plugin) throws IOException {
-        setMessage(getString(R.string.downloading_plugin, plugin.getVersion()));
-        
-        Source source = Source.getSource();
-        for(String abi : Build.SUPPORTED_ABIS) {
-            String path = plugin.getPluginDownloadPath(abi);
-        	try (Connection connection = source.openConnection(path)){
-                if(connection.isExists()) {
-                    downloadPlugin(connection, plugin.getVersion() + ".apk");
-                    return true;
-                }
-            }
-        }
-        
-        SimpleDialog.show(getFragmentManager(),
-             getString(R.string.plugin_not_supported),
-             getString(R.string.plugin_not_supported_message, Arrays.toString(Build.SUPPORTED_ABIS)));
-        
-        return false;
-    }
-    
-    private void downloadPlugin(Connection connection, String name) throws IOException {
-        pluginApk = new File(Files.getCacheFolder(getApplicationContext()), name);
-        BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
-        try (BufferedOutputStream outputStream = new BufferedOutputStream(
-                new FileOutputStream(pluginApk))) {
-            byte[] buf = new byte[8192];
-            int len;
-            while((len = inputStream.read(buf)) != -1) {
-                outputStream.write(buf, 0, len);
-            }
-            outputStream.flush();
-        }
-    }  
-    
+
     private boolean installPlugin() throws IOException {
         if(pluginApk == null) return true;
         
         setMessage(getString(R.string.installing_plugin));
         
         InstallationResult result = Packages.installPackage(getDialog().getActivity(), pluginApk);
-        if(result.getStatus() != STATUS_SUCCESS) {
-            return false;
-        }
-        
-        return true;
+
+        return result.getStatus() == STATUS_SUCCESS;
     }
       
     private void setMessage(String message) {

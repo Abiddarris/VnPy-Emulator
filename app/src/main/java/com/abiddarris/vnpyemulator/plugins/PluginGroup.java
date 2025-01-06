@@ -17,48 +17,37 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.plugins;
 
-import com.abiddarris.vnpyemulator.sources.Connection;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
+public class PluginGroup {
 
-public class Plugin {
-
-    private final String privateFiles;
-    private final String abi;
-    private final String file;
+    private final String name;
     private final String version;
+    private final Plugin[] plugins;
 
-    public Plugin(JSONObject object) throws JSONException {
-        abi = object.getString("abi");
+    PluginGroup(JSONObject object) throws JSONException {
+        name = object.getString("name");
         version = object.getString("version");
-        file = object.getString("file");
-        privateFiles = object.getString("private-files");
+
+        JSONArray pluginsJSON = object.getJSONArray("downloads");
+
+        plugins = new Plugin[pluginsJSON.length()];
+        for (int i = 0; i < pluginsJSON.length(); i++) {
+            plugins[i] = new Plugin(pluginsJSON.getJSONObject(i));
+        }
     }
 
-    public String getAbi() {
-        return abi;
-    }
-
-    public String getFile() {
-        return file;
-    }
-
-    public String getPrivateFiles() {
-        return privateFiles;
+    public Plugin[] getPlugins() {
+        return plugins;
     }
 
     public String getVersion() {
         return version;
     }
 
-    public Connection downloadPlugin() throws IOException {
-        return PluginSource.openInCurrentVersion(getFile());
-    }
-
-    public Connection downloadPrivateFiles() throws IOException {
-        return PluginSource.openInCurrentVersion(getPrivateFiles());
+    public String getName() {
+        return name;
     }
 }

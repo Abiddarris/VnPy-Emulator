@@ -85,7 +85,7 @@ public abstract class Source {
                 .orElse(""));
     }
 
-    public abstract Connection newConnection(String fileName) throws IOException;
+    protected abstract Connection newConnection(String fileName) throws IOException;
 
     public static Source getSource() {
         return SOURCE;
