@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 - 2025 Abiddarris
+ * Copyright (C) 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +17,5 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-/**
- * Thrown when unable to patch the game
- */
-public class PatchException extends RuntimeException {
-
-    public PatchException() {
-    }
-
-    public PatchException(String message) {
-        super(message);
-    }
-
-    public PatchException(String message, Throwable cause) {
-        super(message, cause);
-    }
-    
+public class IncompatiblePatchException extends PatchException {
 }

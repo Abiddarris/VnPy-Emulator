@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024 - 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,27 +17,24 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.sources;
 
+import android.net.Uri;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Source implementation that provides file from local storage
+ * Source implementation that provides file from local host
  */
-public class LocalSource implements Source {
+public class LocalSource extends URLSource {
     
-    /**
-     * Hardcoded path
-     */
-    private static final File PATCH_FOLDER = new File("/storage/emulated/0/Home/Abiddarris/Programming/My Project/Android Application/VnPy Emulator");
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Connection openConnection(String fileName) throws IOException {
-        return new LocalConnection(new File(PATCH_FOLDER, fileName));
+    private static final int PORT = 5788;
+    private static final String HOST = "192.168.194.50";
+    private static final Uri SOURCE = Uri.parse("http://" + HOST + ":" + PORT);
+
+    LocalSource() {
+        super(SOURCE);
     }
     
 }

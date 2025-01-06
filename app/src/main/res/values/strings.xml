@@ -46,4 +46,5 @@
     <string name="unpack">Unpack</string>
     <string name="unpacking_archive">Unpacking archive</string>
     <string name="edit_game">Edit Game</string>
+    <string name="download">Download</string>
 </resources>

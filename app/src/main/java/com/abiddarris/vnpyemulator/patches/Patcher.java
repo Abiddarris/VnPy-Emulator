@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024 - 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,10 @@
  *
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -42,7 +46,7 @@ public class Patcher {
     /**
      * Store patch objects
      */
-    private Patch[] patches;
+    private PatchFile[] patchFiles;
     
     /**
      * Store associated {@code PatchSource}
@@ -52,39 +56,15 @@ public class Patcher {
     /**
      * Create patcher from specified string
      */
-    Patcher(PatchSource source, String patchString) {
-        this.source = source;
-        
-        String[] components = patchString.split("//");
-        
-        version = components[0];
-        patchFolderName = components[1];
-        
-        try(var reader = new BufferedReader(
-                new InputStreamReader(open("patches")))){
-            patches = reader.lines()
-                .map(line -> {
-                    String[] patchComponents = line.split("//");
-                    if(patchComponents.length != 3) {
-                        throw new ParseException("Unexpected components when parsing (expected 3 but " + 
-                        patchComponents.length +")");
-                    }
-                    return new Patch(patchComponents[0], patchComponents[1], patchComponents[2]);
-                }).toArray(Patch[]::new);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
+    Patcher(JSONObject object) throws JSONException {
+        version = object.getString("version");
+
+        JSONArray contents = object.getJSONArray("contents");
+
+        this.patchFiles = new PatchFile[contents.length()];
+        for (int i = 0; i < contents.length(); i++) {
+            this.patchFiles[i] = new PatchFile(contents.getJSONObject(i));
         }
-    }
-    
-    /**
-     * Open an {@code InputStream} relative from patch folder from specified file name
-     *
-     * @param fileName File path relative from patch folder
-     * @throws IOException If unable to open
-     * @return {@code InputStream}
-     */
-    public InputStream open(String fileName) throws IOException {
-        return source.open(patchFolderName + File.separator + fileName);
     }
     
     /**
@@ -92,25 +72,17 @@ public class Patcher {
      *
      * @return Array of patches 
      */
-    public Patch[] getPatches() {
-        return patches;
+    public PatchFile[] getPatches() {
+        return patchFiles;
     }
     
     /**
-     * Returns target Ren'Py version
+     * Returns target {@code Patcher} version
      *
-     * @return Target Ren'Py version
+     * @return Target {@code Patcher} version
      */
     public String getVersion() {
         return version;
     }
-    
-    /**
-     * Returns folder that contains patches
-     *
-     * @return Folder that contains patches
-     */
-    public String getPatchFolderName() {
-    	return patchFolderName;
-    }
+
 }

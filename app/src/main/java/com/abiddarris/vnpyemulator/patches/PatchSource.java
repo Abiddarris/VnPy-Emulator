@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024 - 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,18 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import com.abiddarris.vnpyemulator.sources.Source;
-import java.io.BufferedReader;
+import static com.abiddarris.common.stream.InputStreams.readAll;
+import static com.abiddarris.vnpyemulator.sources.Source.SOURCE;
+import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
+
+import com.abiddarris.vnpyemulator.sources.Connection;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -37,7 +44,7 @@ public class PatchSource {
     /**
      * Hold fetched patchers
      */
-    private Patcher[] patchers;
+    private Patch[] patches;
     
     /**
      * Returns versions that have a patch
@@ -46,11 +53,11 @@ public class PatchSource {
      * @return Versions that have a patch
      */
     public String[] getVersions() throws IOException {
-        if(patchers == null) {
+        if(patches == null) {
             fetch();
         }
-        return Stream.of(patchers)
-            .map(Patcher::getVersion)
+        return Stream.of(patches)
+            .map(Patch::getRenPyVersion)
             .toArray(String[]::new);
     }
     
@@ -61,13 +68,13 @@ public class PatchSource {
      * @throws IOException if unable to fetch the patcher
      * @return {@code Patcher} from given version
      */
-    public Patcher getPatcher(String version) throws IOException {
-        if(patchers == null) {
+    public Patch getPatch(String version) throws IOException {
+        if(patches == null) {
             fetch();
         }
         
-        return Stream.of(patchers)
-            .filter(patcher -> patcher.getVersion().equals(version))
+        return Stream.of(patches)
+            .filter(patch -> patch.getRenPyVersion().equals(version))
             .findFirst()
             .get();
     }
@@ -79,11 +86,10 @@ public class PatchSource {
      * @param fileName File path relative from folder containing 
      *                 patches from specified file name
      * @throws IOException If unable to open
-     * @return {@code InputStream}
+     * @return {@code Connection}
      */
-    public InputStream open(String fileName) throws IOException {
-        return Source.getSource()
-            .open("patches/" + fileName);
+    public Connection openInCurrentVersion(String fileName) throws IOException {
+        return SOURCE.openConnection("patches/" + VERSION + "/" + fileName);
     }
     
     /**
@@ -91,12 +97,18 @@ public class PatchSource {
      * {@code patchers} field
      */
     private void fetch() throws IOException {
-        BufferedReader reader = new BufferedReader(
-            new InputStreamReader(open("version")));
-        
-        patchers = reader.lines()
-            .map(line -> new Patcher(this, line))
-            .toArray(Patcher[]::new);
+        try (Connection connection = openInCurrentVersion("patches.json")) {
+            JSONArray patches = new JSONArray(new String(readAll(connection.getInputStream())));
+            List<Patch> patchesList = new ArrayList<>();
+
+            for (int i = 0; i < patches.length(); i++) {
+                patchesList.add(new Patch(patches.getJSONObject(i)));
+            }
+
+            this.patches = patchesList.toArray(new Patch[0]);
+        } catch (JSONException e) {
+            throw new IOException("Unable to fetch patches", e);
+        }
     }
     
     /**

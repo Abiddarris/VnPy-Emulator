@@ -29,7 +29,8 @@
         android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:supportsRtl="true"
-        android:theme="@style/PluginTheme">
+        android:theme="@style/PluginTheme"
+        android:usesCleartextTraffic="true">
         
         <activity
             android:label="@string/icon_name"

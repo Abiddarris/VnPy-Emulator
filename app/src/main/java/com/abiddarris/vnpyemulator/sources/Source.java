@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024 - 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,23 +19,27 @@ package com.abiddarris.vnpyemulator.sources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class that provides file for patching and downloading
  * python for running renpy games
  */
-public interface Source {
-    
+public abstract class Source {
+
+    public static final String VERSION = "0.3.0";
+
     /**
      * For testing purpose, {@link #getSource()} will provide
      * stream on internal storage.
      */
-    static final boolean LOCAL = true;
+    private static final boolean LOCAL = true;
     
     /**
      * Store singleton of source
      */
-    static Source source = LOCAL ? new LocalSource() : new GithubSource();
+    public static final Source SOURCE = LOCAL ? new LocalSource() : new GithubSource();
     
     /**
      * Open an {@code InputStream} relative from folder containing 
@@ -47,14 +51,43 @@ public interface Source {
      * @return {@code InputStream}
      */
     @Deprecated
-    public default InputStream open(String fileName) throws IOException {
+    public InputStream open(String fileName) throws IOException {
         return openConnection(fileName)
             .getInputStream();
     }
-    
-    public abstract Connection openConnection(String fileName) throws IOException;
-    
+
+    public final Connection openConnection(String fileName) throws IOException {
+        if(fileName.startsWith("/")) {
+            fileName = fileName.substring(1);
+        }
+
+        if(fileName.endsWith("/")) {
+            fileName = fileName.substring(0, fileName.length() - 1);
+        }
+
+        String[] parts = fileName.split("/");
+        List<String> newParts = new ArrayList<>();
+        for (String part : parts) {
+            if (!part.equals("..")) {
+                newParts.add(part);
+                continue;
+            }
+
+            if (newParts.isEmpty()) {
+                continue;
+            }
+
+            newParts.remove(newParts.size() - 1);
+        }
+
+        return newConnection(newParts.stream()
+                .reduce((part, part2) -> part + "/" + part2)
+                .orElse(""));
+    }
+
+    public abstract Connection newConnection(String fileName) throws IOException;
+
     public static Source getSource() {
-        return source;
+        return SOURCE;
     }
 }

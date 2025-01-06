@@ -15,22 +15,42 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.patches;
+package com.abiddarris.vnpyemulator.sources;
+
+import android.net.Uri;
+import android.net.Uri.Builder;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.stream.Stream;
 
 /**
- * Thrown when unable to patch the game
+ * Provide an {@code InputStream} from github repo
+ *
+ * @Author Abiddarris
  */
-public class PatchException extends RuntimeException {
+public abstract class URLSource extends Source {
 
-    public PatchException() {
+    private final Uri base;
+
+    URLSource(Uri base) {
+        this.base = base;
     }
 
-    public PatchException(String message) {
-        super(message);
-    }
-
-    public PatchException(String message, Throwable cause) {
-        super(message, cause);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Connection newConnection(String fileName) throws IOException {
+        String[] parts = fileName.split("/");
+        
+        Builder builder = base.buildUpon();
+        Stream.of(parts)
+            .forEach(builder::appendPath);
+        Uri uri = builder.build();
+        
+        return new HttpConnection((HttpURLConnection)
+            new URL(uri.toString()).openConnection());
     }
     
 }

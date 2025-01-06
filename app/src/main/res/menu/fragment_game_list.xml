@@ -7,7 +7,12 @@
         android:icon="@drawable/ic_add"
         android:id="@+id/add_new_game"
         android:title="@string/add_new_game" />
-    
+
+    <item
+        app:showAsAction="never"
+        android:id="@+id/download"
+        android:title="@string/download"/>
+
     <item
         android:id="@+id/about"
         android:title="@string/about"/>

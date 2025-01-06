@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,49 +18,11 @@
 package com.abiddarris.vnpyemulator.sources;
 
 import android.net.Uri;
-import android.net.Uri.Builder;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.stream.Stream;
 
-/**
- * Provide an {@code InputStream} from github repo
- *
- * @Author Abiddarris
- */
-public class GithubSource implements Source {
-    
-    /**
-     * Hardcoded URL
-     */
-    private static final Uri RAW_URL = Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator/0.2.1-beta");
-    
-    private static final Uri BASE_URL = Uri.parse("https://github.com/Abiddarris/VnPy-Emulator");
-    
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Connection openConnection(String fileName) throws IOException {
-        if(fileName.startsWith("/")) {
-            fileName = fileName.substring(1);
-        }
-        Uri base = fileName.startsWith("releases/") ? BASE_URL : RAW_URL;
-        if(fileName.endsWith("/")) {
-            fileName = fileName.substring(0, fileName.length() - 1);
-        }
-        String[] parts = fileName.split("/");
-        
-        Builder builder = base.buildUpon();
-        Stream.of(parts)
-            .forEach(builder::appendPath);
-        Uri uri = builder.build();
-        
-        return new HttpConnection((HttpURLConnection)
-            new URL(uri.toString()).openConnection());
+public class GithubSource extends URLSource {
+
+    GithubSource() {
+        super(Uri.parse("https://raw.githubusercontent.com/Abiddarris/VnPy-Emulator-Repo/refs/heads/master"));
     }
-    
+
 }

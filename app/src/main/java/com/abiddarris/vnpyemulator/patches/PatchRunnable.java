@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024 - 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,6 @@ import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.common.stream.NullOutputStream;
 import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
-import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.games.EditGameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
@@ -106,45 +105,24 @@ public class PatchRunnable extends TaskDialog {
             version = versions[selection];
         }
 
-        var patcher = source.getPatcher(version);
-        for(var patch : patcher.getPatches()) {
-            var target = new File(folderToPatch, patch.getFileToPatch());
-            if(!target.exists()) {
-                throw new PatchException("Unable to patch non exist file: " + target.getPath());
-            }
-            
-            var inputStream = new BufferedInputStream(patcher.open(patch.getPatchFileName()));
-            var outputStream = new ByteArrayOutputStream();
-            
-            var patchHash = Hash.createHashingFrom(inputStream, outputStream);
-            var patchContent = outputStream.toByteArray();
-           
-            outputStream.close();
-            inputStream.close();
-            inputStream = new BufferedInputStream(new FileInputStream(target));
-            
-            var originalFileHash = Hash.createHashingFrom(inputStream, new NullOutputStream());
-            
-            inputStream.close();
-            if(originalFileHash.equals(patchHash)) {
-                Log.i(TAG, target.getPath() + "Already patched");
-                continue;
-            }
-            
-            if(!originalFileHash.equals(patch.getOriginalFileHash())) {
+        Patch patch = source.getPatch(version);
+        Patcher[] patchers = patch.getPatchers();
+
+        for(PatchFile patchFile : patchers[patchers.length - 1].getPatches()) {
+            try {
+                patchFile.patch(folderToPatch, false);
+            } catch (IncompatiblePatchException e) {
                 var dialog = new IncompatiblePatchDialog();
-                dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, target.getName());
-                
+                dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, patchFile.getFileToPatch());
+
                 boolean result = dialog.showForResultAndBlock(getFragmentManager());
                 if(!result) {
-                    return;
+                    continue;
                 }
+
+                patchFile.patch(folderToPatch, true);
             }
-            
-            var os = new BufferedOutputStream(new FileOutputStream(target));
-            os.write(patchContent);
-            os.flush();
-            os.close();
+
         }
         
         String baseName = removeExtension(script.getName());

@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,51 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-/**
- * Class to store individual patch information for individual file
- */
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Patch {
-    
-    private String originalFileHash;
-    private String patchFileName;
-    private String fileToPatch;
-    
-    Patch(String originalFileHash, String patchFileName, String fileToPatch) {
-        this.originalFileHash = originalFileHash;
-        this.patchFileName = patchFileName;
-        this.fileToPatch = fileToPatch;
+
+    private final String name;
+    private final String renpyVersion;
+    private final Patcher[] patchers;
+
+    Patch(JSONObject object) throws JSONException {
+        name = object.getString("name");
+        renpyVersion = object.getString("version");
+
+        List<Patcher> patchers = new ArrayList<>();
+        JSONArray patchersJSON = object.getJSONArray("patch_version");
+        for (int i = 0; i < patchersJSON.length(); i++) {
+            patchers.add(new Patcher(patchersJSON.getJSONObject(i)));
+        }
+
+        this.patchers = patchers.toArray(new Patcher[0]);
     }
-    
-    public String getOriginalFileHash() {
-        return this.originalFileHash;
+
+    /**
+     * Returns array of patches
+     *
+     * @return Array of patches
+     */
+    public Patcher[] getPatchers() {
+        return patchers;
     }
-    
-    public String getPatchFileName() {
-        return this.patchFileName;
+
+    /**
+     * Returns target Ren'Py version
+     *
+     * @return Target Ren'Py version
+     */
+    public String getRenPyVersion() {
+        return renpyVersion;
     }
-        
-    public String getFileToPatch() {
-        return this.fileToPatch;
+
+    public String getName() {
+        return name;
     }
 }
