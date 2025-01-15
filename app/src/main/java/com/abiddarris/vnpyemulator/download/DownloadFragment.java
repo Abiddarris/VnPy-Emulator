@@ -18,13 +18,23 @@
 package com.abiddarris.vnpyemulator.download;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.abiddarris.common.android.fragments.AdvanceFragment;
 import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.databinding.FragmentDownloadBinding;
 
 public class DownloadFragment extends AdvanceFragment {
+
+    private FragmentDownloadBinding ui;
+    private ViewPagerAdapter viewPagerAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,6 +44,40 @@ public class DownloadFragment extends AdvanceFragment {
 
         requireActivity().getOnBackPressedDispatcher()
                 .addCallback(this, new BackPressedListener());
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        viewPagerAdapter = new ViewPagerAdapter(this);
+
+        ui = FragmentDownloadBinding.inflate(inflater);
+        ui.viewPager.setAdapter(viewPagerAdapter);
+        ui.viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                switch(position) {
+                    case 0 :
+                        ui.bottomNavigation.setSelectedItemId(R.id.plugins);
+                        break;
+                    case 1 :
+                        ui.bottomNavigation.setSelectedItemId(R.id.patches);
+                }
+            }
+        });
+
+        ui.bottomNavigation.setOnItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.plugins) {
+                ui.viewPager.setCurrentItem(0);
+                return true;
+            } else if (item.getItemId() == R.id.patches) {
+                ui.viewPager.setCurrentItem(1);
+                return true;
+            }
+            return false;
+        });
+
+        return ui.getRoot();
     }
 
     private class BackPressedListener extends OnBackPressedCallback {

@@ -47,4 +47,6 @@
     <string name="unpacking_archive">Unpacking archive</string>
     <string name="edit_game">Edit Game</string>
     <string name="download">Download</string>
+    <string name="patches">Patches</string>
+    <string name="plugins">Plugins</string>
 </resources>
