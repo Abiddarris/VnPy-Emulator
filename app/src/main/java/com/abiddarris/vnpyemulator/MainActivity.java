@@ -30,7 +30,6 @@ import com.abiddarris.vnpyemulator.databinding.ActivityMainBinding;
 import com.abiddarris.vnpyemulator.errors.ErrorViewModel;
 import com.abiddarris.vnpyemulator.games.GameListFragment;
 
-
 public class MainActivity extends PermissionActivity {
    
     private ActivityMainBinding binding;
