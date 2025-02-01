@@ -11,12 +11,15 @@ dependencyResolutionManagement {
   repositories {
     google()
     mavenCentral()
+    maven { url 'https://jitpack.io' }
   }
 }
 
 rootProject.name = "Renpy Emulator"
 
-include ':common'
+include ':common', ':common-android'
+
 project(':common').projectDir = file('Common-Library/common')
+project(':common-android').projectDir = file('Common-Library/common-android')
 
 include(":app", ":definition", ":plugin", ":plugin-6.99.12.4.2187", ":plugin-7.3.5.606")

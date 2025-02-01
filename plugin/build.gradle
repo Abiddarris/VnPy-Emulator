@@ -24,7 +24,8 @@ android {
 
 dependencies {
     api project(':common')
-    
+    api project(':common-android')
+
     compileOnly project(':definition')
 
     implementation("androidx.appcompat:appcompat:1.6.1")
