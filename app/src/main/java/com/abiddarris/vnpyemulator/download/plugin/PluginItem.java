@@ -16,35 +16,20 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.plugin;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
 
-import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
-import com.abiddarris.vnpyemulator.download.plugin.PluginFragment.PluginViewModel;
+import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownloadViewModel;
+import com.abiddarris.vnpyemulator.download.base.BasePluginItem;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
-import com.xwray.groupie.viewbinding.BindableItem;
 
-public class PluginItem extends BindableItem<LayoutPluginBinding> {
+public class PluginItem extends BasePluginItem {
 
     private final Plugin plugin;
-    private final PluginViewModel pluginViewModel;
 
-    public PluginItem(Plugin plugin, PluginViewModel pluginViewModel) {
+    public PluginItem(Plugin plugin, BaseDownloadViewModel pluginViewModel) {
+        super(pluginViewModel);
         this.plugin = plugin;
-        this.pluginViewModel = pluginViewModel;
-    }
-
-    @Override
-    public int getLayout() {
-        return R.layout.layout_plugin;
-    }
-
-    @NonNull
-    @Override
-    protected LayoutPluginBinding initializeViewBinding(@NonNull View view) {
-        return LayoutPluginBinding.bind(view);
     }
 
     @Override

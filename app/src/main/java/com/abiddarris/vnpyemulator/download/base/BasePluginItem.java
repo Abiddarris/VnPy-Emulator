@@ -14,26 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download.plugin;
+package com.abiddarris.vnpyemulator.download.base;
+
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.abiddarris.vnpyemulator.databinding.LayoutPluginGroupBinding;
-import com.abiddarris.vnpyemulator.download.base.BaseGroupItem;
-import com.abiddarris.vnpyemulator.plugins.PluginGroup;
+import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
+import com.xwray.groupie.viewbinding.BindableItem;
 
-public class PluginGroupItem extends BaseGroupItem {
+public abstract class BasePluginItem extends BindableItem<LayoutPluginBinding> {
 
-    public PluginGroupItem(PluginGroup group) {
-        super(group);
+    protected final BaseDownloadFragment.BaseDownloadViewModel pluginViewModel;
+
+    public BasePluginItem(BaseDownloadFragment.BaseDownloadViewModel pluginViewModel) {
+        this.pluginViewModel = pluginViewModel;
     }
 
     @Override
-    public void bind(@NonNull LayoutPluginGroupBinding binding, int position) {
-        super.bind(binding, position);
-
-        binding.name.setText(group.getName());
-        binding.version.setText(group.getVersion());
+    public int getLayout() {
+        return R.layout.layout_plugin;
     }
 
+    @NonNull
+    @Override
+    protected LayoutPluginBinding initializeViewBinding(@NonNull View view) {
+        return LayoutPluginBinding.bind(view);
+    }
 }
