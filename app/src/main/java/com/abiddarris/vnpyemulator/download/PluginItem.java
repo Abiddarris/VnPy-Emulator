@@ -33,6 +33,6 @@ public class PluginItem extends BindableItem<LayoutPluginBinding> {
 
     @Override
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
-        viewBinding.version.setText(plugin.getVersion());
+        viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
     }
 }
