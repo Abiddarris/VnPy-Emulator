@@ -47,6 +47,10 @@
         <service
              android:name=".errors.ErrorHandlerService"
              android:exported="false"/>
+
+        <service
+            android:name=".download.DownloadService"
+            android:exported="false"/>
     </application>
     
 </manifest>

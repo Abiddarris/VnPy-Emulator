@@ -143,54 +143,33 @@ public class FetchPluginsRunnable extends TaskDialog {
 
     private void downloadPlugin(PluginGroup pluginGroup, Plugin plugin) throws IOException {
         setMessage(getString(R.string.downloading_plugin, pluginGroup.getVersion()));
-        try (Connection connection = plugin.downloadPlugin()) {
-            pluginApk = new File(Files.getCacheFolder(getApplicationContext()), pluginGroup.getName() + ".apk");
-
-            BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
-            try (BufferedOutputStream outputStream = new BufferedOutputStream(
-                    new FileOutputStream(pluginApk))) {
-                writeAllTo(inputStream, outputStream);
-            }
-        }
+//        try (Connection connection = plugin.downloadPlugin()) {
+//            pluginApk = new File(Files.getCacheFolder(getApplicationContext()), pluginGroup.getName() + ".apk");
+//
+//            BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
+//            try (BufferedOutputStream outputStream = new BufferedOutputStream(
+//                    new FileOutputStream(pluginApk))) {
+//                writeAllTo(inputStream, outputStream);
+//            }
+//        }
     }
 
     private void downloadPrivateFiles(PluginGroup group, Plugin plugin) throws IOException {
         setMessage(getString(R.string.downloading_renpy_private_files, group.getVersion()));
 
         File cache = new File(Files.getCacheFolder(getApplicationContext()), group.getVersion());
-        try (Connection connection = plugin.downloadPrivateFiles();
-             BufferedOutputStream outputStream = new BufferedOutputStream(
-                     new FileOutputStream(cache))) {
-            writeAllTo(connection.getInputStream(), outputStream);
-        }
-
-        unpackRenPyPrivateFiles(cache, RenPyPrivate.getPrivateFiles(getApplicationContext(), group.getVersion()));
+//        try (Connection connection = plugin.downloadPrivateFiles();
+//             BufferedOutputStream outputStream = new BufferedOutputStream(
+//                     new FileOutputStream(cache))) {
+//            writeAllTo(connection.getInputStream(), outputStream);
+//        }
+//
+//        unpackRenPyPrivateFiles(cache, RenPyPrivate.getPrivateFiles(getApplicationContext(), group.getVersion()));
     }
 
     private void unpackRenPyPrivateFiles(File cache, File dest) throws IOException {
         setMessage(getString(R.string.unpacking_renpy_private_files));
-        dest.mkdirs();
 
-        var is = new TarInputStream(new GZIPInputStream(new BufferedInputStream(new FileInputStream(cache))));
-        TarEntry entry;
-        while((entry = is.getNextEntry()) != null) {
-            var destination = new File(dest, entry.getName());
-            if(entry.isDirectory()) {
-                destination.mkdirs();
-                continue;
-            }
-            var os = new BufferedOutputStream(new FileOutputStream(destination));
-            byte[] buf = new byte[8192];
-            int len;
-            while((len = is.read(buf)) != -1) {
-                os.write(buf,0,len);
-            }
-            os.flush();
-            os.close();
-        }
-        is.close();
-
-        cache.delete();
     }
 
     private boolean installPlugin() throws IOException {

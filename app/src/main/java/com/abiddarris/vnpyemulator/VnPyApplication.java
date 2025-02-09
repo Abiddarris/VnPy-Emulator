@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator;
 
@@ -25,6 +24,7 @@ import android.app.Application;
 import com.abiddarris.common.android.logs.factory.AndroidLogFactory;
 import com.abiddarris.common.logs.factory.FileLogFactory;
 import com.abiddarris.common.logs.factory.MultipleLogFactory;
+import com.abiddarris.vnpyemulator.utils.Notifications;
 import com.google.android.material.color.DynamicColors;
 
 import java.io.BufferedWriter;
@@ -51,7 +51,6 @@ public class VnPyApplication extends Application {
             e.printStackTrace();
         }
         
-        
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             getExternalFilesDir(null).mkdirs();
             try (var writer = new PrintWriter(new BufferedWriter(
@@ -72,7 +71,8 @@ public class VnPyApplication extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
+        Notifications.initNotificationChannel(this);
         DynamicColors.applyToActivitiesIfAvailable(this);
     }
     

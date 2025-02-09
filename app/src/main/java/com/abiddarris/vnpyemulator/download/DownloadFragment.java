@@ -17,7 +17,11 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +34,11 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.abiddarris.common.android.fragments.AdvanceFragment;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.FragmentDownloadBinding;
+import com.abiddarris.vnpyemulator.download.DownloadService.DownloadServiceBinder;
 
-public class DownloadFragment extends AdvanceFragment {
+public class DownloadFragment extends AdvanceFragment implements ServiceConnection {
 
+    private DownloadService downloadService;
     private FragmentDownloadBinding ui;
     private ViewPagerAdapter viewPagerAdapter;
 
@@ -40,8 +46,13 @@ public class DownloadFragment extends AdvanceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requireActivity().setTitle(R.string.download);
+        Intent intent = new Intent(requireContext(), DownloadService.class);
+        if (savedInstanceState == null) {
+            requireContext().startService(intent);
+        }
+        requireContext().bindService(intent, this, 0);
 
+        requireActivity().setTitle(R.string.download);
         requireActivity().getOnBackPressedDispatcher()
                 .addCallback(this, new BackPressedListener());
     }
@@ -78,6 +89,20 @@ public class DownloadFragment extends AdvanceFragment {
         });
 
         return ui.getRoot();
+    }
+
+    @Override
+    public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+        downloadService = ((DownloadServiceBinder)iBinder).getService();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName componentName) {
+        downloadService = null;
+    }
+
+    public DownloadService getDownloadService() {
+        return downloadService;
     }
 
     private class BackPressedListener extends OnBackPressedCallback {

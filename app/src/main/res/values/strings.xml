@@ -49,4 +49,6 @@
     <string name="download">Download</string>
     <string name="patches">Patches</string>
     <string name="plugins">Plugins</string>
+    <string name="plugin_downloader">Plugin Downloader</string>
+    <string name="downloaded">Downloaded</string>
 </resources>

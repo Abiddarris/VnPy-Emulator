@@ -67,20 +67,28 @@ public class PluginFragment extends AdvanceFragment {
         pluginViewModel.execute(new FetchPluginTask());
     }
 
+    public DownloadService getDownloadService() {
+        return ((DownloadFragment)getParentFragment()).getDownloadService();
+    }
+
     public static class PluginViewModel extends TaskViewModel {
 
         public void onPluginFetched(PluginGroup[] pluginGroups) {
-            PluginFragment fragment = ((PluginFragment)getOwner());
+            PluginFragment fragment = getFragment();
             fragment.requireActivity().runOnUiThread(() -> {
                 for (PluginGroup group : pluginGroups) {
                     ExpandableGroup pluginGroup = new ExpandableGroup(new PluginGroupItem(group));
                     for (Plugin plugin : group.getPlugins()){
-                        pluginGroup.add(new PluginItem(plugin));
+                        pluginGroup.add(new PluginItem(plugin, this));
                     }
 
                     fragment.adapter.add(pluginGroup);
                 }
             });
+        }
+
+        public PluginFragment getFragment() {
+            return (PluginFragment) getOwner();
         }
     }
 }

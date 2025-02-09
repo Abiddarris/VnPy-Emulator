@@ -86,6 +86,13 @@ public class Files {
         
         return log;
     }
+
+    public static File getPlugin(Context context, String name) {
+        File file = new File(getVnPyEmulatorFolder(context), "plugins");
+        file.mkdirs();
+
+        return name == null ? file : new File(file, name);
+    }
     
     private static void createDirectory(File file) {
         if(!file.exists()) {

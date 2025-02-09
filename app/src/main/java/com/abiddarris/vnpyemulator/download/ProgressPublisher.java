@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 - 2025 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,28 +13,10 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.sources;
+package com.abiddarris.vnpyemulator.download;
 
-import android.net.Uri;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-/**
- * Source implementation that provides file from local host
- */
-public class LocalSource extends URLSource {
-    
-    private static final int PORT = 5788;
-    private static final String HOST = "192.168.70.50";
-    private static final Uri SOURCE = Uri.parse("http://" + HOST + ":" + PORT);
-
-    LocalSource() {
-        super(SOURCE);
-    }
-    
+public interface ProgressPublisher {
+    void incrementProgress(int progress);
+    void setMaxProgress(int maxProgress);
 }
