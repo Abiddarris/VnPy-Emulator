@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download;
+package com.abiddarris.vnpyemulator.download.plugin;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.abiddarris.common.android.fragments.AdvanceFragment;
 import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.vnpyemulator.databinding.FragmentPluginBinding;
+import com.abiddarris.vnpyemulator.download.DownloadFragment;
+import com.abiddarris.vnpyemulator.download.DownloadService;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.abiddarris.vnpyemulator.plugins.PluginGroup;
 import com.xwray.groupie.ExpandableGroup;

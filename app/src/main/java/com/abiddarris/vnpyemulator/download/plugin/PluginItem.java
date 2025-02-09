@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download;
+package com.abiddarris.vnpyemulator.download.plugin;
 
 import android.view.View;
 
@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
-import com.abiddarris.vnpyemulator.download.PluginFragment.PluginViewModel;
+import com.abiddarris.vnpyemulator.download.plugin.PluginFragment.PluginViewModel;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.xwray.groupie.viewbinding.BindableItem;
 

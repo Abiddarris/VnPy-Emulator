@@ -1,4 +1,4 @@
-package com.abiddarris.vnpyemulator.download;
+package com.abiddarris.vnpyemulator.download.plugin;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -6,7 +6,7 @@ import androidx.fragment.app.DialogFragment;
 import com.abiddarris.common.android.dialogs.ProgressDialog;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.download.PluginFragment.PluginViewModel;
+import com.abiddarris.vnpyemulator.download.plugin.PluginFragment.PluginViewModel;
 import com.abiddarris.vnpyemulator.plugins.PluginSource;
 
 public class FetchPluginTask extends TaskDialog {

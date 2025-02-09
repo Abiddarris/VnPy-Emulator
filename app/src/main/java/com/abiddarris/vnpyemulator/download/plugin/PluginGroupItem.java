@@ -1,4 +1,4 @@
-package com.abiddarris.vnpyemulator.download;
+package com.abiddarris.vnpyemulator.download.plugin;
 
 import android.view.View;
 
