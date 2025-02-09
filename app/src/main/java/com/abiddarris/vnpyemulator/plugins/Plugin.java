@@ -18,6 +18,7 @@
 package com.abiddarris.vnpyemulator.plugins;
 
 import static com.abiddarris.vnpyemulator.files.Files.getPlugin;
+import static com.abiddarris.vnpyemulator.renpy.RenPyPrivate.hasPrivateFiles;
 
 import android.content.Context;
 
@@ -69,6 +70,10 @@ public class Plugin {
         return version;
     }
 
+    public boolean isPrivateFilesDownloaded(Context context) {
+        return hasPrivateFiles(context, getPrivateFiles());
+    }
+
     public void downloadPlugin(Context context, ProgressPublisher progressPublisher) throws IOException {
         try(Connection connection = PluginSource.openInCurrentVersion(getFile());
             BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(getPlugin(context, getFile())))) {
@@ -81,6 +86,9 @@ public class Plugin {
     }
 
     public void downloadPrivateFiles(Context context, ProgressPublisher progressPublisher) throws IOException {
+        if (isPrivateFilesDownloaded(context)) {
+            return;
+        }
         File cache = new File(Files.getCacheFolder(context), getPrivateFiles());
         cache.deleteOnExit();
 
