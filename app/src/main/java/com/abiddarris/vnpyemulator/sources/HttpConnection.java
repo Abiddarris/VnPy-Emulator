@@ -24,10 +24,12 @@ import java.net.HttpURLConnection;
 
 final class HttpConnection implements Connection {
     
-    private HttpURLConnection connection;
+    private final HttpURLConnection connection;
    
     HttpConnection(HttpURLConnection connection) {
         this.connection = connection;
+        this.connection.setConnectTimeout(10000);
+        this.connection.setReadTimeout(10000);
     }
     
     @Override
