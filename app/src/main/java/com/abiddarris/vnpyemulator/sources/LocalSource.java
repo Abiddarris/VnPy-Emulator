@@ -30,7 +30,7 @@ import java.io.InputStream;
 public class LocalSource extends URLSource {
     
     private static final int PORT = 5788;
-    private static final String HOST = "192.168.70.50";
+    private static final String HOST = "192.168.151.50";
     private static final Uri SOURCE = Uri.parse("http://" + HOST + ":" + PORT);
 
     LocalSource() {

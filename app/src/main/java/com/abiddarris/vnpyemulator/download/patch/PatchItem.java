@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,11 +13,28 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download;
+package com.abiddarris.vnpyemulator.download.patch;
 
-import com.abiddarris.common.android.fragments.AdvanceFragment;
+import androidx.annotation.NonNull;
 
-public class PatchFragment extends AdvanceFragment {
+import com.abiddarris.vnpyemulator.databinding.LayoutPluginGroupBinding;
+import com.abiddarris.vnpyemulator.download.base.BaseGroupItem;
+import com.abiddarris.vnpyemulator.patches.Patch;
+
+public class PatchItem extends BaseGroupItem {
+
+    private final Patch patch;
+
+    public PatchItem(Patch patch) {
+        this.patch = patch;
+    }
+
+    @Override
+    public void bind(@NonNull LayoutPluginGroupBinding binding, int position) {
+        super.bind(binding, position);
+
+        binding.name.setText(patch.getName());
+        binding.version.setText(patch.getRenPyVersion());
+    }
 }

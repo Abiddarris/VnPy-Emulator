@@ -14,32 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download.base;
-
-import android.view.View;
+package com.abiddarris.vnpyemulator.download.patch;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
+import com.abiddarris.common.android.dialogs.ProgressDialog;
+import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
-import com.xwray.groupie.viewbinding.BindableItem;
+import com.abiddarris.vnpyemulator.patches.PatchSource;
 
-public abstract class BasePluginItem extends BindableItem<LayoutPluginBinding> {
-
-    protected final BaseDownloadFragment.BaseDownloadViewModel pluginViewModel;
-
-    public BasePluginItem(BaseDownloadFragment.BaseDownloadViewModel pluginViewModel) {
-        this.pluginViewModel = pluginViewModel;
-    }
-
+public class FetchPatchTask extends TaskDialog {
+    @NonNull
     @Override
-    public int getLayout() {
-        return R.layout.layout_plugin;
+    protected DialogFragment newDialog() {
+        ProgressDialog dialog = ProgressDialog.newProgressDialog(getString(R.string.fetch_patch_title), getString(R.string.fetching));
+        dialog.setCancelable(false);
+
+        return dialog;
     }
 
     @NonNull
     @Override
-    protected LayoutPluginBinding initializeViewBinding(@NonNull View view) {
-        return LayoutPluginBinding.bind(view);
+    protected String getTag() {
+        return "FetchPatchDialog";
+    }
+
+    @Override
+    public void execute() throws Exception {
+        ((PatchFragment)getOwner())
+                .onPatchFetched(PatchSource.getPatches());
     }
 }

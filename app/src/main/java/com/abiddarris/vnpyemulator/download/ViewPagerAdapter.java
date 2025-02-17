@@ -32,14 +32,10 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position) {
-            case 0 :
-                return new PluginFragment();
-            case 1 :
-                return new PatchFragment();
-            default :
-                return new PluginFragment();
+        if (position == 1) {
+            return new PatchFragment();
         }
+        return new PluginFragment();
     }
 
     @Override

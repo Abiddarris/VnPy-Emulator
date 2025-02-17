@@ -24,8 +24,10 @@ import com.abiddarris.vnpyemulator.plugins.PluginGroup;
 
 public class PluginGroupItem extends BaseGroupItem {
 
+    protected PluginGroup group;
+
     public PluginGroupItem(PluginGroup group) {
-        super(group);
+        this.group = group;
     }
 
     @Override

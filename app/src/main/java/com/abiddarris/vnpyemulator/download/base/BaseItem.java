@@ -14,28 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download.plugin;
+package com.abiddarris.vnpyemulator.download.base;
+
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
-import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownloadViewModel;
-import com.abiddarris.vnpyemulator.download.base.BaseItem;
-import com.abiddarris.vnpyemulator.plugins.Plugin;
+import com.xwray.groupie.viewbinding.BindableItem;
 
-public class PluginItem extends BaseItem {
+public abstract class BaseItem extends BindableItem<LayoutPluginBinding> {
 
-    private final Plugin plugin;
+    protected final BaseDownloadFragment.BaseDownloadViewModel pluginViewModel;
 
-    public PluginItem(Plugin plugin, BaseDownloadViewModel pluginViewModel) {
-        super(pluginViewModel);
-        this.plugin = plugin;
+    public BaseItem(BaseDownloadFragment.BaseDownloadViewModel pluginViewModel) {
+        this.pluginViewModel = pluginViewModel;
     }
 
     @Override
-    public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
-        viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
-        viewBinding.download.setOnClickListener(v -> pluginViewModel.getFragment().getDownloadService().downloadPlugin(plugin));
+    public int getLayout() {
+        return R.layout.layout_plugin;
+    }
 
+    @NonNull
+    @Override
+    protected LayoutPluginBinding initializeViewBinding(@NonNull View view) {
+        return LayoutPluginBinding.bind(view);
     }
 }

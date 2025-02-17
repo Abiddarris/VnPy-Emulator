@@ -28,6 +28,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -44,7 +45,7 @@ public class PatchSource {
     /**
      * Hold fetched patchers
      */
-    private Patch[] patches;
+    private static Patch[] patches;
     
     /**
      * Returns versions that have a patch
@@ -52,7 +53,7 @@ public class PatchSource {
      * @throws IOException if unable to fetch versions
      * @return Versions that have a patch
      */
-    public String[] getVersions() throws IOException {
+    public static String[] getVersions() throws IOException {
         if(patches == null) {
             fetch();
         }
@@ -68,7 +69,7 @@ public class PatchSource {
      * @throws IOException if unable to fetch the patcher
      * @return {@code Patcher} from given version
      */
-    public Patch getPatch(String version) throws IOException {
+    public static Patch getPatch(String version) throws IOException {
         if(patches == null) {
             fetch();
         }
@@ -88,15 +89,22 @@ public class PatchSource {
      * @throws IOException If unable to open
      * @return {@code Connection}
      */
-    public Connection openInCurrentVersion(String fileName) throws IOException {
+    public static Connection openInCurrentVersion(String fileName) throws IOException {
         return SOURCE.openConnection("patches/" + VERSION + "/" + fileName);
     }
-    
+
+    public static Patch[] getPatches() throws IOException {
+        if (patches == null) {
+            fetch();
+        }
+        return patches;
+    }
+
     /**
      * Function that fetched patches and store it in 
      * {@code patchers} field
      */
-    private void fetch() throws IOException {
+    private static void fetch() throws IOException {
         try (Connection connection = openInCurrentVersion("patches.json")) {
             JSONArray patches = new JSONArray(new String(readAll(connection.getInputStream())));
             List<Patch> patchesList = new ArrayList<>();
@@ -105,7 +113,7 @@ public class PatchSource {
                 patchesList.add(new Patch(patches.getJSONObject(i)));
             }
 
-            this.patches = patchesList.toArray(new Patch[0]);
+            PatchSource.patches = patchesList.toArray(new Patch[0]);
         } catch (JSONException e) {
             throw new IOException("Unable to fetch patches", e);
         }

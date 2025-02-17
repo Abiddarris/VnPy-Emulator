@@ -13,12 +13,7 @@ import com.xwray.groupie.viewbinding.BindableItem;
 
 public abstract class BaseGroupItem extends BindableItem<LayoutPluginGroupBinding> implements ExpandableItem {
 
-    protected PluginGroup group;
     protected ExpandableGroup onToggleListener;
-
-    public BaseGroupItem(PluginGroup group) {
-        this.group = group;
-    }
 
     @NonNull
     @Override
