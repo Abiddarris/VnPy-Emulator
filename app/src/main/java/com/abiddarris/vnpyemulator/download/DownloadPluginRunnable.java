@@ -24,6 +24,7 @@ import android.content.Context;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.abiddarris.common.android.handlers.MainThreads;
 import com.abiddarris.common.utils.BaseRunnable;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
@@ -57,7 +58,7 @@ public class DownloadPluginRunnable implements BaseRunnable, ProgressPublisher {
         plugin.downloadPlugin(context,this);
         plugin.downloadPrivateFiles(context, this);
 
-        complete();
+        MainThreads.postDelayed(this::complete, 4000);
     }
 
     @Override
