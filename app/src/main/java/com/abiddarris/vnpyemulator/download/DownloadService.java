@@ -16,22 +16,26 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download;
 
+import static com.abiddarris.vnpyemulator.utils.Notifications.DOWNLOAD_CHANNEL_ID;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
+import com.abiddarris.common.android.tasks.v2.DeterminateNotificationProgressPublisher;
+import com.abiddarris.common.android.tasks.v2.TaskManager;
+import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class DownloadService extends Service {
 
+    private final TaskManager taskManager = new TaskManager(this);
+
     private DownloadServiceBinder binder;
-    private final ExecutorService downloadExecutor = Executors.newSingleThreadExecutor();
 
     @Nullable
     @Override
@@ -43,7 +47,12 @@ public class DownloadService extends Service {
     }
 
     public void downloadPlugin(Plugin plugin) {
-        downloadExecutor.submit(new DownloadPluginRunnable(this, plugin));
+        var builder = new NotificationCompat.Builder(this, DOWNLOAD_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_download)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
+        var publisher = new DeterminateNotificationProgressPublisher(builder, this);
+
+        taskManager.execute(new DownloadPluginTask(this, plugin), publisher);
     }
 
     public class DownloadServiceBinder extends Binder {

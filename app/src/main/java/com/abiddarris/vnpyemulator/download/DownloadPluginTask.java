@@ -25,67 +25,43 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.abiddarris.common.android.handlers.MainThreads;
-import com.abiddarris.common.utils.BaseRunnable;
+import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
+import com.abiddarris.common.android.tasks.v2.DeterminateTask;
+import com.abiddarris.common.android.tasks.v2.Task;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 
-public class DownloadPluginRunnable implements BaseRunnable, ProgressPublisher {
+public class DownloadPluginTask extends DeterminateTask<Void> implements ProgressPublisher {
 
     private final Context context;
     private final Plugin plugin;
-    private final NotificationCompat.Builder builder;
-    private final NotificationManagerCompat notificationManager;
-    private final int id;
-    private int maxProgress;
     private int progress;
 
-    public DownloadPluginRunnable(Context context, Plugin plugin) {
+    public DownloadPluginTask(Context context, Plugin plugin) {
         this.context = context;
         this.plugin = plugin;
-
-        notificationManager = NotificationManagerCompat.from(context);
-        id = randomInt(Integer.MAX_VALUE);
-
-        builder = new NotificationCompat.Builder(context, DOWNLOAD_CHANNEL_ID);
-        builder.setContentTitle(context.getString(R.string.plugin_downloader))
-                .setContentText(context.getString(R.string.downloading_plugin, plugin.getFile()))
-                .setSmallIcon(R.drawable.ic_download)
-                .setPriority(NotificationCompat.PRIORITY_LOW);
     }
 
     @Override
     public void execute() throws Exception {
+        setTitle(context.getString(R.string.plugin_downloader));
+        setMessage(context.getString(R.string.downloading_plugin, plugin.getFile()));
+
         plugin.downloadPlugin(context,this);
         plugin.downloadPrivateFiles(context, this);
 
-        MainThreads.postDelayed(this::complete, 4000);
+        setMessage(context.getString(R.string.downloaded));
     }
 
     @Override
     public void incrementProgress(int progress) {
         this.progress += progress;
-
-        builder.setProgress(maxProgress, this.progress, false);
-
-        updateNotification();
+        setProgress(this.progress);
     }
 
     @Override
     public void setMaxProgress(int maxProgress) {
-        this.maxProgress = maxProgress;
-
-        builder.setProgress(this.maxProgress, progress, false);
-
-        updateNotification();
+        setMaxProgress((long)maxProgress);
     }
 
-    private void complete() {
-        builder.setContentText(context.getString(R.string.downloaded))
-                .setProgress(0,0,false);
-        updateNotification();
-    }
-
-    private void updateNotification() {
-        notificationManager.notify(id, builder.build());
-    }
 }
