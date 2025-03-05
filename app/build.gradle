@@ -63,6 +63,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':plugin')
     implementation project(':common-android')
+    implementation project(':unrpa')
 
     def groupie_version = "2.10.1"
     

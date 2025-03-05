@@ -23,9 +23,9 @@ import static com.abiddarris.common.stream.InputStreams.writeAllTo;
 import androidx.fragment.app.DialogFragment;
 
 import com.abiddarris.common.android.tasks.TaskDialog;
-import com.abiddarris.common.renpy.archives.RpaEntry;
-import com.abiddarris.common.renpy.archives.Unrpa;
 
+import com.abiddarris.unrpa.RpaEntry;
+import com.abiddarris.unrpa.Unrpa;
 import com.abiddarris.vnpyemulator.R;
 import java.io.BufferedOutputStream;
 import java.io.File;
