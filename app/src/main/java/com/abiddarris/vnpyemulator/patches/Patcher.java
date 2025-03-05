@@ -26,6 +26,8 @@ import static com.abiddarris.vnpyemulator.files.Files.getPatchFolder;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
 import com.abiddarris.vnpyemulator.sources.Connection;
 
@@ -96,8 +98,7 @@ public class Patcher {
     }
 
     public void download(Context context, ProgressPublisher progressPublisher) throws IOException {
-        File patch = new File(getPatchFolder(context), getPatch().getName());
-        File dest = new File(patch, getVersion());
+        File dest = getPatcherFolder(context);
         makeDirectories(dest);
 
         progressPublisher.setMaxProgress(patchFiles.length);
@@ -113,5 +114,14 @@ public class Patcher {
             }
             progressPublisher.incrementProgress(1);
         }
+    }
+
+    private @NonNull File getPatcherFolder(Context context) {
+        File patch = new File(getPatchFolder(context), getPatch().getName());
+        return new File(patch, getVersion());
+    }
+
+    public boolean isInstalled(Context context) {
+        return getPatcherFolder(context).exists();
     }
 }

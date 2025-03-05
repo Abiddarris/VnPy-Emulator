@@ -42,7 +42,7 @@ public class Files {
         return file == null ? null : file;
     }
 
-    public static File getPatchFolder(Context context) throws IOException {
+    public static File getPatchFolder(Context context) {
         File patchFolder = new File(getVnPyEmulatorFolder(context), "patches");
         createDirectory(patchFolder);
 
