@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import static com.abiddarris.common.files.Files.delete;
 import static com.abiddarris.common.files.Files.getPathName;
 import static com.abiddarris.common.files.Files.makeDirectories;
 import static com.abiddarris.common.files.Files.openBufferedOutput;
@@ -105,6 +106,10 @@ public class Patcher {
                  OutputStream output = openBufferedOutput(new File(dest, getPathName(patchFile.getPatchFileName())))) {
                 InputStream input = new BufferedInputStream(connection.getInputStream());
                 writeAllTo(input, output);
+            } catch (IOException e) {
+                delete(dest);
+
+                throw e;
             }
             progressPublisher.incrementProgress(1);
         }
