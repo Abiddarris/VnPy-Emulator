@@ -5,7 +5,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ *dest.mkdirs();
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -17,46 +17,51 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import static com.abiddarris.common.files.Files.getPathName;
+import static com.abiddarris.common.files.Files.makeDirectories;
+import static com.abiddarris.common.files.Files.openBufferedOutput;
+import static com.abiddarris.common.stream.InputStreams.writeAllTo;
+import static com.abiddarris.vnpyemulator.files.Files.getPatchFolder;
+
+import android.content.Context;
+
+import com.abiddarris.vnpyemulator.download.ProgressPublisher;
+import com.abiddarris.vnpyemulator.sources.Connection;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
+import java.io.OutputStream;
 
 /**
  * Patcher is a group of patches
  */
 public class Patcher {
-    
+
+    private final Patch patch;
+
     /**
      * Target Ren'Py version
      */
-    private String version;
-    
-    /**
-     * Store folder that contains patches
-     */
-    private String patchFolderName;
-    
+    private final String version;
+
     /**
      * Store patch objects
      */
-    private PatchFile[] patchFiles;
-    
-    /**
-     * Store associated {@code PatchSource}
-     */
-    private PatchSource source;
-    
+    private final PatchFile[] patchFiles;
+
     /**
      * Create patcher from specified string
      */
-    Patcher(JSONObject object) throws JSONException {
+    Patcher(Patch patch, JSONObject object) throws JSONException {
+        this.patch = patch;
         version = object.getString("version");
 
         JSONArray contents = object.getJSONArray("contents");
@@ -85,4 +90,23 @@ public class Patcher {
         return version;
     }
 
+    public Patch getPatch() {
+        return patch;
+    }
+
+    public void download(Context context, ProgressPublisher progressPublisher) throws IOException {
+        File patch = new File(getPatchFolder(context), getPatch().getName());
+        File dest = new File(patch, getVersion());
+        makeDirectories(dest);
+
+        progressPublisher.setMaxProgress(patchFiles.length);
+        for (PatchFile patchFile : patchFiles) {
+            try (Connection connection = patchFile.open();
+                 OutputStream output = openBufferedOutput(new File(dest, getPathName(patchFile.getPatchFileName())))) {
+                InputStream input = new BufferedInputStream(connection.getInputStream());
+                writeAllTo(input, output);
+            }
+            progressPublisher.incrementProgress(1);
+        }
+    }
 }

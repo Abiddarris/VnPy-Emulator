@@ -37,7 +37,7 @@ public class Patch {
         List<Patcher> patchers = new ArrayList<>();
         JSONArray patchersJSON = object.getJSONArray("patch_version");
         for (int i = 0; i < patchersJSON.length(); i++) {
-            patchers.add(new Patcher(patchersJSON.getJSONObject(i)));
+            patchers.add(new Patcher(this, patchersJSON.getJSONObject(i)));
         }
 
         this.patchers = patchers.toArray(new Patcher[0]);

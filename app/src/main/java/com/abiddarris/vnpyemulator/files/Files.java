@@ -17,9 +17,12 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.files;
 
+import static com.abiddarris.common.files.Files.makeDirectories;
+
 import android.content.Context;
 import android.os.Build;
 import java.io.File;
+import java.io.IOException;
 
 public class Files {
     
@@ -37,6 +40,13 @@ public class Files {
         }
         File file = context.getExternalFilesDir(null);
         return file == null ? null : file;
+    }
+
+    public static File getPatchFolder(Context context) throws IOException {
+        File patchFolder = new File(getVnPyEmulatorFolder(context), "patches");
+        createDirectory(patchFolder);
+
+        return patchFolder;
     }
     
     public static File getKeyboardFolder(Context context) {

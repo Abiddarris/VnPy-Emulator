@@ -23,12 +23,15 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import com.abiddarris.common.android.tasks.v2.DeterminateNotificationProgressPublisher;
 import com.abiddarris.common.android.tasks.v2.TaskManager;
 import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.download.patch.DownloadPatchTask;
+import com.abiddarris.vnpyemulator.patches.Patcher;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 
 public class DownloadService extends Service {
@@ -47,12 +50,22 @@ public class DownloadService extends Service {
     }
 
     public void downloadPlugin(Plugin plugin) {
-        var builder = new NotificationCompat.Builder(this, DOWNLOAD_CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_download)
-                .setPriority(NotificationCompat.PRIORITY_LOW);
-        var publisher = new DeterminateNotificationProgressPublisher(builder, this);
+        var publisher = new DeterminateNotificationProgressPublisher(createDefaultNotification(), this);
 
         taskManager.execute(new DownloadPluginTask(this, plugin), publisher);
+    }
+
+    public void downloadPatcher(Patcher patcher) {
+        taskManager.execute(
+                new DownloadPatchTask(patcher),
+                new DeterminateNotificationProgressPublisher(createDefaultNotification(), this)
+        );
+    }
+
+    private NotificationCompat.Builder createDefaultNotification() {
+        return new NotificationCompat.Builder(this, DOWNLOAD_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_download)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
     }
 
     public class DownloadServiceBinder extends Binder {

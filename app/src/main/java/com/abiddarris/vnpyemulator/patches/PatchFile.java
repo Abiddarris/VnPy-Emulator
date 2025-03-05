@@ -39,9 +39,9 @@ import java.io.IOException;
  */
 public class PatchFile {
     
-    private String originalFileHash;
-    private String patchFileName;
-    private String fileToPatch;
+    private final String originalFileHash;
+    private final String patchFileName;
+    private final String fileToPatch;
     
     PatchFile(String originalFileHash, String patchFileName, String fileToPatch) {
         this.originalFileHash = originalFileHash;
@@ -65,6 +65,10 @@ public class PatchFile {
         
     public String getFileToPatch() {
         return this.fileToPatch;
+    }
+
+    public Connection open() throws IOException {
+        return PatchSource.openInCurrentVersion(getPatchFileName());
     }
 
     public void patch(File folderToPatch, boolean force) {

@@ -52,4 +52,5 @@
     <string name="plugin_downloader">Plugin Downloader</string>
     <string name="downloaded">Downloaded</string>
     <string name="fetch_patch_title">Fetching Patches</string>
+    <string name="downloading_patch_message">Downloading patch for %s (version %s)</string>
 </resources>

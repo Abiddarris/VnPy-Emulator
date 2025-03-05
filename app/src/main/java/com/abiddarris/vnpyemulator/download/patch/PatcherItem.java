@@ -20,5 +20,6 @@ public class PatcherItem extends BaseItem {
     @Override
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
         viewBinding.version.setText(patcher.getVersion());
+        viewBinding.download.setOnClickListener(v -> pluginViewModel.getFragment().getDownloadService().downloadPatcher(patcher));
     }
 }
