@@ -21,6 +21,9 @@ import static com.abiddarris.common.stream.InputStreams.readAll;
 import static com.abiddarris.vnpyemulator.sources.Source.SOURCE;
 import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 
+import android.content.Context;
+
+import com.abiddarris.vnpyemulator.sources.CachedSource;
 import com.abiddarris.vnpyemulator.sources.Connection;
 
 import org.json.JSONArray;
@@ -28,7 +31,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -41,12 +43,18 @@ public class PatchSource {
      * Hold {@code PatchSource} singleton
      */
     private static PatchSource patchSource;
-    
+
+    private static Context context;
+
     /**
      * Hold fetched patchers
      */
     private static Patch[] patches;
-    
+
+    public static void setContext(Context context) {
+        PatchSource.context = context.getApplicationContext();
+    }
+
     /**
      * Returns versions that have a patch
      *
@@ -79,18 +87,36 @@ public class PatchSource {
             .findFirst()
             .get();
     }
-    
+
     /**
-     * Open an {@code InputStream} relative from folder containing 
+     * Open an {@code InputStream} relative from folder containing
      * patches from specified file name
      *
-     * @param fileName File path relative from folder containing 
+     * @param fileName File path relative from folder containing
      *                 patches from specified file name
      * @throws IOException If unable to open
      * @return {@code Connection}
      */
     public static Connection openInCurrentVersion(String fileName) throws IOException {
-        return SOURCE.openConnection("patches/" + VERSION + "/" + fileName);
+        return openInCurrentVersion(fileName, false);
+    }
+
+    /**
+     * Open an {@code InputStream} relative from folder containing
+     * patches from specified file name
+     *
+     * @param fileName            File path relative from folder containing
+     *                            patches from specified file name
+     * @param accessibleOnOffline Download the file so later can be accessed without internet connection
+     * @return {@code Connection}
+     * @throws IOException If unable to open
+     */
+    public static Connection openInCurrentVersion(String fileName, boolean accessibleOnOffline) throws IOException {
+        fileName = "patches/" + VERSION + "/" + fileName;
+        if (accessibleOnOffline) {
+            return CachedSource.getInstance(context).openConnection(fileName);
+        }
+        return SOURCE.openConnection(fileName);
     }
 
     public static Patch[] getPatches() throws IOException {
@@ -105,7 +131,7 @@ public class PatchSource {
      * {@code patchers} field
      */
     private static void fetch() throws IOException {
-        try (Connection connection = openInCurrentVersion("patches.json")) {
+        try (Connection connection = openInCurrentVersion("patches.json", true)) {
             JSONArray patches = new JSONArray(new String(readAll(connection.getInputStream())));
             List<Patch> patchesList = new ArrayList<>();
 

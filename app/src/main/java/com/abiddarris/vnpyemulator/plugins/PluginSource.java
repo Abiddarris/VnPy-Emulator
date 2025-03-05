@@ -23,7 +23,9 @@ import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 
 import android.content.Context;
 
+import com.abiddarris.vnpyemulator.sources.CachedSource;
 import com.abiddarris.vnpyemulator.sources.Connection;
+import com.abiddarris.vnpyemulator.sources.Source;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,11 +35,16 @@ import java.io.IOException;
 public class PluginSource {
 
     public static Connection openInCurrentVersion(String fileName) throws IOException {
-        return SOURCE.openConnection("plugins/" + VERSION + "/" + fileName);
+        return openInCurrentVersion(SOURCE, fileName);
+    }
+
+    private static Connection openInCurrentVersion(Source source, String fileName) throws IOException {
+        fileName = "plugins/" + VERSION + "/" + fileName;
+        return source.openConnection(fileName);
     }
 
     public static PluginGroup[] getPlugins(Context context) throws IOException {
-        try (Connection connection = openInCurrentVersion("plugins.json")) {
+        try (Connection connection = openInCurrentVersion(CachedSource.getInstance(context), "plugins.json")) {
             JSONArray pluginsJSON = new JSONArray(new String(readAll(connection.getInputStream())));
             PluginGroup[] plugins = new PluginGroup[pluginsJSON.length()];
             for (int i = 0; i < plugins.length; i++) {

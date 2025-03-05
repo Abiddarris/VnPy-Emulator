@@ -24,6 +24,7 @@ import android.app.Application;
 import com.abiddarris.common.android.logs.factory.AndroidLogFactory;
 import com.abiddarris.common.logs.factory.FileLogFactory;
 import com.abiddarris.common.logs.factory.MultipleLogFactory;
+import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.utils.Notifications;
 import com.google.android.material.color.DynamicColors;
 
@@ -74,6 +75,7 @@ public class VnPyApplication extends Application {
 
         Notifications.initNotificationChannel(this);
         DynamicColors.applyToActivitiesIfAvailable(this);
+        PatchSource.setContext(this);
     }
     
 }
