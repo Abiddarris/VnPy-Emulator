@@ -27,17 +27,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.abiddarris.common.android.fragments.AdvanceFragment;
+import com.abiddarris.common.android.pm.Packages;
+import com.abiddarris.common.utils.ObservableValue;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.FragmentDownloadBinding;
 import com.abiddarris.vnpyemulator.download.DownloadService.DownloadServiceBinder;
 
 public class DownloadFragment extends AdvanceFragment implements ServiceConnection {
 
+    private final ObservableValue<Boolean> paused = new ObservableValue<>(true);
+
+    private ActivityResultLauncher<Void> requestInstallPackagePermission;
+    private boolean continueInstall;
     private DownloadService downloadService;
     private FragmentDownloadBinding ui;
     private ViewPagerAdapter viewPagerAdapter;
@@ -50,11 +57,24 @@ public class DownloadFragment extends AdvanceFragment implements ServiceConnecti
         if (savedInstanceState == null) {
             requireContext().startService(intent);
         }
-        requireContext().bindService(intent, this, 0);
 
         requireActivity().setTitle(R.string.download);
         requireActivity().getOnBackPressedDispatcher()
                 .addCallback(this, new BackPressedListener());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        requireContext().bindService(new Intent(requireContext(), DownloadService.class),
+                this, 0);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        requireContext().unbindService(this);
     }
 
     @Nullable
@@ -88,12 +108,38 @@ public class DownloadFragment extends AdvanceFragment implements ServiceConnecti
             return false;
         });
 
+        requestInstallPackagePermission = registerForActivityResult(
+                new Packages.RequestInstallPackagePermission(),
+                this::installPackagePermissionCallback
+        );
+
         return ui.getRoot();
+    }
+
+    private void installPackagePermissionCallback(Boolean success) {
+        if (success) {
+            if (downloadService != null) {
+                downloadService.continueInstall();
+                return;
+            }
+
+            continueInstall = true;
+        }
+    }
+
+    public void requestPackagePermission() {
+        requestInstallPackagePermission.launch(null);
     }
 
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
         downloadService = ((DownloadServiceBinder)iBinder).getService();
+        downloadService.attachFragment(this);
+
+        if (continueInstall) {
+            downloadService.continueInstall();
+            continueInstall = false;
+        }
     }
 
     @Override

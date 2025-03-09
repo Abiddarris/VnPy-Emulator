@@ -22,6 +22,8 @@ import static com.abiddarris.vnpyemulator.renpy.RenPyPrivate.hasPrivateFiles;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
 import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
@@ -76,13 +78,17 @@ public class Plugin {
 
     public void downloadPlugin(Context context, ProgressPublisher progressPublisher) throws IOException {
         try(Connection connection = PluginSource.openInCurrentVersion(getFile());
-            BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(getPlugin(context, getFile())))) {
+            BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(getPluginApk(context)))) {
             BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
             long size = connection.getSize();
             progressPublisher.setMaxProgress(size >= Integer.MAX_VALUE ? Integer.MIN_VALUE : (int)size);
 
             download(progressPublisher, input, output);
         }
+    }
+
+    public @NonNull File getPluginApk(Context context) {
+        return getPlugin(context, getFile());
     }
 
     public void downloadPrivateFiles(Context context, ProgressPublisher progressPublisher) throws IOException {
@@ -137,4 +143,5 @@ public class Plugin {
         }
         output.flush();
     }
+
 }

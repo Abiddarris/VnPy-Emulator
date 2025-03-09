@@ -16,6 +16,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download;
 
+import static com.abiddarris.common.android.pm.Packages.isAllowedToInstallPackage;
 import static com.abiddarris.vnpyemulator.utils.Notifications.DOWNLOAD_CHANNEL_ID;
 
 import android.app.Service;
@@ -23,22 +24,29 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.abiddarris.common.android.tasks.v2.DeterminateNotificationProgressPublisher;
+import com.abiddarris.common.android.pm.Packages;
+import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
+import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.common.android.tasks.v2.TaskManager;
+import com.abiddarris.common.android.tasks.v2.notifications.DeterminateNotificationProgressPublisher;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.patch.DownloadPatchTask;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 
+import java.io.IOException;
+
 public class DownloadService extends Service {
 
     private final TaskManager taskManager = new TaskManager(this);
 
+    private boolean paused;
     private DownloadServiceBinder binder;
+    private DownloadFragment downloadFragment;
+    private Plugin plugin;
 
     @Nullable
     @Override
@@ -49,10 +57,30 @@ public class DownloadService extends Service {
         return binder;
     }
 
+    @Override
+    public boolean onUnbind(Intent intent) {
+        downloadFragment = null;
+
+        return super.onUnbind(intent);
+    }
+
     public void downloadPlugin(Plugin plugin) {
         var publisher = new DeterminateNotificationProgressPublisher(createDefaultNotification(), this);
 
-        taskManager.execute(new DownloadPluginTask(this, plugin), publisher);
+        TaskInfo<DeterminateProgress, Void> taskInfo = taskManager.execute(new DownloadPluginTask(this, plugin), publisher);
+        taskInfo.addOnTaskExecuted(ignored -> {
+            if (!isAllowedToInstallPackage(this) && downloadFragment == null) {
+                return;
+            }
+
+            this.plugin = plugin;
+            if (!isAllowedToInstallPackage(this)) {
+                downloadFragment.requestPackagePermission();
+                return;
+            }
+
+            continueInstall();
+        });
     }
 
     public void downloadPatcher(Patcher patcher) {
@@ -66,6 +94,18 @@ public class DownloadService extends Service {
         return new NotificationCompat.Builder(this, DOWNLOAD_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_download)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
+    }
+
+    public void attachFragment(DownloadFragment downloadFragment) {
+        this.downloadFragment = downloadFragment;
+    }
+
+    public void continueInstall() {
+        try {
+            Packages.installPackage(this, plugin.getPluginApk(this));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public class DownloadServiceBinder extends Binder {
