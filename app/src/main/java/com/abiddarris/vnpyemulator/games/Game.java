@@ -23,18 +23,10 @@ import androidx.annotation.Nullable;
 
 import com.abiddarris.common.utils.Exceptions;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -132,6 +124,14 @@ public class Game extends JSONObject {
         set(PATCH_VERSION, patchVersion);
     }
 
+    public void setGamePath(String path) {
+        set(GAME_FOLDER_PATH, path);
+    }
+
+    public void setGameScript(String name) {
+        set(GAME_SCRIPT, name);
+    }
+
     private void set(String key, String value) {
         try {
             putOpt(key, value);
@@ -166,5 +166,4 @@ public class Game extends JSONObject {
     public static void saveGames(Context context, List<Game> games) throws IOException {
     	GameLoader.saveGames(context);
     }
-
 }

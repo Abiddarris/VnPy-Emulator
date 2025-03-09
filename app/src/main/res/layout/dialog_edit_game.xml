@@ -11,9 +11,9 @@
         android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/name_layout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/name_layout">
+        app:layout_constraintTop_toTopOf="@id/name_layout">
 
         <ImageView
             android:id="@+id/icon"
@@ -39,6 +39,53 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/name" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:id="@+id/main_game_scripts"
+        android:hint="@string/game_script"
+        app:layout_constraintTop_toBottomOf="@id/name_layout"
+        android:visibility="gone">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:id="@+id/patches"
+        android:hint="@string/patch"
+        app:layout_constraintTop_toBottomOf="@id/main_game_scripts"
+        android:visibility="gone">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:id="@+id/plugins"
+        android:hint="@string/plugin"
+        app:layout_constraintTop_toBottomOf="@id/patches">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

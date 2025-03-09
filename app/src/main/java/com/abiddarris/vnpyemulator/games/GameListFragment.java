@@ -32,10 +32,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.abiddarris.common.android.about.AboutActivity;
 import com.abiddarris.common.android.fragments.AdvanceFragment;
 import com.abiddarris.common.android.tasks.TaskViewModel;
+import com.abiddarris.common.android.tasks.v2.TaskManager;
+import com.abiddarris.common.android.tasks.v2.dialog.DialogProgressPublisherManager;
+import com.abiddarris.common.android.tasks.v2.dialog.IndeterminateDialogProgressPublisher;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.FragmentGameListBinding;
 import com.abiddarris.vnpyemulator.download.DownloadFragment;
-import com.abiddarris.vnpyemulator.patches.PatchRunnable;
 import com.abiddarris.vnpyemulator.unrpa.FindRpaTask;
 
 import java.io.IOException;
@@ -43,7 +45,7 @@ import java.io.IOException;
 public class GameListFragment extends AdvanceFragment {
 
     private GameAdapter adapter;
-    private TaskViewModel model;
+    private GameListViewModel gameListViewModel;
     private View currentItem;
     private FragmentGameListBinding binding;
 
@@ -54,7 +56,8 @@ public class GameListFragment extends AdvanceFragment {
 
         requireActivity().setTitle(R.string.icon_name);
 
-        model = TaskViewModel.getInstance(this);
+        gameListViewModel = TaskViewModel.getInstance(this, GameListViewModel.class);
+        gameListViewModel.attach(this);
 
         adapter = new GameAdapter(this);
 
@@ -73,11 +76,14 @@ public class GameListFragment extends AdvanceFragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.add_new_game) {
-            new AddNewGameDialog()
-                    .showForResult(getParentFragmentManager(), path -> {
-                        if(path != null)
-                            model.execute(new PatchRunnable(path));
-                    });
+            new AddNewGameDialog().showForResult(getParentFragmentManager(), path -> {
+                if (path == null) {
+                    return;
+                }
+                var publisher = new IndeterminateDialogProgressPublisher("AddGameDialog");
+                gameListViewModel.dialogManager.registerPublisher(publisher);
+                gameListViewModel.taskManager.execute(new AddGameTask(path), publisher);
+            });
             return true;
         }
 
@@ -115,24 +121,25 @@ public class GameListFragment extends AdvanceFragment {
             DeleteGameDialog.getInstance(game)
                     .showForResult(getChildFragmentManager(), (delete) -> {
                         if (delete) {
-                            model.execute(new DeleteGameTask(game));
+                            gameListViewModel.execute(new DeleteGameTask(game));
                         }
                     });
             return true;
         }
 
         if (item.getItemId() == R.id.edit) {
-            EditGameDialog.editGame(game)
-                    .showForResult(getChildFragmentManager(), result -> {
-                        if (result) {
-                            try {
-                                GameLoader.saveGames(getContext());
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            adapter.notifyGameModified(game);
-                        }
-                    });
+            // TODO: 09/03/25 fix this
+//            EditGameDialog.editGame(game)
+//                    .showForResult(getChildFragmentManager(), result -> {
+//                        if (result) {
+//                            try {
+//                                GameLoader.saveGames(getContext());
+//                            } catch (IOException e) {
+//                                throw new RuntimeException(e);
+//                            }
+//                            adapter.notifyGameModified(game);
+//                        }
+//                    });
             return true;
         }
 
@@ -148,7 +155,7 @@ public class GameListFragment extends AdvanceFragment {
         }
 
         if(item.getItemId() == R.id.unpack_archive) {
-            model.execute(
+            gameListViewModel.execute(
                     new FindRpaTask(game.getGamePath())
             );
             return true;
@@ -158,7 +165,7 @@ public class GameListFragment extends AdvanceFragment {
     }
 
     public TaskViewModel getTaskModel() {
-        return model;
+        return gameListViewModel;
     }
 
     public void open(Game game) {
@@ -174,6 +181,39 @@ public class GameListFragment extends AdvanceFragment {
             adapter.refresh();
             adapter.notifyDataSetChanged();
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        gameListViewModel.detach();
+
+        super.onDestroy();
+    }
+
+    public static class GameListViewModel extends TaskViewModel {
+        private TaskManager taskManager;
+        private DialogProgressPublisherManager dialogManager;
+
+        private void attach(GameListFragment fragment) {
+            if (taskManager == null) {
+                taskManager = new TaskManager(fragment.getContext());
+                dialogManager = new DialogProgressPublisherManager(fragment);
+            }
+
+            taskManager.setContext(fragment.getContext());
+            dialogManager.attach(fragment);
+        }
+
+        private void detach() {
+            dialogManager.invalidate();
+        }
+
+        @Override
+        protected void onCleared() {
+            taskManager.shutdown(true);
+
+            super.onCleared();
+        }
     }
 
 }

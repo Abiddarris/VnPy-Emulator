@@ -20,14 +20,10 @@ package com.abiddarris.vnpyemulator.patches;
 import static com.abiddarris.vnpyemulator.games.Game.GAME_FOLDER_PATH;
 import static com.abiddarris.vnpyemulator.games.Game.GAME_SCRIPT;
 
-import android.util.Log;
-
 import androidx.fragment.app.DialogFragment;
 
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.tasks.TaskDialog;
-import com.abiddarris.common.stream.NullOutputStream;
-import com.abiddarris.common.utils.Hash;
 import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.games.EditGameDialog;
@@ -36,12 +32,7 @@ import com.abiddarris.vnpyemulator.games.GameListFragment;
 import com.abiddarris.vnpyemulator.games.GameLoader;
 import com.abiddarris.vnpyemulator.renpy.RenPyParser;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -143,8 +134,8 @@ public class PatchRunnable extends TaskDialog {
         game.setPatchVersion(version);
         game.setRenPyVersion(renPyVersion);
 
-        EditGameDialog.editNewGame(game)
-                .showForResultAndBlock(getFragmentManager());;
+        //EditGameDialog.editGame(game)
+          //      .showForResultAndBlock(getFragmentManager());;
 
         GameLoader.addGame(getApplicationContext(), game);
         GameLoader.saveGames(getApplicationContext());

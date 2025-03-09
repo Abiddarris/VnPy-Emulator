@@ -85,7 +85,7 @@ public class PatchSource {
         return Stream.of(patches)
             .filter(patch -> patch.getRenPyVersion().equals(version))
             .findFirst()
-            .get();
+            .orElse(null);
     }
 
     /**

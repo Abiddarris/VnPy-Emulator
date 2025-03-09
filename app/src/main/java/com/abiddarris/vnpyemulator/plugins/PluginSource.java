@@ -31,8 +31,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class PluginSource {
+
+    private static PluginGroup[] plugins;
 
     public static Connection openInCurrentVersion(String fileName) throws IOException {
         return openInCurrentVersion(SOURCE, fileName);
@@ -44,9 +47,14 @@ public class PluginSource {
     }
 
     public static PluginGroup[] getPlugins(Context context) throws IOException {
+        if (plugins != null) {
+            return plugins;
+        }
+
         try (Connection connection = openInCurrentVersion(CachedSource.getInstance(context), "plugins.json")) {
             JSONArray pluginsJSON = new JSONArray(new String(readAll(connection.getInputStream())));
-            PluginGroup[] plugins = new PluginGroup[pluginsJSON.length()];
+
+            plugins = new PluginGroup[pluginsJSON.length()];
             for (int i = 0; i < plugins.length; i++) {
                 plugins[i] = new PluginGroup(pluginsJSON.getJSONObject(i));
             }
@@ -55,5 +63,13 @@ public class PluginSource {
         } catch (JSONException e) {
             throw new IOException("Cannot fetch plugins.json", e);
         }
+    }
+
+    public static PluginGroup getPluginGroup(Context context, String renPyVersion) throws IOException {
+        return Arrays.asList(getPlugins(context))
+                .stream()
+                .filter(plugin -> plugin.getVersion().equals(renPyVersion))
+                .findFirst()
+                .orElse(null);
     }
 }

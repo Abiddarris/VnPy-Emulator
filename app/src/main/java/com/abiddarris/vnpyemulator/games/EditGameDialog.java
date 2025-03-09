@@ -17,7 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.games;
 
-import static com.abiddarris.common.android.utils.TextListener.*;
+import static com.abiddarris.common.android.utils.TextListener.newTextListener;
 import static com.abiddarris.common.stream.InputStreams.writeAllTo;
 import static com.abiddarris.common.utils.Randoms.newRandomString;
 import static com.abiddarris.vnpyemulator.files.Files.getIconFolder;
@@ -25,47 +25,68 @@ import static com.abiddarris.vnpyemulator.games.GameLoader.getGames;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocument;
 
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import com.abiddarris.common.android.utils.ItemSelectedListener;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.DialogEditGameBinding;
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class EditGameDialog extends BaseDialogFragment<Boolean> {
 
     private static final String GAME = "game";
-    private static final String NEW_GAME = "new_game";
     private static final String ICON_URI = "icon_uri";
+    private static final String MAIN_SCRIPT_CANDIDATES = "mainScriptCandidates";
+    private static final String PATCH_VERSIONS = "patchVersions";
+    private static final String PATCH_VERSION = "patchVersion";
+    private static final String PLUGIN_VERSIONS = "pluginVersions";
+    private static final String PLUGIN_VERSION = "pluginVersion";
 
     private ActivityResultLauncher<String[]> selectImageLauncher;
     private DialogEditGameBinding ui;
     private List<String> disallowedNames;
 
-    public static EditGameDialog editGame(Game game) {
+    public static EditGameDialog editGame(Game game, String[] pluginVersions, String pluginVersion) {
+        return editGame(game, null, null,
+                null, pluginVersions, pluginVersion);
+    }
+
+    public static EditGameDialog editGame(Game game, File[] mainScriptCandidates,
+                                          String[] patchVersions, String patchVersion,
+                                          String[] pluginVersions, String pluginVersion) {
         EditGameDialog dialog = new EditGameDialog();
         dialog.saveVariable(GAME, game);
+        dialog.saveVariable(MAIN_SCRIPT_CANDIDATES, mainScriptCandidates);
+        dialog.saveVariable(PATCH_VERSIONS, patchVersions);
+        dialog.saveVariable(PATCH_VERSION, patchVersion);
+        dialog.saveVariable(PLUGIN_VERSIONS, pluginVersions);
+        dialog.saveVariable(PLUGIN_VERSION, pluginVersion);
 
         return dialog;
     }
 
-    public static EditGameDialog editNewGame(Game game) {
-        EditGameDialog dialog = editGame(game);
-        dialog.saveVariable(NEW_GAME, true);
-
-        return dialog;
+    @Override
+    protected Boolean getDefaultResult() {
+        return false;
     }
 
     @Override
@@ -80,8 +101,37 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
 
         ui = DialogEditGameBinding.inflate(getLayoutInflater());
         ui.name.setText(game.getName());
-        ui.name.addTextChangedListener(newTextListener(this::onNameTextChanged));
+        ui.name.addTextChangedListener(newTextListener(editable -> validate()));
         ui.card.setOnClickListener(v -> selectImageLauncher.launch(new String[] {"image/*"}));
+
+        OnItemClickListener itemClickListener = (ignored, ignored1, ignored2, ignored3) -> validate();
+        if (getMainScriptsCandidate() != null) {
+            ui.mainGameScripts.setVisibility(View.VISIBLE);
+
+            MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.mainGameScripts.getEditText();
+            textView.setOnItemClickListener(itemClickListener);
+            textView.setSimpleItems(Arrays.asList(getMainScriptsCandidate())
+                    .stream()
+                    .map(File::getName)
+                    .toArray(String[]::new));
+        }
+
+        if (getPatchVersions() != null) {
+            setCancelable(false);
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+
+            ui.patches.setVisibility(View.VISIBLE);
+
+            MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.patches.getEditText();
+            textView.setOnItemClickListener(itemClickListener);
+            textView.setSimpleItems(getPatchVersions());
+            textView.setText(getPatchVersion());
+        }
+
+        MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.plugins.getEditText();
+        textView.setOnItemClickListener(itemClickListener);
+        textView.setSimpleItems(getPluginVersions());
+        textView.setText(getPluginVersion());
 
         Glide.with(this)
                 .load(game.getIconPath())
@@ -92,10 +142,7 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
                 .setView(ui.getRoot())
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> onPositiveButtonClicked(game));
 
-        if (!isNewGame()) {
-            setCancelable(false);
-            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
-        }
+        validate();
     }
 
     private void onImageSelected(Uri uri) {
@@ -130,6 +177,13 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
     }
 
     private void onPositiveButtonClicked(Game game) {
+        if (getPatchVersions() == null) {
+            sendResult(game);
+            return;
+        }
+    }
+
+    private void sendResult(Game game) {
         boolean updated = false;
 
         String name = ui.name.getText().toString();
@@ -163,7 +217,7 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
     private File copyIcon() {
         File icon = new File(getIconFolder(getContext()), newRandomString(8));
         try (BufferedInputStream inputStream = new BufferedInputStream(
-                getContext()
+                requireContext()
                         .getContentResolver()
                         .openInputStream(getIconUri()));
              BufferedOutputStream outputStream = new BufferedOutputStream(
@@ -171,14 +225,32 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
             writeAllTo(inputStream, outputStream);
             return icon;
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionDialog.showExceptionDialog(getParentFragmentManager(), e);
 
             return null;
         }
     }
 
-    private void onNameTextChanged(Editable editable) {
-        String string = editable.toString();
+    private void validate() {
+        boolean valid = isNameValid() && isSpinnerValid(ui.plugins);
+        if (getMainScriptsCandidate() != null) {
+            valid &= isSpinnerValid(ui.mainGameScripts);
+        }
+
+        if (getPatchVersions() != null) {
+            valid &= isSpinnerValid(ui.patches);
+        }
+
+        enablePositiveButton(valid);
+    }
+
+    private boolean isSpinnerValid(TextInputLayout layout) {
+        MaterialAutoCompleteTextView editText = (MaterialAutoCompleteTextView) layout.getEditText();
+        return editText.getText().length() != 0;
+    }
+
+    private boolean isNameValid() {
+        String string = ui.name.getText().toString();
         boolean invalid = false;
         String message = null;
 
@@ -191,24 +263,35 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
         }
 
         boolean error = ui.nameLayout.isErrorEnabled();
-        if(error == invalid) return;
+        if(error == invalid) return !invalid;
 
         ui.nameLayout.setErrorEnabled(invalid);
         ui.nameLayout.setError(message);
 
-        enablePositiveButton(!invalid);
-    }
-
-    @Override
-    protected Boolean getDefaultResult() {
-        return false;
+        return !invalid;
     }
 
     private Game getGame() {
         return getVariable(GAME);
     }
 
-    private boolean isNewGame() {
-        return getVariable(NEW_GAME, false);
+    private String getPluginVersion() {
+        return getVariable(PLUGIN_VERSION, null);
+    }
+
+    private String[] getPluginVersions() {
+        return getVariable(PLUGIN_VERSIONS, null);
+    }
+
+    private String getPatchVersion() {
+        return getVariable(PATCH_VERSION, null);
+    }
+
+    private String[] getPatchVersions() {
+        return getVariable(PATCH_VERSIONS, null);
+    }
+
+    private File[] getMainScriptsCandidate() {
+        return getVariable(MAIN_SCRIPT_CANDIDATES, null);
     }
 }

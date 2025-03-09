@@ -53,4 +53,7 @@
     <string name="downloaded">Downloaded</string>
     <string name="fetch_patch_title">Fetching Patches</string>
     <string name="downloading_patch_message">Downloading patch for %s (version %s)</string>
+    <string name="plugin">Plugin</string>
+    <string name="patch">Patch</string>
+    <string name="game_script">Game Script</string>
 </resources>

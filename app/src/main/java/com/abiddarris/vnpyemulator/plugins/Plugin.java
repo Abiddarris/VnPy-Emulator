@@ -44,12 +44,15 @@ import java.util.zip.GZIPInputStream;
 
 public class Plugin {
 
+    private final PluginGroup pluginGroup;
     private final String privateFiles;
     private final String abi;
     private final String file;
     private final String version;
 
-    public Plugin(JSONObject object) throws JSONException {
+    public Plugin(PluginGroup pluginGroup, JSONObject object) throws JSONException {
+        this.pluginGroup = pluginGroup;
+
         abi = object.getString("abi");
         version = object.getString("version");
         file = object.getString("file");
@@ -72,8 +75,18 @@ public class Plugin {
         return version;
     }
 
+    public PluginGroup getPluginGroup() {
+        return pluginGroup;
+    }
+
     public boolean isPrivateFilesDownloaded(Context context) {
         return hasPrivateFiles(context, getPrivateFiles());
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getPluginGroup().getVersion() + "." + getVersion() + " (" + getAbi() + ")";
     }
 
     public void downloadPlugin(Context context, ProgressPublisher progressPublisher) throws IOException {
@@ -85,6 +98,7 @@ public class Plugin {
 
             download(progressPublisher, input, output);
         }
+
     }
 
     public @NonNull File getPluginApk(Context context) {
@@ -143,5 +157,4 @@ public class Plugin {
         }
         output.flush();
     }
-
 }

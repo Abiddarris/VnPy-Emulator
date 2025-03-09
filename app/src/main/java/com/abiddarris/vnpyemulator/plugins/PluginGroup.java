@@ -17,9 +17,14 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.plugins;
 
+import android.os.Build;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class PluginGroup {
 
@@ -35,12 +40,24 @@ public class PluginGroup {
 
         plugins = new Plugin[pluginsJSON.length()];
         for (int i = 0; i < pluginsJSON.length(); i++) {
-            plugins[i] = new Plugin(pluginsJSON.getJSONObject(i));
+            plugins[i] = new Plugin(this, pluginsJSON.getJSONObject(i));
         }
     }
 
     public Plugin[] getPlugins() {
-        return plugins;
+        return getPlugins(false);
+    }
+
+    public Plugin[] getPlugins(boolean onlySupportedABIs) {
+        if (!onlySupportedABIs) {
+            return plugins;
+        }
+
+        List<String> supportedABIs = Arrays.asList(Build.SUPPORTED_ABIS);
+        return Arrays.asList(plugins)
+                .stream()
+                .filter(plugin -> supportedABIs.contains(plugin.getAbi()))
+                .toArray(Plugin[]::new);
     }
 
     public String getVersion() {
