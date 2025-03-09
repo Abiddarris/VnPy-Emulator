@@ -49,10 +49,12 @@ public class MainActivity extends PermissionActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolbar);
 
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container, GameListFragment.class, null)
-                .commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_container, GameListFragment.class, null)
+                    .commit();
+        }
     }
     
     @Override
