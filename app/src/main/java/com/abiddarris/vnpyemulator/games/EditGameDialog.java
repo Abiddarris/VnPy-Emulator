@@ -205,10 +205,17 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
                     .get();
             game.setPlugin(plugin.toStringWithoutAbi());
             game.setRenPyPrivateVersion(getPathName(plugin.getPrivateFiles()));
+
+            try {
+                GameLoader.saveGames(requireContext());
+            } catch (IOException e) {
+                ExceptionDialog.showExceptionDialog(getParentFragmentManager(), e);
+            }
         }
 
         if (getPatchVersions() == null) {
             sendResult(updated);
+            return;
         }
 
         game.setPatchVersion(getStringFromTextLayout(ui.patches));
@@ -290,7 +297,7 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
         if(string.isBlank()) {
             invalid = true;
             message = getString(R.string.name_cannot_be_blank);
-        } else if(disallowedNames.contains(string)) {
+        } else if(disallowedNames.contains(string) && !string.equals(getGame().getName())) {
             invalid = true;
             message = getString(R.string.name_already_used);
         }

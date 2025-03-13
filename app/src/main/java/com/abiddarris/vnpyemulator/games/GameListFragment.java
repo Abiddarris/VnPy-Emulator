@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,9 +40,12 @@ import com.abiddarris.common.android.tasks.v2.dialog.IndeterminateDialogProgress
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.FragmentGameListBinding;
 import com.abiddarris.vnpyemulator.download.DownloadFragment;
+import com.abiddarris.vnpyemulator.plugins.Plugin;
+import com.abiddarris.vnpyemulator.plugins.PluginGroup;
 import com.abiddarris.vnpyemulator.unrpa.FindRpaTask;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class GameListFragment extends AdvanceFragment {
 
@@ -133,18 +136,29 @@ public class GameListFragment extends AdvanceFragment {
         }
 
         if (item.getItemId() == R.id.edit) {
-            // TODO: 09/03/25 fix this
-//            EditGameDialog.editGame(game)
-//                    .showForResult(getChildFragmentManager(), result -> {
-//                        if (result) {
-//                            try {
-//                                GameLoader.saveGames(getContext());
-//                            } catch (IOException e) {
-//                                throw new RuntimeException(e);
-//                            }
-//                            adapter.notifyGameModified(game);
-//                        }
-//                    });
+            var publisher = new IndeterminateDialogProgressPublisher("GetPluginTask");
+            gameListViewModel.dialogManager.registerPublisher(publisher);
+
+            TaskInfo<IndeterminateProgress, Plugin[]> info =
+                    gameListViewModel.taskManager.execute(new GetPluginTask(), publisher);
+            info.addOnTaskExecuted(plugins -> {
+                Plugin plugin = Arrays.asList(plugins)
+                        .stream()
+                        .filter(p -> p.toStringWithoutAbi().equals(game.getPlugin()))
+                        .findFirst()
+                        .get();
+                EditGameDialog.editGame(game, plugins, plugin)
+                    .showForResult(getChildFragmentManager(), result -> {
+                        if (result) {
+                            try {
+                                GameLoader.saveGames(getContext());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                            adapter.notifyGameModified(game);
+                        }
+                    });
+            });
             return true;
         }
 
