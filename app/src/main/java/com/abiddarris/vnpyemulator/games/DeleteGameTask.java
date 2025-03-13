@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,17 +13,18 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.games;
 
 import androidx.fragment.app.DialogFragment;
+
+import com.abiddarris.common.android.dialogs.ProgressDialog;
 import com.abiddarris.common.android.tasks.TaskDialog;
-import com.abiddarris.vnpyemulator.MainActivity;
+import com.abiddarris.vnpyemulator.R;
 
 public class DeleteGameTask extends TaskDialog {
     
-    private Game game;
+    private final Game game;
     
     public DeleteGameTask(Game game) {
         this.game = game;
@@ -31,12 +32,18 @@ public class DeleteGameTask extends TaskDialog {
     
     @Override
     protected String getTag() {
-        return "deleteGameTask";
+        return "DeleteGameTask";
     }
     
     @Override
     protected DialogFragment newDialog() {
-        return new DeletingGameDialog();
+        ProgressDialog dialog = ProgressDialog.newProgressDialog(
+                getString(R.string.delete_game),
+                getString(R.string.deleting_game)
+        );
+        dialog.setCancelable(false);
+        
+        return dialog;
     }
     
     @Override

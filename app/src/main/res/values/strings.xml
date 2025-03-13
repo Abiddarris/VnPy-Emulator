@@ -63,4 +63,5 @@
     <string name="mismatch_plugin_version">Mismatch plugin version</string>
     <string name="mismatch_plugin_message">Expected %s but %s installed</string>
     <string name="skip">Skip</string>
+    <string name="deleting_game">Deleting game…</string>
 </resources>
