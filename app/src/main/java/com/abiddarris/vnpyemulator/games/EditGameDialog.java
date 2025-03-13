@@ -18,6 +18,7 @@
 package com.abiddarris.vnpyemulator.games;
 
 import static com.abiddarris.common.android.utils.TextListener.newTextListener;
+import static com.abiddarris.common.files.Files.getPathName;
 import static com.abiddarris.common.stream.InputStreams.writeAllTo;
 import static com.abiddarris.common.utils.Randoms.newRandomString;
 import static com.abiddarris.vnpyemulator.files.Files.getIconFolder;
@@ -26,7 +27,6 @@ import static com.abiddarris.vnpyemulator.games.GameLoader.getGames;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -36,12 +36,11 @@ import androidx.annotation.NonNull;
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.common.android.dialogs.ExceptionDialog;
 import com.abiddarris.common.android.tasks.v2.IndeterminateProgress;
-import com.abiddarris.common.android.tasks.v2.Task;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.common.android.tasks.v2.dialog.IndeterminateDialogProgressPublisher;
-import com.abiddarris.common.android.utils.ItemSelectedListener;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.DialogEditGameBinding;
+import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
@@ -70,14 +69,14 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
     private DialogEditGameBinding ui;
     private List<String> disallowedNames;
 
-    public static EditGameDialog editGame(Game game, String[] pluginVersions, String pluginVersion) {
+    public static EditGameDialog editGame(Game game, Plugin[] pluginVersions, Plugin pluginVersion) {
         return editGame(game, null, null,
                 null, pluginVersions, pluginVersion);
     }
 
     public static EditGameDialog editGame(Game game, File[] mainScriptCandidates,
                                           String[] patchVersions, String patchVersion,
-                                          String[] pluginVersions, String pluginVersion) {
+                                          Plugin[] pluginVersions, Plugin pluginVersion) {
         EditGameDialog dialog = new EditGameDialog();
         dialog.saveVariable(GAME, game);
         dialog.saveVariable(MAIN_SCRIPT_CANDIDATES, mainScriptCandidates);
@@ -135,8 +134,11 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
 
         MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.plugins.getEditText();
         textView.setOnItemClickListener(itemClickListener);
-        textView.setSimpleItems(getPluginVersions());
-        textView.setText(getPluginVersion(), false);
+        textView.setSimpleItems(Arrays.asList(getPluginVersions())
+                .stream()
+                .map(Plugin::toString)
+                .toArray(String[]::new));
+        textView.setText(getPluginVersion().toString(), false);
 
         Glide.with(this)
                 .load(game.getIconPath())
@@ -194,9 +196,15 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
             updated |= updateIcon(game);
         }
 
-        String plugin = getStringFromTextLayout(ui.plugins);
-        if (!plugin.equals(game.getPlugin())) {
-            game.setPlugin(plugin);
+        String pluginStr = getStringFromTextLayout(ui.plugins);
+        if (!pluginStr.equals(game.getPlugin())) {
+            Plugin plugin = Arrays.asList(getPluginVersions())
+                    .stream()
+                    .filter(p -> p.toString().equals(pluginStr))
+                    .findFirst()
+                    .get();
+            game.setPlugin(plugin.toStringWithoutAbi());
+            game.setRenPyPrivateVersion(getPathName(plugin.getPrivateFiles()));
         }
 
         if (getPatchVersions() == null) {
@@ -300,11 +308,11 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
         return getVariable(GAME);
     }
 
-    private String getPluginVersion() {
+    private Plugin getPluginVersion() {
         return getVariable(PLUGIN_VERSION, null);
     }
 
-    private String[] getPluginVersions() {
+    private Plugin[] getPluginVersions() {
         return getVariable(PLUGIN_VERSIONS, null);
     }
 

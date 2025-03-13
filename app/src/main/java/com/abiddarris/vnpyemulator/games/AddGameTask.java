@@ -90,14 +90,13 @@ public class AddGameTask extends IndeterminateTask<EditGameDialog> {
         }
 
         PluginGroup[] plugins = PluginSource.getPlugins(getContext());
-        String[] pluginVersions = Arrays.asList(plugins)
+        Plugin[] pluginVersions = Arrays.asList(plugins)
                 .stream()
                 .flatMap(pluginGroup -> Arrays.asList(pluginGroup.getPlugins(true)).stream())
-                .map(Plugin::toString)
-                .toArray(String[]::new);
+                .toArray(Plugin[]::new);
 
         PluginGroup pluginGroup = PluginSource.getPluginGroup(getContext(), game.getRenPyVersion());
-        String pluginVersion = null;
+        Plugin pluginVersion = null;
         if (pluginGroup != null) {
             pluginVersion = findPreferredPluginVersion(pluginGroup);
         }
@@ -112,7 +111,7 @@ public class AddGameTask extends IndeterminateTask<EditGameDialog> {
         setResult(dialog);
     }
 
-    private String findPreferredPluginVersion(PluginGroup pluginGroup) {
+    private Plugin findPreferredPluginVersion(PluginGroup pluginGroup) {
         Plugin[] plugins = pluginGroup.getPlugins(true);
         List<String> supportedABIs = Arrays.asList(Build.SUPPORTED_ABIS);
         Arrays.sort(plugins, (plugin, plugin2) -> {
@@ -133,7 +132,7 @@ public class AddGameTask extends IndeterminateTask<EditGameDialog> {
             return Integer.compare(abi2, abi);
         });
 
-        return plugins.length == 0 ? null : plugins[0].toString();
+        return plugins.length == 0 ? null : plugins[0];
     }
 
     private String getGameName(File mainScript) throws IOException {
