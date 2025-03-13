@@ -195,7 +195,7 @@ public class PatchSource {
         patcher.download(context, progressPublisher);
     }
 
-    public static void apply(Patcher patcher, String gamePath, IncompatiblePatchCallback callback) throws IOException {
+    public static boolean apply(Patcher patcher, String gamePath, IncompatiblePatchCallback callback) throws IOException {
         for(PatchFile patchFile : patcher.getPatches()) {
             File target = new File(gamePath, patchFile.getTarget());
             if(!target.exists()) {
@@ -221,13 +221,13 @@ public class PatchSource {
 
             inputStream.close();
             if(targetHash.equals(sourceHash)) {
-                return;
+                continue;
             }
 
             if(!targetHash.equals(patchFile.getOriginalFileHash())) {
                 switch (callback.onConflict(target)) {
-                    case CANCEL_PATCHES:
-                        return;
+                    case ABORT:
+                        return false;
                     case SKIP:
                         continue;
                 }
@@ -238,5 +238,6 @@ public class PatchSource {
             os.flush();
             os.close();
         }
+        return true;
     }
 }

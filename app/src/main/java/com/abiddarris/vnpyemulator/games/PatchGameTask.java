@@ -22,7 +22,6 @@ import androidx.fragment.app.FragmentManager;
 import com.abiddarris.common.android.tasks.v2.IndeterminateTask;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
-import com.abiddarris.vnpyemulator.patches.IncompatiblePatchDialog;
 import com.abiddarris.vnpyemulator.patches.IncompatiblePatchStrategy;
 import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.patches.Patcher;
@@ -54,16 +53,14 @@ public class PatchGameTask extends IndeterminateTask<Void> {
         }
 
         setMessage(R.string.patching);
-        PatchSource.apply(patcher, game.getGamePath(), file -> {
-            return IncompatiblePatchStrategy.CANCEL_PATCHES;
-//            var dialog = new IncompatiblePatchDialog();
-//            dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, file.getName());
 
-            //return dialog.showForResultAndBlock(getFragmentManager());
-        });
-
-        GameLoader.addGame(getContext(), game);
-        GameLoader.saveGames(getContext());
+        if (PatchSource.apply(patcher, game.getGamePath(), file ->
+                IncompatiblePatchDialog.newInstance(file.getName())
+                        .showForResultAndBlock(getFragmentManager())
+        )) {
+            GameLoader.addGame(getContext(), game);
+            GameLoader.saveGames(getContext());
+        }
     }
 
     private FragmentManager getFragmentManager() {

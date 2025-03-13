@@ -17,5 +17,5 @@
 package com.abiddarris.vnpyemulator.patches;
 
 public enum IncompatiblePatchStrategy {
-    CANCEL_PATCHES, SKIP, FORCE
+    ABORT, SKIP, FORCE
 }
