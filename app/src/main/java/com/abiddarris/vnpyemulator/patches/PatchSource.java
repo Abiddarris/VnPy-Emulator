@@ -17,19 +17,30 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import static com.abiddarris.common.files.Files.getPathName;
 import static com.abiddarris.common.stream.InputStreams.readAll;
 import static com.abiddarris.vnpyemulator.sources.Source.SOURCE;
 import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 
 import android.content.Context;
 
+import com.abiddarris.common.stream.NullOutputStream;
+import com.abiddarris.common.utils.Hash;
+import com.abiddarris.vnpyemulator.download.ProgressPublisher;
 import com.abiddarris.vnpyemulator.sources.CachedSource;
 import com.abiddarris.vnpyemulator.sources.Connection;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -86,6 +97,25 @@ public class PatchSource {
             .filter(patch -> patch.getRenPyVersion().equals(version))
             .findFirst()
             .orElse(null);
+    }
+
+    public static Patcher getPatcher(String fullVersion) throws IOException {
+        int lastDot = fullVersion.lastIndexOf(".");
+        String patchVersion = fullVersion.substring(0, lastDot);
+        String patcherVersion = fullVersion.substring(lastDot + 1);
+
+        Patch patch = getPatch(patchVersion);
+        if (patch == null) {
+            return null;
+        }
+
+        for (Patcher patcher : patch.getPatchers()) {
+            if (patcher.getVersion().equals(patcherVersion)) {
+                return patcher;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -155,5 +185,58 @@ public class PatchSource {
             return new PatchSource();
         }
         return patchSource;
+    }
+
+    public static boolean isInstalled(Patcher patcher) {
+        return patcher.isInstalled(context);
+    }
+
+    public static void download(Patcher patcher, ProgressPublisher progressPublisher) throws IOException {
+        patcher.download(context, progressPublisher);
+    }
+
+    public static void apply(Patcher patcher, String gamePath, IncompatiblePatchCallback callback) throws IOException {
+        for(PatchFile patchFile : patcher.getPatches()) {
+            File target = new File(gamePath, patchFile.getTarget());
+            if(!target.exists()) {
+                throw new PatchException("Unable to patch non exist file: " + target.getPath());
+            }
+
+            File src = new File(patcher.getPatcherFolder(context), getPathName(patchFile.getSource()));
+            if (!src.exists()) {
+                throw new PatchException(String.format("Broken patch file (Missing %s)", patchFile.getSource()));
+            }
+
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(src));
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            String sourceHash = Hash.createHashingFrom(inputStream, outputStream);
+            byte[] patchContent = outputStream.toByteArray();
+
+            outputStream.close();
+            inputStream.close();
+            inputStream = new BufferedInputStream(new FileInputStream(target));
+
+            String targetHash = Hash.createHashingFrom(inputStream, new NullOutputStream());
+
+            inputStream.close();
+            if(targetHash.equals(sourceHash)) {
+                return;
+            }
+
+            if(!targetHash.equals(patchFile.getOriginalFileHash())) {
+                switch (callback.onConflict(target)) {
+                    case CANCEL_PATCHES:
+                        return;
+                    case SKIP:
+                        continue;
+                }
+            }
+
+            var os = new BufferedOutputStream(new FileOutputStream(target));
+            os.write(patchContent);
+            os.flush();
+            os.close();
+        }
     }
 }

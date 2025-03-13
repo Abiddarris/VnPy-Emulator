@@ -17,21 +17,12 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
-import android.util.Log;
-
-import com.abiddarris.common.stream.NullOutputStream;
-import com.abiddarris.common.utils.Hash;
 import com.abiddarris.vnpyemulator.sources.Connection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -40,73 +31,33 @@ import java.io.IOException;
 public class PatchFile {
     
     private final String originalFileHash;
-    private final String patchFileName;
-    private final String fileToPatch;
-    
-    PatchFile(String originalFileHash, String patchFileName, String fileToPatch) {
-        this.originalFileHash = originalFileHash;
-        this.patchFileName = patchFileName;
-        this.fileToPatch = fileToPatch;
-    }
+    private final String source;
+    private final String target;
 
     public PatchFile(JSONObject object) throws JSONException {
         originalFileHash = object.getString("original_hash");
-        patchFileName = object.getString("src");
-        fileToPatch = object.getString("dest");
+        source = object.getString("src");
+        target = object.getString("dest");
     }
 
     public String getOriginalFileHash() {
         return this.originalFileHash;
     }
     
-    public String getPatchFileName() {
-        return this.patchFileName;
+    public String getSource() {
+        return this.source;
     }
         
-    public String getFileToPatch() {
-        return this.fileToPatch;
+    public String getTarget() {
+        return this.target;
     }
 
     public Connection open() throws IOException {
-        return PatchSource.openInCurrentVersion(getPatchFileName());
+        return PatchSource.openInCurrentVersion(getSource());
     }
 
     public void patch(File folderToPatch, boolean force) {
-        File target = new File(folderToPatch, getFileToPatch());
-        if(!target.exists()) {
-            throw new PatchException("Unable to patch non exist file: " + target.getPath());
-        }
 
-        try (Connection connection = PatchSource.getPatcher()
-                .openInCurrentVersion(getPatchFileName())) {
-            BufferedInputStream inputStream = new BufferedInputStream(connection.getInputStream());
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            String patchHash = Hash.createHashingFrom(inputStream, outputStream);
-            byte[] patchContent = outputStream.toByteArray();
-
-            outputStream.close();
-            inputStream.close();
-            inputStream = new BufferedInputStream(new FileInputStream(target));
-
-            String originalFileHash = Hash.createHashingFrom(inputStream, new NullOutputStream());
-
-            inputStream.close();
-            if(originalFileHash.equals(patchHash)) {
-                return;
-            }
-
-            if(!originalFileHash.equals(getOriginalFileHash()) && !force) {
-                throw new IncompatiblePatchException();
-            }
-
-            var os = new BufferedOutputStream(new FileOutputStream(target));
-            os.write(patchContent);
-            os.flush();
-            os.close();
-        } catch (IOException e) {
-            throw new PatchException(String.format("Cannot patch %s", getPatchFileName()), e);
-        }
 
     }
 }

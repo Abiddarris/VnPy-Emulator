@@ -32,6 +32,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.abiddarris.common.android.about.AboutActivity;
 import com.abiddarris.common.android.fragments.AdvanceFragment;
 import com.abiddarris.common.android.tasks.TaskViewModel;
+import com.abiddarris.common.android.tasks.v2.IndeterminateProgress;
+import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.common.android.tasks.v2.TaskManager;
 import com.abiddarris.common.android.tasks.v2.dialog.DialogProgressPublisherManager;
 import com.abiddarris.common.android.tasks.v2.dialog.IndeterminateDialogProgressPublisher;
@@ -82,7 +84,10 @@ public class GameListFragment extends AdvanceFragment {
                 }
                 var publisher = new IndeterminateDialogProgressPublisher("AddGameDialog");
                 gameListViewModel.dialogManager.registerPublisher(publisher);
-                gameListViewModel.taskManager.execute(new AddGameTask(path), publisher);
+
+                TaskInfo<IndeterminateProgress, EditGameDialog> info =
+                        gameListViewModel.taskManager.execute(new AddGameTask(path), publisher);
+                info.addOnTaskExecuted(dialog -> dialog.show(getChildFragmentManager(), null));
             });
             return true;
         }
@@ -164,7 +169,7 @@ public class GameListFragment extends AdvanceFragment {
         return false;
     }
 
-    public TaskViewModel getTaskModel() {
+    public GameListViewModel getTaskModel() {
         return gameListViewModel;
     }
 
@@ -191,6 +196,7 @@ public class GameListFragment extends AdvanceFragment {
     }
 
     public static class GameListViewModel extends TaskViewModel {
+
         private TaskManager taskManager;
         private DialogProgressPublisherManager dialogManager;
 
@@ -204,6 +210,14 @@ public class GameListFragment extends AdvanceFragment {
             dialogManager.attach(fragment);
         }
 
+        public DialogProgressPublisherManager getDialogManager() {
+            return dialogManager;
+        }
+
+        public TaskManager getTaskManager() {
+            return taskManager;
+        }
+
         private void detach() {
             dialogManager.invalidate();
         }
@@ -213,6 +227,11 @@ public class GameListFragment extends AdvanceFragment {
             taskManager.shutdown(true);
 
             super.onCleared();
+        }
+
+        public void refresh() {
+            GameListFragment fragment = (GameListFragment) getOwner();
+            fragment.refresh();
         }
     }
 

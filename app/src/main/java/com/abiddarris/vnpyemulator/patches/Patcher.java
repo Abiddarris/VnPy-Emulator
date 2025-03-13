@@ -5,7 +5,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *dest.mkdirs();
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
@@ -36,9 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -104,7 +101,7 @@ public class Patcher {
         progressPublisher.setMaxProgress(patchFiles.length);
         for (PatchFile patchFile : patchFiles) {
             try (Connection connection = patchFile.open();
-                 OutputStream output = openBufferedOutput(new File(dest, getPathName(patchFile.getPatchFileName())))) {
+                 OutputStream output = openBufferedOutput(new File(dest, getPathName(patchFile.getSource())))) {
                 InputStream input = new BufferedInputStream(connection.getInputStream());
                 writeAllTo(input, output);
             } catch (IOException e) {
@@ -116,7 +113,7 @@ public class Patcher {
         }
     }
 
-    private @NonNull File getPatcherFolder(Context context) {
+    @NonNull File getPatcherFolder(Context context) {
         File patch = new File(getPatchFolder(context), getPatch().getName());
         return new File(patch, getVersion());
     }

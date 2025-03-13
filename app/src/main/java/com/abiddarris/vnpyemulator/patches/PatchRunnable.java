@@ -26,7 +26,6 @@ import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.tasks.TaskDialog;
 import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.games.EditGameDialog;
 import com.abiddarris.vnpyemulator.games.Game;
 import com.abiddarris.vnpyemulator.games.GameListFragment;
 import com.abiddarris.vnpyemulator.games.GameLoader;
@@ -104,7 +103,7 @@ public class PatchRunnable extends TaskDialog {
                 patchFile.patch(folderToPatch, false);
             } catch (IncompatiblePatchException e) {
                 var dialog = new IncompatiblePatchDialog();
-                dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, patchFile.getFileToPatch());
+                dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, patchFile.getTarget());
 
                 boolean result = dialog.showForResultAndBlock(getFragmentManager());
                 if(!result) {

@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AddGameTask extends IndeterminateTask<Void> {
+public class AddGameTask extends IndeterminateTask<EditGameDialog> {
 
     private final File gameFolder;
 
@@ -105,30 +105,11 @@ public class AddGameTask extends IndeterminateTask<Void> {
                 .map(PluginGroup::getVersion)
                 .collect(Collectors.toList());
 
-        EditGameDialog.editGame(game, mainScriptCandidates, patchVersions,
-                        patchVersion, pluginVersions, pluginVersion)
-                .showForResultAndBlock(getFragmentManager());
-//        game.setPatchVersion(patchVersion);
-//
-//        for(PatchFile patchFile : patchers[patchers.length - 1].getPatches()) {
-//            try {
-//                patchFile.patch(gameFolder, false);
-//            } catch (IncompatiblePatchException e) {
-//                var dialog = new IncompatiblePatchDialog();
-//                dialog.saveVariable(IncompatiblePatchDialog.FILE_NAME, patchFile.getFileToPatch());
-//
-//                boolean result = dialog.showForResultAndBlock(getFragmentManager());
-//                if(!result) {
-//                    continue;
-//                }
-//
-//                patchFile.patch(gameFolder, true);
-//            }
-//
-//        }
-//
-//        GameLoader.addGame(getApplicationContext(), game);
-//        GameLoader.saveGames(getApplicationContext());
+        EditGameDialog dialog = EditGameDialog.editGame(
+                game, mainScriptCandidates, patchVersions,
+                patchVersion, pluginVersions, pluginVersion
+        );
+        setResult(dialog);
     }
 
     private String findPreferredPluginVersion(PluginGroup pluginGroup) {
@@ -192,14 +173,6 @@ public class AddGameTask extends IndeterminateTask<Void> {
         }
 
         return files;
-    }
-
-    @Override
-    public void onFinally() {
-        super.onFinally();
-
-//        GameListFragment fragment = (GameListFragment) getOwner();
-//        fragment.refresh();
     }
 
     private void showScriptNotFoundError() {

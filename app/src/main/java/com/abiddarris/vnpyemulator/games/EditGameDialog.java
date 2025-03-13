@@ -31,9 +31,14 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocument;
+import androidx.annotation.NonNull;
 
 import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import com.abiddarris.common.android.tasks.v2.IndeterminateProgress;
+import com.abiddarris.common.android.tasks.v2.Task;
+import com.abiddarris.common.android.tasks.v2.TaskInfo;
+import com.abiddarris.common.android.tasks.v2.dialog.IndeterminateDialogProgressPublisher;
 import com.abiddarris.common.android.utils.ItemSelectedListener;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.DialogEditGameBinding;
@@ -125,13 +130,13 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
             MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.patches.getEditText();
             textView.setOnItemClickListener(itemClickListener);
             textView.setSimpleItems(getPatchVersions());
-            textView.setText(getPatchVersion());
+            textView.setText(getPatchVersion(), false);
         }
 
         MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.plugins.getEditText();
         textView.setOnItemClickListener(itemClickListener);
         textView.setSimpleItems(getPluginVersions());
-        textView.setText(getPluginVersion());
+        textView.setText(getPluginVersion(), false);
 
         Glide.with(this)
                 .load(game.getIconPath())
@@ -177,26 +182,42 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
     }
 
     private void onPositiveButtonClicked(Game game) {
-        if (getPatchVersions() == null) {
-            sendResult(game);
-            return;
-        }
-    }
-
-    private void sendResult(Game game) {
         boolean updated = false;
+        String name = getStringFromTextLayout(ui.nameLayout);
 
-        String name = ui.name.getText().toString();
-        if (!game.getName().equals(name)) {
+        if (!name.equals(game.getName())) {
             updated = true;
             game.setName(name);
         }
 
         if (getIconUri() != null) {
-            updated = updateIcon(game);
+            updated |= updateIcon(game);
         }
 
-        sendResult(updated);
+        String plugin = getStringFromTextLayout(ui.plugins);
+        if (!plugin.equals(game.getPlugin())) {
+            game.setPlugin(plugin);
+        }
+
+        if (getPatchVersions() == null) {
+            sendResult(updated);
+        }
+
+        game.setPatchVersion(getStringFromTextLayout(ui.patches));
+
+        if (getMainScriptsCandidate() != null) {
+            game.setGameScript(getStringFromTextLayout(ui.mainGameScripts));
+        }
+
+        GameListFragment.GameListViewModel taskModel = ((GameListFragment) getParentFragment())
+                .getTaskModel();
+        IndeterminateDialogProgressPublisher publisher = new IndeterminateDialogProgressPublisher("PatchGameDialog");
+        taskModel.getDialogManager().registerPublisher(publisher);
+
+        TaskInfo<IndeterminateProgress, Void> info = taskModel.getTaskManager()
+                .execute(new PatchGameTask(game), publisher);
+        info.addOnTaskExecuted(ignored -> taskModel.refresh());
+        sendResult(true);
     }
 
     private boolean updateIcon(Game game) {
@@ -212,6 +233,10 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
         game.setIconPath(path.getAbsolutePath());
 
         return true;
+    }
+
+    private @NonNull String getStringFromTextLayout(TextInputLayout layout) {
+        return layout.getEditText().getText().toString();
     }
 
     private File copyIcon() {
