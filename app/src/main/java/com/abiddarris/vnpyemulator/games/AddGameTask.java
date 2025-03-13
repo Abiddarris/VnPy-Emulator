@@ -105,8 +105,8 @@ public class AddGameTask extends IndeterminateTask<EditGameDialog> {
                 .collect(Collectors.toList());
 
         EditGameDialog dialog = EditGameDialog.editGame(
-                game, mainScriptCandidates, patchVersions,
-                patchVersion, pluginVersions, pluginVersion
+                game, mainScriptCandidates.length == 1 ? null : mainScriptCandidates,
+                patchVersions, patchVersion, pluginVersions, pluginVersion
         );
         setResult(dialog);
     }
