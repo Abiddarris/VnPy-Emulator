@@ -41,6 +41,6 @@ public class FetchPluginTask extends TaskDialog {
     @Override
     public void execute() throws Exception {
         ((PluginFragment)getOwner())
-                .onPluginFetched(PluginSource.getPlugins(getApplicationContext()));
+                .onPluginFetched(PluginSource.getPluginGroups(getApplicationContext()));
     }
 }

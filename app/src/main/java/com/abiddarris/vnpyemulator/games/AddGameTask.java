@@ -89,20 +89,12 @@ public class AddGameTask extends IndeterminateTask<EditGameDialog> {
             patchVersion = null;
         }
 
-        PluginGroup[] plugins = PluginSource.getPlugins(getContext());
-        Plugin[] pluginVersions = Arrays.asList(plugins)
-                .stream()
-                .flatMap(pluginGroup -> Arrays.asList(pluginGroup.getPlugins(true)).stream())
-                .toArray(Plugin[]::new);
-
+        Plugin[] pluginVersions = PluginSource.getPlugins(getContext(), true);
         PluginGroup pluginGroup = PluginSource.getPluginGroup(getContext(), game.getRenPyVersion());
         Plugin pluginVersion = null;
         if (pluginGroup != null) {
             pluginVersion = findPreferredPluginVersion(pluginGroup);
         }
-        List<String> versions = Stream.of(plugins)
-                .map(PluginGroup::getVersion)
-                .collect(Collectors.toList());
 
         EditGameDialog dialog = EditGameDialog.editGame(
                 game, mainScriptCandidates.length == 1 ? null : mainScriptCandidates,

@@ -35,7 +35,7 @@ import java.util.Arrays;
 
 public class PluginSource {
 
-    private static PluginGroup[] plugins;
+    private static PluginGroup[] pluginGroups;
 
     public static Connection openInCurrentVersion(String fileName) throws IOException {
         return openInCurrentVersion(SOURCE, fileName);
@@ -46,30 +46,37 @@ public class PluginSource {
         return source.openConnection(fileName);
     }
 
-    public static PluginGroup[] getPlugins(Context context) throws IOException {
-        if (plugins != null) {
-            return plugins;
+    public static PluginGroup[] getPluginGroups(Context context) throws IOException {
+        if (pluginGroups != null) {
+            return pluginGroups;
         }
 
         try (Connection connection = openInCurrentVersion(CachedSource.getInstance(context), "plugins.json")) {
             JSONArray pluginsJSON = new JSONArray(new String(readAll(connection.getInputStream())));
 
-            plugins = new PluginGroup[pluginsJSON.length()];
-            for (int i = 0; i < plugins.length; i++) {
-                plugins[i] = new PluginGroup(pluginsJSON.getJSONObject(i));
+            pluginGroups = new PluginGroup[pluginsJSON.length()];
+            for (int i = 0; i < pluginGroups.length; i++) {
+                pluginGroups[i] = new PluginGroup(pluginsJSON.getJSONObject(i));
             }
 
-            return plugins;
+            return pluginGroups;
         } catch (JSONException e) {
             throw new IOException("Cannot fetch plugins.json", e);
         }
     }
 
     public static PluginGroup getPluginGroup(Context context, String renPyVersion) throws IOException {
-        return Arrays.asList(getPlugins(context))
+        return Arrays.asList(getPluginGroups(context))
                 .stream()
                 .filter(plugin -> plugin.getVersion().equals(renPyVersion))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public static Plugin[] getPlugins(Context context, boolean onlySupportedAbi) throws IOException {
+        return Arrays.asList(getPluginGroups(context))
+                .stream()
+                .flatMap(pluginGroup -> Arrays.asList(pluginGroup.getPlugins(onlySupportedAbi)).stream())
+                .toArray(Plugin[]::new);
     }
 }
