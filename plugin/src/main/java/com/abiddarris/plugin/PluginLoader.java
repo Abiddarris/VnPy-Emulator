@@ -17,9 +17,13 @@
  ***********************************************************************************/
 package com.abiddarris.plugin;
 
+import static androidx.core.content.pm.PackageInfoCompat.getLongVersionCode;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+
 import com.abiddarris.common.android.pm.Packages;
 
 public class PluginLoader {
@@ -29,9 +33,18 @@ public class PluginLoader {
     public static final String GAME_SCRIPT = "game_script";
     public static final String KEYBOARD_FOLDER_PATH = "keyboard_folder_path";
     public static final String ERROR_PORT = "error_port";
-    
-    public static boolean hasPlugin(Context context, String version) {
-        return Packages.isInstalled(context, getPackage(version));
+
+    public static long getPluginInternalVersion(Context context, String version) {
+        PackageManager manager = context.getPackageManager();
+        try {
+            return getLongVersionCode(manager.getPackageInfo(getPackage(version), 0));
+        } catch (PackageManager.NameNotFoundException e) {
+            return -1;
+        }
+    }
+
+    public static boolean hasPlugin(Context context, PluginName name) {
+        return Packages.isInstalled(context, getPackage(name.getVersion()));
     }
     
     public static String getPackage(String version) {

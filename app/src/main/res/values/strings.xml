@@ -56,4 +56,10 @@
     <string name="plugin">Plugin</string>
     <string name="patch">Patch</string>
     <string name="game_script">Game Script</string>
+    <string name="plugin_not_installed">Plugin not installed</string>
+    <string name="please_install_plugin">Please install plugin</string>
+    <string name="plugin_corrupted">Plugin corrupted</string>
+    <string name="plugin_corrupted_message">Missing renpy private files. Please redownload</string>
+    <string name="mismatch_plugin_version">Mismatch plugin version</string>
+    <string name="mismatch_plugin_message">Expected %s but %s installed</string>
 </resources>

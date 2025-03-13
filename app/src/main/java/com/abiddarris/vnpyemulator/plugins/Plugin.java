@@ -83,10 +83,14 @@ public class Plugin {
         return hasPrivateFiles(context, getPrivateFiles());
     }
 
+    public String toStringWithoutAbi() {
+        return getPluginGroup().getVersion() + "." + getVersion();
+    }
+
     @NonNull
     @Override
     public String toString() {
-        return getPluginGroup().getVersion() + "." + getVersion() + " (" + getAbi() + ")";
+        return toStringWithoutAbi() + " (" + getAbi() + ")";
     }
 
     public void downloadPlugin(Context context, ProgressPublisher progressPublisher) throws IOException {

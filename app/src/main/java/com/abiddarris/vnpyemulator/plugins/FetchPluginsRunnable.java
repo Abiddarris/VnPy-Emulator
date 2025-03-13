@@ -100,9 +100,9 @@ public class FetchPluginsRunnable extends TaskDialog {
             return;
         }
         
-        if(!PluginLoader.hasPlugin(getApplicationContext(), pluginGroup.getVersion())) {
-            downloadPlugin(pluginGroup, plugin);
-        }
+//        if(!PluginLoader.hasPlugin(getApplicationContext(), pluginGroup.getVersion())) {
+//            downloadPlugin(pluginGroup, plugin);
+//        }
         
         if(!RenPyPrivate.hasPrivateFiles(getApplicationContext(), pluginGroup.getVersion())) {
             downloadPrivateFiles(pluginGroup, plugin);
