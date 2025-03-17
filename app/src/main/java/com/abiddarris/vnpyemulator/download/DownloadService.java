@@ -26,18 +26,14 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
+import com.abiddarris.common.android.tasks.v2.DeterminateTask;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.common.android.tasks.v2.TaskManager;
 import com.abiddarris.common.android.tasks.v2.notifications.DeterminateNotificationProgressPublisher;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.patch.DownloadPatchTask;
-import com.abiddarris.vnpyemulator.download.plugin.DownloadPluginTask;
 import com.abiddarris.vnpyemulator.patches.Patcher;
-import com.abiddarris.vnpyemulator.plugins.Plugin;
-
-import java.io.IOException;
 
 public class DownloadService extends Service {
 
@@ -54,17 +50,10 @@ public class DownloadService extends Service {
         return binder;
     }
 
-    public void downloadPlugin(Plugin plugin) {
+    public <Result> TaskInfo<DeterminateProgress, Result> download(DeterminateTask<Result> task) {
         var publisher = new DeterminateNotificationProgressPublisher(createDefaultNotification(), this);
 
-        TaskInfo<DeterminateProgress, Void> taskInfo = taskManager.execute(new DownloadPluginTask(this, plugin), publisher);
-        taskInfo.addOnTaskExecuted(ignored -> {
-            try {
-                Packages.installPackage(this, plugin.getPluginApk(this));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        return taskManager.execute(task, publisher);
     }
 
     public void downloadPatcher(Patcher patcher) {

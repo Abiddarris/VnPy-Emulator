@@ -16,16 +16,23 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.plugin;
 
+import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.abiddarris.common.android.pm.Packages;
+import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
+import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
+import com.abiddarris.vnpyemulator.download.DownloadService;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownloadViewModel;
 import com.abiddarris.vnpyemulator.download.base.BaseItem;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.abiddarris.vnpyemulator.plugins.PluginSource;
+
+import java.io.IOException;
 
 public class PluginItem extends BaseItem {
 
@@ -40,7 +47,6 @@ public class PluginItem extends BaseItem {
     @Override
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
-
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
         if (PluginSource.isInstalled(fragment.getContext(), plugin)) {
@@ -48,7 +54,22 @@ public class PluginItem extends BaseItem {
             viewBinding.download.setVisibility(View.INVISIBLE);
         } else {
             viewBinding.download.setVisibility(View.VISIBLE);
-            viewBinding.download.setOnClickListener(v -> fragment.getDownloadService().downloadPlugin(plugin));
+            viewBinding.download.setOnClickListener(this::downloadPlugin);
         }
+    }
+
+    private void downloadPlugin(View v) {
+        BaseDownloadFragment fragment = pluginViewModel.getFragment();
+        DownloadService service = fragment.getDownloadService();
+        Context context = service.getApplicationContext();
+
+        TaskInfo<DeterminateProgress, Void> info = service.download(new DownloadPluginTask(plugin));
+        info.addOnTaskExecuted(ignored -> {
+            try {
+                Packages.installPackage(context, plugin.getPluginApk(context));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }

@@ -18,8 +18,6 @@ package com.abiddarris.vnpyemulator.download.plugin;
 
 import static com.abiddarris.common.utils.Randoms.randomInt;
 
-import android.content.Context;
-
 import com.abiddarris.common.android.tasks.v2.DeterminateTask;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
@@ -27,24 +25,22 @@ import com.abiddarris.vnpyemulator.plugins.Plugin;
 
 public class DownloadPluginTask extends DeterminateTask<Void> implements ProgressPublisher {
 
-    private final Context context;
     private final Plugin plugin;
     private int progress;
 
-    public DownloadPluginTask(Context context, Plugin plugin) {
-        this.context = context;
+    public DownloadPluginTask(Plugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public void execute() throws Exception {
-        setTitle(context.getString(R.string.plugin_downloader));
-        setMessage(context.getString(R.string.downloading_plugin, plugin.getFile()));
+        setTitle(R.string.plugin_downloader);
+        setMessage(getString(R.string.downloading_plugin, plugin.getFile()));
 
-        plugin.downloadPlugin(context,this);
-        plugin.downloadPrivateFiles(context, this);
+        plugin.downloadPlugin(getContext(),this);
+        plugin.downloadPrivateFiles(getContext(), this);
 
-        setMessage(context.getString(R.string.downloaded));
+        setMessage(R.string.downloaded);
     }
 
     @Override
