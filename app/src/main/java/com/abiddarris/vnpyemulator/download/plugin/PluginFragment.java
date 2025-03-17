@@ -19,6 +19,7 @@ package com.abiddarris.vnpyemulator.download.plugin;
 
 import static com.abiddarris.common.android.pm.Packages.isAllowedToInstallPackage;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -42,10 +43,12 @@ public class PluginFragment extends BaseDownloadFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestInstallFromUnknownSource = registerForActivityResult(
-                new Packages.RequestInstallPackagePermission(),
-                this::requestInstallFromUnknownSourceCallback
-        );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            requestInstallFromUnknownSource = registerForActivityResult(
+                    new Packages.RequestInstallPackagePermission(),
+                    this::requestInstallFromUnknownSourceCallback
+            );
+        }
     }
 
     @Override
