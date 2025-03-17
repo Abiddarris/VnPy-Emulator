@@ -71,8 +71,9 @@ public class BaseDownloadFragment extends AdvanceFragment {
 
     public static class BaseDownloadViewModel extends TaskViewModel {
 
-        public BaseDownloadFragment getFragment() {
-            return (BaseDownloadFragment) getOwner();
+        @SuppressWarnings("unchecked")
+        public <T extends BaseDownloadFragment> T getFragment() {
+            return (T) getOwner();
         }
     }
 }

@@ -35,8 +35,14 @@ import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.abiddarris.vnpyemulator.plugins.PluginGroup;
 import com.xwray.groupie.ExpandableGroup;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class PluginFragment extends BaseDownloadFragment {
 
+    public static final String PLUGIN_GROUPS = "pluginGroups";
+    public static final String PLUGIN_STATE = "pluginState";
+    public static final String PLUGIN_ITEMS = "pluginItems";
     private ActivityResultLauncher<Void> requestInstallFromUnknownSource;
 
     @Override
@@ -55,7 +61,14 @@ public class PluginFragment extends BaseDownloadFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        baseDownloadViewModel.execute(new FetchPluginTask());
+        setPluginToAdapter();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        getPluginItems().clear();
     }
 
     private void requestInstallFromUnknownSourceCallback(Boolean success) {
@@ -63,18 +76,69 @@ public class PluginFragment extends BaseDownloadFragment {
     }
 
     public void onPluginFetched(PluginGroup[] pluginGroups) {
-        requireActivity().runOnUiThread(() -> {
-            for (PluginGroup group : pluginGroups) {
-                ExpandableGroup pluginGroup = new ExpandableGroup(new PluginGroupItem(group));
-                for (Plugin plugin : group.getPlugins()){
-                    pluginGroup.add(new PluginItem(plugin, baseDownloadViewModel));
-                }
-
-                adapter.add(pluginGroup);
-            }
-        });
+        setPluginGroups(pluginGroups);
+        requireActivity().runOnUiThread(this::setPluginToAdapter);
 
         checkInstallFromUnknownSourcePermission();
+    }
+
+    private void setPluginToAdapter() {
+        PluginGroup[] pluginGroups = getPluginGroups();
+        if (pluginGroups == null) {
+            baseDownloadViewModel.execute(new FetchPluginTask());
+            return;
+        }
+
+        Map<Plugin, PluginState> pluginStates = getPluginStates();
+        Map<PluginState, PluginItem> pluginItems = getPluginItems();
+        for (PluginGroup group : pluginGroups) {
+            ExpandableGroup pluginGroup = new ExpandableGroup(new PluginGroupItem(group));
+            for (Plugin plugin : group.getPlugins()) {
+                PluginState state = pluginStates.get(plugin);
+                if (state == null) {
+                    state = new PluginState(plugin);
+                    pluginStates.put(plugin, state);
+                }
+
+                PluginItem item = new PluginItem(state, baseDownloadViewModel);
+                pluginGroup.add(item);
+                pluginItems.put(state, item);
+            }
+
+            adapter.add(pluginGroup);
+        }
+    }
+
+    public PluginItem getActivePluginItem(PluginState pluginState) {
+        return getPluginItems().get(pluginState);
+    }
+
+    private Map<PluginState, PluginItem> getPluginItems() {
+        Map<PluginState, PluginItem> pluginItems = getVariable(PLUGIN_ITEMS);
+        if (pluginItems == null) {
+            pluginItems = new HashMap<>();
+            saveVariable(PLUGIN_ITEMS, pluginItems);
+        }
+
+        return pluginItems;
+    }
+
+    private Map<Plugin, PluginState> getPluginStates() {
+        Map<Plugin, PluginState> pluginStates = getVariable(PLUGIN_STATE);
+        if (pluginStates == null) {
+            pluginStates = new HashMap<>();
+            saveVariable(PLUGIN_STATE, pluginStates);
+        }
+
+        return pluginStates;
+    }
+
+    private void setPluginGroups(PluginGroup[] groups) {
+        saveVariable(PLUGIN_GROUPS, groups);
+    }
+
+    private PluginGroup[] getPluginGroups() {
+        return getVariable(PLUGIN_GROUPS);
     }
 
     private void checkInstallFromUnknownSourcePermission() {

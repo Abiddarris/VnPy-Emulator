@@ -18,6 +18,8 @@ package com.abiddarris.vnpyemulator.download.plugin;
 
 import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
 
+import static com.abiddarris.common.android.handlers.MainThreads.runOnMainThreadIfNot;
+
 import android.content.Context;
 import android.view.View;
 
@@ -42,49 +44,63 @@ import java.io.IOException;
 public class PluginItem extends BaseItem {
 
     private final Plugin plugin;
+    private final PluginState pluginState;
     private LayoutPluginBinding viewBinding;
 
-    public PluginItem(Plugin plugin, BaseDownloadViewModel pluginViewModel) {
+    public PluginItem(PluginState pluginState, BaseDownloadViewModel pluginViewModel) {
         super(pluginViewModel);
 
-        this.plugin = plugin;
+        this.pluginState = pluginState;
+        this.plugin = pluginState.getPlugin();
     }
 
     @Override
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
         this.viewBinding = viewBinding;
+
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
-        if (PluginSource.isInstalled(fragment.getContext(), plugin)) {
+        if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading()) {
             viewBinding.download.setOnClickListener(null);
             viewBinding.download.setVisibility(View.INVISIBLE);
         } else {
             viewBinding.download.setVisibility(View.VISIBLE);
-            viewBinding.download.setOnClickListener(v -> {
-                if (viewBinding.download.getVisibility() == View.INVISIBLE) {
-                    return;
-                }
-                viewBinding.download.setVisibility(View.INVISIBLE);
+            viewBinding.download.setOnClickListener(v -> download(fragment));
+        }
+    }
 
-                DownloadService service = fragment.getDownloadService();
+    private void download(BaseDownloadFragment fragment) {
+        if (viewBinding.download.getVisibility() == View.INVISIBLE) {
+            return;
+        }
+        pluginState.setDownloading(true);
+        notifyChanged();
 
-                TaskInfo<DeterminateProgress, Boolean> info = service.download(new DownloadPluginTask(plugin));
-                info.addOnTaskExecuted(success -> {
-                    if (success) {
-                        installPlugin();
-                    } else {
-                        viewBinding.download.setVisibility(View.INVISIBLE);
-                    }
-                });
-            });
+        DownloadService service = fragment.getDownloadService();
+
+        TaskInfo<DeterminateProgress, Boolean> info = service.download(new DownloadPluginTask(plugin));
+        info.addOnTaskExecuted(this::onDownloadResult);
+    }
+
+    private void onDownloadResult(Boolean success) {
+        if (success) {
+            installPlugin();
+            return;
+        }
+        pluginState.setDownloading(false);
+
+        PluginFragment fragment = pluginViewModel.getFragment();
+        PluginItem item = fragment.getActivePluginItem(pluginState);
+        if (item != null) {
+            runOnMainThreadIfNot(item::notifyChanged);
         }
     }
 
     private void installPlugin() {
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
         Context context = fragment.requireContext().getApplicationContext();
-        
+
         try {
             Packages.installPackage(context, plugin.getPluginApk(context), (status, message) -> {
                 if (status == STATUS_SUCCESS) {
