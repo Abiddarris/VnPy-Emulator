@@ -43,6 +43,7 @@ public class PluginFragment extends BaseDownloadFragment {
     public static final String PLUGIN_GROUPS = "pluginGroups";
     public static final String PLUGIN_STATE = "pluginState";
     public static final String PLUGIN_ITEMS = "pluginItems";
+    public static final String FETCHED = "fetched";
     private ActivityResultLauncher<Void> requestInstallFromUnknownSource;
 
     @Override
@@ -85,6 +86,11 @@ public class PluginFragment extends BaseDownloadFragment {
     private void setPluginToAdapter() {
         PluginGroup[] pluginGroups = getPluginGroups();
         if (pluginGroups == null) {
+            if (getVariable(FETCHED, false)) {
+                return;
+            }
+            saveVariable(FETCHED, true);
+
             baseDownloadViewModel.execute(new FetchPluginTask());
             return;
         }

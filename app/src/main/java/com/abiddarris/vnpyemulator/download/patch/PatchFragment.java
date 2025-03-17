@@ -31,10 +31,16 @@ import com.xwray.groupie.ExpandableGroup;
 
 public class PatchFragment extends BaseDownloadFragment {
 
+    private static final String FETCHED = "fetched";
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (getVariable(FETCHED, false)) {
+            return;
+        }
+        saveVariable(FETCHED, true);
         baseDownloadViewModel.execute(new FetchPatchTask());
     }
 
