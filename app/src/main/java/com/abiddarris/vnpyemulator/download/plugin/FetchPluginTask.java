@@ -29,7 +29,12 @@ public class FetchPluginTask extends TaskDialog {
     @NonNull
     @Override
     protected DialogFragment newDialog() {
-        return ProgressDialog.newProgressDialog(getString(R.string.fetch_plugin_title), getString(R.string.fetching));
+        ProgressDialog dialog = ProgressDialog.newProgressDialog(
+                getString(R.string.fetch_plugin_title),
+                getString(R.string.fetching)
+        );
+        dialog.setCancelable(false);
+        return dialog;
     }
 
     @NonNull
