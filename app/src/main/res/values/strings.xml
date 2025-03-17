@@ -65,4 +65,6 @@
     <string name="skip">Skip</string>
     <string name="deleting_game">Deleting game…</string>
     <string name="please_wait">Please Wait…</string>
+    <string name="permission_required">Permission required</string>
+    <string name="request_install_permission_message">To install plugins, please grant install from unknown sources for this app.</string>
 </resources>

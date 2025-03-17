@@ -17,12 +17,18 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.plugin;
 
+import static com.abiddarris.common.android.pm.Packages.isAllowedToInstallPackage;
+
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.abiddarris.common.android.dialogs.SimpleDialog;
+import com.abiddarris.common.android.pm.Packages;
+import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.abiddarris.vnpyemulator.plugins.PluginGroup;
@@ -30,11 +36,27 @@ import com.xwray.groupie.ExpandableGroup;
 
 public class PluginFragment extends BaseDownloadFragment {
 
+    private ActivityResultLauncher<Void> requestInstallFromUnknownSource;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        requestInstallFromUnknownSource = registerForActivityResult(
+                new Packages.RequestInstallPackagePermission(),
+                this::requestInstallFromUnknownSourceCallback
+        );
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         baseDownloadViewModel.execute(new FetchPluginTask());
+    }
+
+    private void requestInstallFromUnknownSourceCallback(Boolean success) {
+        checkInstallFromUnknownSourcePermission();
     }
 
     public void onPluginFetched(PluginGroup[] pluginGroups) {
@@ -48,5 +70,21 @@ public class PluginFragment extends BaseDownloadFragment {
                 adapter.add(pluginGroup);
             }
         });
+
+        checkInstallFromUnknownSourcePermission();
+    }
+
+    private void checkInstallFromUnknownSourcePermission() {
+        if (isAllowedToInstallPackage(requireContext())) {
+            return;
+        }
+
+        SimpleDialog dialog = SimpleDialog.newSimpleDialog(
+                getString(R.string.permission_required),
+                getString(R.string.request_install_permission_message)
+        );
+        dialog.setCancelable(false);
+        dialog.showForResult(getChildFragmentManager(),
+                ignored -> requestInstallFromUnknownSource.launch(null));
     }
 }

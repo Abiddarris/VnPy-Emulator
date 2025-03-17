@@ -16,7 +16,6 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download;
 
-import static com.abiddarris.common.android.pm.Packages.isAllowedToInstallPackage;
 import static com.abiddarris.vnpyemulator.utils.Notifications.DOWNLOAD_CHANNEL_ID;
 
 import android.app.Service;
@@ -44,10 +43,7 @@ public class DownloadService extends Service {
 
     private final TaskManager taskManager = new TaskManager(this);
 
-    private boolean paused;
     private DownloadServiceBinder binder;
-    private DownloadFragment downloadFragment;
-    private Plugin plugin;
 
     @Nullable
     @Override
@@ -58,29 +54,16 @@ public class DownloadService extends Service {
         return binder;
     }
 
-    @Override
-    public boolean onUnbind(Intent intent) {
-        downloadFragment = null;
-
-        return super.onUnbind(intent);
-    }
-
     public void downloadPlugin(Plugin plugin) {
         var publisher = new DeterminateNotificationProgressPublisher(createDefaultNotification(), this);
 
         TaskInfo<DeterminateProgress, Void> taskInfo = taskManager.execute(new DownloadPluginTask(this, plugin), publisher);
         taskInfo.addOnTaskExecuted(ignored -> {
-            if (!isAllowedToInstallPackage(this) && downloadFragment == null) {
-                return;
+            try {
+                Packages.installPackage(this, plugin.getPluginApk(this));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-
-            this.plugin = plugin;
-            if (!isAllowedToInstallPackage(this)) {
-                downloadFragment.requestPackagePermission();
-                return;
-            }
-
-            continueInstall();
         });
     }
 
@@ -95,18 +78,6 @@ public class DownloadService extends Service {
         return new NotificationCompat.Builder(this, DOWNLOAD_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_download)
                 .setPriority(NotificationCompat.PRIORITY_LOW);
-    }
-
-    public void attachFragment(DownloadFragment downloadFragment) {
-        this.downloadFragment = downloadFragment;
-    }
-
-    public void continueInstall() {
-        try {
-            Packages.installPackage(this, plugin.getPluginApk(this));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public class DownloadServiceBinder extends Binder {
