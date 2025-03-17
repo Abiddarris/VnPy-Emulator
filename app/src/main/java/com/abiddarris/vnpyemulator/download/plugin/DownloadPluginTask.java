@@ -14,21 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download;
+package com.abiddarris.vnpyemulator.download.plugin;
 
 import static com.abiddarris.common.utils.Randoms.randomInt;
-import static com.abiddarris.vnpyemulator.utils.Notifications.DOWNLOAD_CHANNEL_ID;
 
 import android.content.Context;
 
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import com.abiddarris.common.android.handlers.MainThreads;
-import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
 import com.abiddarris.common.android.tasks.v2.DeterminateTask;
-import com.abiddarris.common.android.tasks.v2.Task;
 import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.download.ProgressPublisher;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 
 public class DownloadPluginTask extends DeterminateTask<Void> implements ProgressPublisher {

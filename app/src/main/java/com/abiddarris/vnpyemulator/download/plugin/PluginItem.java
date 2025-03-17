@@ -16,12 +16,16 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.plugin;
 
+import android.view.View;
+
 import androidx.annotation.NonNull;
 
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
+import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownloadViewModel;
 import com.abiddarris.vnpyemulator.download.base.BaseItem;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
+import com.abiddarris.vnpyemulator.plugins.PluginSource;
 
 public class PluginItem extends BaseItem {
 
@@ -29,13 +33,22 @@ public class PluginItem extends BaseItem {
 
     public PluginItem(Plugin plugin, BaseDownloadViewModel pluginViewModel) {
         super(pluginViewModel);
+
         this.plugin = plugin;
     }
 
     @Override
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
-        viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
-        viewBinding.download.setOnClickListener(v -> pluginViewModel.getFragment().getDownloadService().downloadPlugin(plugin));
+        BaseDownloadFragment fragment = pluginViewModel.getFragment();
 
+        viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
+
+        if (PluginSource.isInstalled(fragment.getContext(), plugin)) {
+            viewBinding.download.setOnClickListener(null);
+            viewBinding.download.setVisibility(View.INVISIBLE);
+        } else {
+            viewBinding.download.setVisibility(View.VISIBLE);
+            viewBinding.download.setOnClickListener(v -> fragment.getDownloadService().downloadPlugin(plugin));
+        }
     }
 }

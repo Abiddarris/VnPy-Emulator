@@ -34,6 +34,7 @@ import com.abiddarris.common.android.tasks.v2.TaskManager;
 import com.abiddarris.common.android.tasks.v2.notifications.DeterminateNotificationProgressPublisher;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.patch.DownloadPatchTask;
+import com.abiddarris.vnpyemulator.download.plugin.DownloadPluginTask;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 
