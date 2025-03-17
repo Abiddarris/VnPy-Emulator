@@ -17,15 +17,15 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.plugins;
 
-import static com.abiddarris.vnpyemulator.files.Files.getPlugin;
+import static com.abiddarris.vnpyemulator.files.Files.getCacheFolder;
 import static com.abiddarris.vnpyemulator.renpy.RenPyPrivate.hasPrivateFiles;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.abiddarris.common.utils.Randoms;
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
-import com.abiddarris.vnpyemulator.files.Files;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import com.abiddarris.vnpyemulator.sources.Connection;
 
@@ -94,15 +94,19 @@ public class Plugin {
     }
 
     public void downloadPlugin(Context context, ProgressPublisher progressPublisher) throws IOException {
+        File temp = new File(getCacheFolder(context), Randoms.newRandomString(8));
         try(Connection connection = PluginSource.openInCurrentVersion(getFile());
-            BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(getPluginApk(context)))) {
+            BufferedOutputStream output = new BufferedOutputStream(new FileOutputStream(temp))) {
             BufferedInputStream input = new BufferedInputStream(connection.getInputStream());
             long size = connection.getSize();
             progressPublisher.setMaxProgress(size >= Integer.MAX_VALUE ? Integer.MIN_VALUE : (int)size);
 
             download(progressPublisher, input, output);
+        } catch (IOException e) {
+            temp.delete();
+            throw e;
         }
-
+        temp.renameTo(getPluginApk(context));
     }
 
     public @NonNull File getPluginApk(Context context) {
@@ -113,7 +117,7 @@ public class Plugin {
         if (isPrivateFilesDownloaded(context)) {
             return;
         }
-        File cache = new File(Files.getCacheFolder(context), getPrivateFiles());
+        File cache = new File(getCacheFolder(context), getPrivateFiles());
         cache.deleteOnExit();
 
         try(Connection connection = PluginSource.openInCurrentVersion(getPrivateFiles());
