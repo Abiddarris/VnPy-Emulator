@@ -17,7 +17,9 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.plugins;
 
+import static com.abiddarris.common.files.Files.getPathName;
 import static com.abiddarris.common.stream.InputStreams.readAll;
+import static com.abiddarris.vnpyemulator.files.Files.getPlugin;
 import static com.abiddarris.vnpyemulator.sources.Source.SOURCE;
 import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 import static java.lang.Boolean.TRUE;
@@ -26,6 +28,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import com.abiddarris.common.android.pm.Packages;
+import com.abiddarris.common.files.Files;
 import com.abiddarris.common.utils.Exceptions;
 import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.plugin.PluginName;
@@ -36,6 +39,7 @@ import com.abiddarris.vnpyemulator.sources.Source;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -126,5 +130,13 @@ public class PluginSource {
 
     public static void setInstalled(Plugin plugin, boolean installed) {
         PluginSource.installed.put(plugin, installed);
+    }
+
+    public static File getPluginApk(Context context, Plugin plugin) {
+        return getPlugin(context, getPathName(plugin.getFile()));
+    }
+
+    public static boolean isDownloaded(Context context, Plugin plugin) {
+        return getPluginApk(context, plugin).exists();
     }
 }

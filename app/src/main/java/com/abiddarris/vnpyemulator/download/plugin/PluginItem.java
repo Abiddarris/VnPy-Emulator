@@ -19,6 +19,7 @@ package com.abiddarris.vnpyemulator.download.plugin;
 import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
 
 import static com.abiddarris.common.android.handlers.MainThreads.runOnMainThreadIfNot;
+import static com.abiddarris.vnpyemulator.files.Files.getPlugin;
 
 import android.content.Context;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownlo
 import com.abiddarris.vnpyemulator.download.base.BaseItem;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.abiddarris.vnpyemulator.plugins.PluginSource;
+import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
 
@@ -58,15 +60,24 @@ public class PluginItem extends BaseItem {
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
         this.viewBinding = viewBinding;
 
-        BaseDownloadFragment fragment = pluginViewModel.getFragment();
+        PluginFragment fragment = pluginViewModel.getFragment();
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
         if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading() || pluginState.isInstalling()) {
             viewBinding.download.setOnClickListener(null);
             viewBinding.download.setVisibility(View.INVISIBLE);
+        } else if (PluginSource.isDownloaded(fragment.getContext(), plugin)) {
+            viewBinding.download.setVisibility(View.VISIBLE);
+            viewBinding.download.setOnClickListener(v -> {
+                installPlugin();
+                notifyItem(fragment.getActivePluginItem(pluginState));
+            });
+            ((MaterialButton)viewBinding.download).setIconResource(R.drawable.ic_install);
         } else {
             viewBinding.download.setVisibility(View.VISIBLE);
             viewBinding.download.setOnClickListener(v -> download(fragment));
+
+            ((MaterialButton)viewBinding.download).setIconResource(R.drawable.ic_download);
         }
     }
 
@@ -116,6 +127,7 @@ public class PluginItem extends BaseItem {
     }
 
     private void onInstallResult(Context context, int status, String message) {
+        PluginFragment fragment = pluginViewModel.getFragment();
         if (status != STATUS_SUCCESS) {
             SimpleDialog.show(
                     pluginViewModel.getFragment().getChildFragmentManager(),
@@ -126,21 +138,21 @@ public class PluginItem extends BaseItem {
                             String.valueOf(status), message
                     )
             );
+        } else {
+            for (Plugin neighbouringPlugin : plugin.getPluginGroup().getPlugins()) {
+                if (neighbouringPlugin == plugin) {
+                    PluginSource.setInstalled(plugin, true);
+                    continue;
+                }
+
+                if (neighbouringPlugin.getVersion().equals(plugin.getVersion())) {
+                    PluginSource.setInstalled(plugin, false);
+                    notifyItem(fragment.getActivePluginItem(fragment.getPluginState(neighbouringPlugin)));
+                }
+            }
         }
+
         pluginState.setInstalling(false);
-
-        PluginFragment fragment = pluginViewModel.getFragment();
-        for (Plugin neighbouringPlugin : plugin.getPluginGroup().getPlugins()) {
-            if (neighbouringPlugin == plugin) {
-                PluginSource.setInstalled(plugin, true);
-                notifyItem(fragment.getActivePluginItem(pluginState));
-                continue;
-            }
-
-            if (neighbouringPlugin.getVersion().equals(plugin.getVersion())) {
-                PluginSource.setInstalled(plugin, false);
-                notifyItem(fragment.getActivePluginItem(fragment.getPluginState(neighbouringPlugin)));
-            }
-        }
+        notifyItem(fragment.getActivePluginItem(pluginState));
     }
 }

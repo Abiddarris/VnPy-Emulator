@@ -106,7 +106,7 @@ public class Plugin {
     }
 
     public @NonNull File getPluginApk(Context context) {
-        return getPlugin(context, getFile());
+        return PluginSource.getPluginApk(context, this);
     }
 
     public void downloadPrivateFiles(Context context, ProgressPublisher progressPublisher) throws IOException {
