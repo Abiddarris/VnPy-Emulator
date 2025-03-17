@@ -89,15 +89,14 @@ public class PluginItem extends BaseItem {
             installPlugin();
         }
 
-        PluginItem item = getActivePluginItem();
+        PluginFragment fragment = pluginViewModel.getFragment();
+        notifyItem(fragment.getActivePluginItem(pluginState));
+    }
+
+    private void notifyItem(PluginItem item) {
         if (item != null) {
             runOnMainThreadIfNot(item::notifyChanged);
         }
-    }
-
-    private PluginItem getActivePluginItem() {
-        PluginFragment fragment = pluginViewModel.getFragment();
-        return fragment.getActivePluginItem(pluginState);
     }
 
     private void installPlugin() {
@@ -130,9 +129,18 @@ public class PluginItem extends BaseItem {
         }
         pluginState.setInstalling(false);
 
-        PluginItem item = getActivePluginItem();
-        if (item != null) {
-            runOnMainThreadIfNot(item::notifyChanged);
+        PluginFragment fragment = pluginViewModel.getFragment();
+        for (Plugin neighbouringPlugin : plugin.getPluginGroup().getPlugins()) {
+            if (neighbouringPlugin == plugin) {
+                PluginSource.setInstalled(plugin, true);
+                notifyItem(fragment.getActivePluginItem(pluginState));
+                continue;
+            }
+
+            if (neighbouringPlugin.getVersion().equals(plugin.getVersion())) {
+                PluginSource.setInstalled(plugin, false);
+                notifyItem(fragment.getActivePluginItem(fragment.getPluginState(neighbouringPlugin)));
+            }
         }
     }
 }

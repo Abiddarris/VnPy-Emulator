@@ -113,6 +113,10 @@ public class PluginFragment extends BaseDownloadFragment {
         return getPluginItems().get(pluginState);
     }
 
+    public PluginState getPluginState(Plugin plugin) {
+        return getPluginStates().get(plugin);
+    }
+
     private Map<PluginState, PluginItem> getPluginItems() {
         Map<PluginState, PluginItem> pluginItems = getVariable(PLUGIN_ITEMS);
         if (pluginItems == null) {

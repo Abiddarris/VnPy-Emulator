@@ -123,4 +123,8 @@ public class PluginSource {
             throw Exceptions.toUncheckException(e);
         }
     }
+
+    public static void setInstalled(Plugin plugin, boolean installed) {
+        PluginSource.installed.put(plugin, installed);
+    }
 }
