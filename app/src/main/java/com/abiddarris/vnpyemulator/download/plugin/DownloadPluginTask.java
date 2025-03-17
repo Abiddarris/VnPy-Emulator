@@ -23,7 +23,7 @@ import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 
-public class DownloadPluginTask extends DeterminateTask<Void> implements ProgressPublisher {
+public class DownloadPluginTask extends DeterminateTask<Boolean> implements ProgressPublisher {
 
     private final Plugin plugin;
     private int progress;
@@ -34,6 +34,7 @@ public class DownloadPluginTask extends DeterminateTask<Void> implements Progres
 
     @Override
     public void execute() throws Exception {
+        setResult(false);
         setTitle(R.string.plugin_downloader);
         setMessage(getString(R.string.downloading_plugin, plugin.getFile()));
 
@@ -41,6 +42,7 @@ public class DownloadPluginTask extends DeterminateTask<Void> implements Progres
         plugin.downloadPrivateFiles(getContext(), this);
 
         setMessage(R.string.downloaded);
+        setResult(true);
     }
 
     @Override

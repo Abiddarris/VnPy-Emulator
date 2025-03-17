@@ -42,6 +42,7 @@ import java.io.IOException;
 public class PluginItem extends BaseItem {
 
     private final Plugin plugin;
+    private LayoutPluginBinding viewBinding;
 
     public PluginItem(Plugin plugin, BaseDownloadViewModel pluginViewModel) {
         super(pluginViewModel);
@@ -51,6 +52,7 @@ public class PluginItem extends BaseItem {
 
     @Override
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
+        this.viewBinding = viewBinding;
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
@@ -59,18 +61,26 @@ public class PluginItem extends BaseItem {
             viewBinding.download.setVisibility(View.INVISIBLE);
         } else {
             viewBinding.download.setVisibility(View.VISIBLE);
-            viewBinding.download.setOnClickListener(this::downloadPlugin);
+            viewBinding.download.setOnClickListener(v -> {
+                if (viewBinding.download.getVisibility() == View.INVISIBLE) {
+                    return;
+                }
+                viewBinding.download.setVisibility(View.INVISIBLE);
+
+                DownloadService service = fragment.getDownloadService();
+
+                TaskInfo<DeterminateProgress, Boolean> info = service.download(new DownloadPluginTask(plugin));
+                info.addOnTaskExecuted(success -> {
+                    if (success) {
+                        installPlugin();
+                    } else {
+                        viewBinding.download.setVisibility(View.INVISIBLE);
+                    }
+                });
+            });
         }
     }
 
-    private void downloadPlugin(View v) {
-        BaseDownloadFragment fragment = pluginViewModel.getFragment();
-        DownloadService service = fragment.getDownloadService();
-        
-        TaskInfo<DeterminateProgress, Void> info = service.download(new DownloadPluginTask(plugin));
-        info.addOnTaskExecuted(ignored -> installPlugin());
-    }
-    
     private void installPlugin() {
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
         Context context = fragment.requireContext().getApplicationContext();
