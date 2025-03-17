@@ -204,7 +204,9 @@ public class GameListFragment extends AdvanceFragment {
 
     @Override
     public void onDestroy() {
-        gameListViewModel.detach();
+        if (gameListViewModel != null) {
+            gameListViewModel.detach();
+        }
 
         super.onDestroy();
     }
