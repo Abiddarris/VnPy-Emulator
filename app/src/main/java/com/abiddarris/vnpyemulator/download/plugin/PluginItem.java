@@ -121,7 +121,7 @@ public class PluginItem extends BaseItem {
                     (status, message) -> onInstallResult(context, status, message)
             );
         } catch (IOException e) {
-            pluginState.setInstalling(true);
+            pluginState.setInstalling(false);
             ExceptionDialog.showExceptionDialog(fragment.getChildFragmentManager(), e);
         }
     }
