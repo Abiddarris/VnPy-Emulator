@@ -22,6 +22,7 @@ public class PluginState {
 
     private final Plugin plugin;
     private boolean isDownloading;
+    private boolean installing;
 
     public PluginState(Plugin plugin) {
         this.plugin = plugin;
@@ -37,5 +38,13 @@ public class PluginState {
 
     public Plugin getPlugin() {
         return plugin;
+    }
+
+    public void setInstalling(boolean installing) {
+        this.installing = installing;
+    }
+
+    public boolean isInstalling() {
+        return installing;
     }
 }

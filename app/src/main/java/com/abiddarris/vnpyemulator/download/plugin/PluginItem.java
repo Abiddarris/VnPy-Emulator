@@ -61,7 +61,7 @@ public class PluginItem extends BaseItem {
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
-        if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading()) {
+        if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading() || pluginState.isInstalling()) {
             viewBinding.download.setOnClickListener(null);
             viewBinding.download.setVisibility(View.INVISIBLE);
         } else {
@@ -84,42 +84,55 @@ public class PluginItem extends BaseItem {
     }
 
     private void onDownloadResult(Boolean success) {
+        pluginState.setDownloading(false);
         if (success) {
             installPlugin();
-            return;
         }
-        pluginState.setDownloading(false);
 
-        PluginFragment fragment = pluginViewModel.getFragment();
-        PluginItem item = fragment.getActivePluginItem(pluginState);
+        PluginItem item = getActivePluginItem();
         if (item != null) {
             runOnMainThreadIfNot(item::notifyChanged);
         }
     }
 
+    private PluginItem getActivePluginItem() {
+        PluginFragment fragment = pluginViewModel.getFragment();
+        return fragment.getActivePluginItem(pluginState);
+    }
+
     private void installPlugin() {
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
         Context context = fragment.requireContext().getApplicationContext();
+        pluginState.setInstalling(true);
 
         try {
-            Packages.installPackage(context, plugin.getPluginApk(context), (status, message) -> {
-                if (status == STATUS_SUCCESS) {
-                    notifyChanged();
-                    return;
-                }
-
-                SimpleDialog.show(
-                        pluginViewModel.getFragment().getChildFragmentManager(),
-                        context.getString(R.string.installation_error),
-                        context.getString(
-                                R.string.installation_error_message,
-                                plugin.toString(),
-                                String.valueOf(status), message
-                        )
-                );
-            });
+            Packages.installPackage(
+                    context, plugin.getPluginApk(context),
+                    (status, message) -> onInstallResult(context, status, message)
+            );
         } catch (IOException e) {
+            pluginState.setInstalling(true);
             ExceptionDialog.showExceptionDialog(fragment.getChildFragmentManager(), e);
+        }
+    }
+
+    private void onInstallResult(Context context, int status, String message) {
+        if (status != STATUS_SUCCESS) {
+            SimpleDialog.show(
+                    pluginViewModel.getFragment().getChildFragmentManager(),
+                    context.getString(R.string.installation_error),
+                    context.getString(
+                            R.string.installation_error_message,
+                            plugin.toString(),
+                            String.valueOf(status), message
+                    )
+            );
+        }
+        pluginState.setInstalling(false);
+
+        PluginItem item = getActivePluginItem();
+        if (item != null) {
+            runOnMainThreadIfNot(item::notifyChanged);
         }
     }
 }
