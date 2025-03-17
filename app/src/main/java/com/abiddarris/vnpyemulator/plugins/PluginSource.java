@@ -121,7 +121,7 @@ public class PluginSource {
         }
 
         try {
-            String[] abis = Packages.getAbiFromPackage(context, PluginLoader.getPackage(name.getVersion()));
+            String[] abis = Packages.getAbiFromPackage(context, PluginLoader.getPackage(name.getVersion()), true);
             return List.of(abis).contains(plugin.getAbi());
         } catch (PackageManager.NameNotFoundException | IOException e) {
             throw Exceptions.toUncheckException(e);
