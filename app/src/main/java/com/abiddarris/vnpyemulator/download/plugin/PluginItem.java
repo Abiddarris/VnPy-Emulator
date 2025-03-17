@@ -16,14 +16,19 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.plugin;
 
+import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
+
 import android.content.Context;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
+import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
 import com.abiddarris.vnpyemulator.download.DownloadService;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
@@ -61,15 +66,34 @@ public class PluginItem extends BaseItem {
     private void downloadPlugin(View v) {
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
         DownloadService service = fragment.getDownloadService();
-        Context context = service.getApplicationContext();
-
+        
         TaskInfo<DeterminateProgress, Void> info = service.download(new DownloadPluginTask(plugin));
-        info.addOnTaskExecuted(ignored -> {
-            try {
-                Packages.installPackage(context, plugin.getPluginApk(context));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        info.addOnTaskExecuted(ignored -> installPlugin());
+    }
+    
+    private void installPlugin() {
+        BaseDownloadFragment fragment = pluginViewModel.getFragment();
+        Context context = fragment.requireContext().getApplicationContext();
+        
+        try {
+            Packages.installPackage(context, plugin.getPluginApk(context), (status, message) -> {
+                if (status == STATUS_SUCCESS) {
+                    notifyChanged();
+                    return;
+                }
+
+                SimpleDialog.show(
+                        pluginViewModel.getFragment().getChildFragmentManager(),
+                        context.getString(R.string.installation_error),
+                        context.getString(
+                                R.string.installation_error_message,
+                                plugin.toString(),
+                                String.valueOf(status), message
+                        )
+                );
+            });
+        } catch (IOException e) {
+            ExceptionDialog.showExceptionDialog(fragment.getChildFragmentManager(), e);
+        }
     }
 }

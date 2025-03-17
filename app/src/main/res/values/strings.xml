@@ -67,4 +67,6 @@
     <string name="please_wait">Please Wait…</string>
     <string name="permission_required">Permission required</string>
     <string name="request_install_permission_message">To install plugins, please grant install from unknown sources for this app.</string>
+    <string name="installation_error">Installation Error</string>
+    <string name="installation_error_message">Cannot install %s with error code : %s and message : %s</string>
 </resources>
