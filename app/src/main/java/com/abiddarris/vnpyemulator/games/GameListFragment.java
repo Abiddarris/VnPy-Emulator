@@ -156,7 +156,7 @@ public class GameListFragment extends AdvanceFragment {
                         .stream()
                         .filter(p -> p.toStringWithoutAbi().equals(game.getPlugin()))
                         .findFirst()
-                        .get();
+                        .orElse(null);
                 EditGameDialog.editGame(game, plugins, plugin)
                     .showForResult(getChildFragmentManager(), result -> {
                         if (result) {

@@ -138,7 +138,11 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
                 .stream()
                 .map(Plugin::toString)
                 .toArray(String[]::new));
-        textView.setText(getPluginVersion().toString(), false);
+
+        Plugin pluginVersion = getPluginVersion();
+        if (pluginVersion != null) {
+            textView.setText(pluginVersion.toString(), false);
+        }
 
         Glide.with(this)
                 .load(game.getIconPath())
