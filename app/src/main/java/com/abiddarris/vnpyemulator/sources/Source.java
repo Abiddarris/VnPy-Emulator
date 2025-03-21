@@ -33,7 +33,7 @@ public abstract class Source {
      * For testing purpose, {@link #getSource()} will provide
      * stream on internal storage.
      */
-    private static final boolean LOCAL = true;
+    private static final boolean LOCAL = false;
     
     /**
      * Store singleton of source

@@ -23,8 +23,8 @@ android {
         applicationId 'com.abiddarris.renpy.plugin735606'
         minSdk 19
         targetSdk 31
-        versionCode 1
-        versionName "v7.3.5.606.0"
+        versionCode 3
+        versionName "v7.3.5.606.3"
         
         vectorDrawables { 
             useSupportLibrary true
@@ -85,7 +85,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 
-def dest = rootProject.file("releases/download/0.2.0-beta")
+def dest = rootProject.file("releases")
 
 def copy(src, dest) {
     def dir = file(src)
@@ -112,7 +112,7 @@ def copy(src, dest) {
 
 task copyDebug {
     dependsOn 'assembleDebug'
-    
+
     doLast {
         copy("$buildDir/outputs/apk/debug", dest)
     }

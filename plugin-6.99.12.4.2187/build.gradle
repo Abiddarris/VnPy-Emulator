@@ -17,14 +17,14 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
-    
+
     defaultConfig {
         multiDexEnabled true
         applicationId 'com.abiddarris.renpy.plugin6991242187'
         minSdk 16
         targetSdk 31
-        versionCode 1
-        versionName "v6.99.12.4.2187.0"
+        versionCode 3
+        versionName "v6.99.12.4.2187.3"
         
         vectorDrawables { 
             useSupportLibrary true
@@ -92,7 +92,7 @@ dependencies {
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 
-def dest = rootProject.file("releases/download/0.2.0-beta")
+def dest = rootProject.file("releases")
 
 def copy(src, dest) {
     def dir = file(src)
