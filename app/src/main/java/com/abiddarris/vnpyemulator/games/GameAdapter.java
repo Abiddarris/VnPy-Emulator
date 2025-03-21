@@ -145,6 +145,7 @@ public class GameAdapter extends Adapter<GameViewHolder> {
                             plugin, name.getVersion() + "." + pluginInternalVersion
                     )
             );
+            return;
         }
 
         if (!RenPyPrivate.hasPrivateFiles(fragment.getContext(), renpyPrivateVersion)) {
