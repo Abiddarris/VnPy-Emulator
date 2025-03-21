@@ -16,6 +16,8 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.games;
 
+import static com.abiddarris.vnpyemulator.files.Files.getKeyboardFolder;
+
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -30,18 +32,26 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.abiddarris.common.android.about.AboutActivity;
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.fragments.AdvanceFragment;
 import com.abiddarris.common.android.tasks.TaskViewModel;
 import com.abiddarris.common.android.tasks.v2.IndeterminateProgress;
+import com.abiddarris.common.android.tasks.v2.IndeterminateTask;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.common.android.tasks.v2.TaskManager;
 import com.abiddarris.common.android.tasks.v2.dialog.DialogProgressPublisherManager;
 import com.abiddarris.common.android.tasks.v2.dialog.IndeterminateDialogProgressPublisher;
+import com.abiddarris.plugin.PluginArguments;
+import com.abiddarris.plugin.PluginLoader;
+import com.abiddarris.plugin.PluginName;
+import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.FragmentGameListBinding;
 import com.abiddarris.vnpyemulator.download.DownloadFragment;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
-import com.abiddarris.vnpyemulator.plugins.PluginGroup;
+import com.abiddarris.vnpyemulator.plugins.PluginSource;
+import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import com.abiddarris.vnpyemulator.unrpa.FindRpaTask;
 
 import java.io.IOException;
@@ -188,7 +198,94 @@ public class GameListFragment extends AdvanceFragment {
     }
 
     public void open(Game game) {
-        adapter.open(game);
+        IndeterminateDialogProgressPublisher progressPublisher = new IndeterminateDialogProgressPublisher("fetch");
+        gameListViewModel.dialogManager.registerPublisher(progressPublisher);
+
+        TaskInfo<IndeterminateProgress, Boolean> taskInfo = gameListViewModel.taskManager.execute(new IndeterminateTask<>() {
+            @Override
+            public void execute() throws Exception {
+                setTitle(R.string.fetch_plugin_title);
+                setMessage(R.string.fetching);
+
+                Plugin[] plugins = PluginSource.getPlugins(getContext(), false);
+                setResult(Arrays.asList(plugins)
+                        .stream()
+                        .map(Plugin::toStringWithoutAbi)
+                        .anyMatch(plugin -> plugin.equals(game.getPlugin())));
+            }
+
+            @Override
+            public void onThrowableCatched(Throwable throwable) {
+                super.onThrowableCatched(throwable);
+
+                ExceptionDialog.showExceptionDialog(getChildFragmentManager(), throwable);
+            }
+        }, progressPublisher);
+        taskInfo.addOnTaskExecuted(shouldOpen -> open(game, shouldOpen));
+    }
+
+    private void open(Game game, Boolean shouldOpen) {
+        if (shouldOpen == null) {
+            return;
+        }
+
+        if (!shouldOpen) {
+            SimpleDialog.newSimpleDialog(
+                    getString(R.string.unsupported_plugin),
+                    getString(R.string.plugin_not_supported_message, game.getPlugin())
+            ).show(getChildFragmentManager(), null);
+            return;
+        }
+
+        String plugin = game.getPlugin();
+        String renpyPrivateVersion = game.getRenPyPrivateVersion();
+
+        game.getPlugin();
+        PluginName name = new PluginName(plugin);
+        if(!PluginLoader.hasPlugin(getContext(), name)) {
+            SimpleDialog.show(
+                    getChildFragmentManager(),
+                    getString(R.string.plugin_not_installed),
+                    getString(R.string.please_install_plugin)
+            );
+            return;
+        }
+
+        long pluginInternalVersion = PluginLoader.getPluginInternalVersion(
+                requireContext(), name.getVersion());
+        if (pluginInternalVersion != Integer.parseInt(name.getPluginInternalVersion())) {
+            SimpleDialog.show(
+                    getChildFragmentManager(),
+                    getString(R.string.mismatch_plugin_version),
+                    getString(
+                            R.string.mismatch_plugin_message,
+                            plugin, name.getVersion() + "." + pluginInternalVersion
+                    )
+            );
+            return;
+        }
+
+        if (!RenPyPrivate.hasPrivateFiles(getContext(), renpyPrivateVersion)) {
+            SimpleDialog.show(
+                    getChildFragmentManager(),
+                    getString(R.string.plugin_corrupted),
+                    getString(R.string.plugin_corrupted_message)
+            );
+            return;
+        }
+
+        String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(getContext(), renpyPrivateVersion)
+                .getAbsolutePath();
+        MainActivity activity = (MainActivity)getActivity();
+        var intent = PluginLoader.getIntentForPlugin(name.getVersion(), new PluginArguments()
+                .setRenPyPrivatePath(renpyPrivateVersionPath)
+                .setGamePath(game.getGamePath())
+                .setGameScript(game.getGameScript())
+                .setErrorPort(activity.getPort())
+                .setKeyboardFolderPath(getKeyboardFolder(getContext()).getAbsolutePath()));
+
+        startActivity(intent);
+        
     }
 
     public GameAdapter getAdapter() {

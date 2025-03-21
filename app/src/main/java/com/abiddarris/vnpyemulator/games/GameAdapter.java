@@ -36,6 +36,7 @@ import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
 import com.abiddarris.vnpyemulator.games.GameAdapter.GameViewHolder;
+import com.abiddarris.vnpyemulator.plugins.PluginSource;
 import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import com.bumptech.glide.Glide;
 
@@ -46,15 +47,14 @@ import java.util.List;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
 
-    private Fragment fragment;
-    private int cardViewColor;
+    private final GameListFragment fragment;
+    private final LayoutInflater inflater;
     private List<Game> games;
-    private LayoutInflater inflater;
-    
-    public GameAdapter(Fragment fragment) {
+
+    public GameAdapter(GameListFragment fragment) {
     	this.fragment = fragment;
-        
-        inflater = fragment.getLayoutInflater();
+        this.inflater = fragment.getLayoutInflater();
+
         refresh();
     }
     
@@ -71,7 +71,7 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     public void onBindViewHolder(GameViewHolder holder, int index) {
         Game game = games.get(index);
         holder.binding.root
-            .setOnClickListener(v -> open(game));
+            .setOnClickListener(v -> fragment.open(game));
         holder.binding.getRoot()
             .setTag(index);
         
@@ -118,56 +118,6 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     
     public void refresh() {
     	this.games = Game.loadGames(fragment.getContext());
-    }
-    
-    public void open(Game game) {
-        String plugin = game.getPlugin();
-        String renpyPrivateVersion = game.getRenPyPrivateVersion();
-        
-        PluginName name = new PluginName(plugin);
-        if(!PluginLoader.hasPlugin(fragment.getContext(), name)) {
-            SimpleDialog.show(
-                    fragment.getChildFragmentManager(),
-                    fragment.getString(R.string.plugin_not_installed),
-                    fragment.getString(R.string.please_install_plugin)
-            );
-            return;
-        }
-
-        long pluginInternalVersion = PluginLoader.getPluginInternalVersion(
-                fragment.requireContext(), name.getVersion());
-        if (pluginInternalVersion != Integer.parseInt(name.getPluginInternalVersion())) {
-            SimpleDialog.show(
-                    fragment.getChildFragmentManager(),
-                    fragment.getString(R.string.mismatch_plugin_version),
-                    fragment.getString(
-                            R.string.mismatch_plugin_message,
-                            plugin, name.getVersion() + "." + pluginInternalVersion
-                    )
-            );
-            return;
-        }
-
-        if (!RenPyPrivate.hasPrivateFiles(fragment.getContext(), renpyPrivateVersion)) {
-            SimpleDialog.show(
-                    fragment.getChildFragmentManager(),
-                    fragment.getString(R.string.plugin_corrupted),
-                    fragment.getString(R.string.plugin_corrupted_message)
-            );
-            return;
-        }
-
-        String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(fragment.getContext(), renpyPrivateVersion)
-                .getAbsolutePath();
-        MainActivity activity = (MainActivity) fragment.getActivity();
-        var intent = PluginLoader.getIntentForPlugin(name.getVersion(), new PluginArguments()
-            .setRenPyPrivatePath(renpyPrivateVersionPath)
-            .setGamePath(game.getGamePath())
-            .setGameScript(game.getGameScript())
-            .setErrorPort(activity.getPort())
-            .setKeyboardFolderPath(getKeyboardFolder(fragment.getContext()).getAbsolutePath()));
-        
-        fragment.startActivity(intent);
     }
 
     public void notifyGameModified(Game game) {

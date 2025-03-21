@@ -31,7 +31,6 @@
     <string name="downloading_plugin">Downloading plugin for %s</string>
     <string name="installing_plugin">Installing plugin&#8230;</string>
     <string name="plugin_not_supported">Plugin not supported</string>
-    <string name="plugin_not_supported_message">Unable to find plugin that supported this device %s</string>
     <string name="plugin_not_available">"Unfortunately plugin for Ren'Py version %s is not available yet. Please select closest plugin version"</string>
     <string name="select_plugin_version">Select Plugin Version</string>
     <string name="delete">Delete</string>
@@ -73,4 +72,6 @@
     <string name="failed_to_download_plugin">Failed to download plugin</string>
     <string name="confirmation">Confirmation</string>
     <string name="delete_patcher_confirmation">Are you sure want to delete patcher %s?</string>
+    <string name="unsupported_plugin">Unsupported Plugin</string>
+    <string name="plugin_not_supported_message">Plugin %s not supported anymore, please update the plugin to newer version</string>
 </resources>
