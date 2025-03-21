@@ -14,32 +14,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  ***********************************************************************************/
-package com.abiddarris.vnpyemulator.download.base;
+package com.abiddarris.vnpyemulator.download.patch;
 
-import android.view.View;
+import com.abiddarris.vnpyemulator.patches.Patcher;
 
-import androidx.annotation.NonNull;
+public class PatcherState {
 
-import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
-import com.xwray.groupie.viewbinding.BindableItem;
+    private final Patcher patcher;
+    private boolean downloading;
 
-public abstract class BaseItem extends BindableItem<LayoutPluginBinding> {
-
-    protected final BaseDownloadFragment.BaseDownloadViewModel baseDownloadViewModel;
-
-    public BaseItem(BaseDownloadFragment.BaseDownloadViewModel baseDownloadViewModel) {
-        this.baseDownloadViewModel = baseDownloadViewModel;
+    public PatcherState(Patcher patcher) {
+        this.patcher = patcher;
     }
 
-    @Override
-    public int getLayout() {
-        return R.layout.layout_plugin;
+    public Patcher getPatcher() {
+        return patcher;
     }
 
-    @NonNull
-    @Override
-    protected LayoutPluginBinding initializeViewBinding(@NonNull View view) {
-        return LayoutPluginBinding.bind(view);
+    public boolean isDownloading() {
+        return downloading;
+    }
+
+    public void setDownloading(boolean downloading) {
+        this.downloading = downloading;
     }
 }

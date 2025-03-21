@@ -32,8 +32,6 @@ import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.common.android.tasks.v2.TaskManager;
 import com.abiddarris.common.android.tasks.v2.notifications.DeterminateNotificationProgressPublisher;
 import com.abiddarris.vnpyemulator.R;
-import com.abiddarris.vnpyemulator.download.patch.DownloadPatchTask;
-import com.abiddarris.vnpyemulator.patches.Patcher;
 
 public class DownloadService extends Service {
 
@@ -54,13 +52,6 @@ public class DownloadService extends Service {
         var publisher = new DeterminateNotificationProgressPublisher(createDefaultNotification(), this);
 
         return taskManager.execute(task, publisher);
-    }
-
-    public void downloadPatcher(Patcher patcher) {
-        taskManager.execute(
-                new DownloadPatchTask(patcher),
-                new DeterminateNotificationProgressPublisher(createDefaultNotification(), this)
-        );
     }
 
     private NotificationCompat.Builder createDefaultNotification() {

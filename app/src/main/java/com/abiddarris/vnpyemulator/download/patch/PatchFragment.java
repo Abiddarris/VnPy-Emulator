@@ -16,8 +16,6 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.patch;
 
-import static com.abiddarris.common.android.handlers.MainThreads.runOnMainThreadIfNot;
-
 import android.os.Bundle;
 import android.view.View;
 
@@ -25,14 +23,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
+import com.abiddarris.vnpyemulator.download.plugin.PluginState;
 import com.abiddarris.vnpyemulator.patches.Patch;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 import com.xwray.groupie.ExpandableGroup;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class PatchFragment extends BaseDownloadFragment {
 
     private static final String FETCHED = "fetched";
     public static final String PATCHES = "patches";
+    public static final String PATCH_STATES = "patchStates";
+
+    private Map<PatcherState, PatcherItem> patchItems = new HashMap<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -57,14 +62,37 @@ public class PatchFragment extends BaseDownloadFragment {
             return;
         }
 
+        Map<Patcher, PatcherState> patchStates = getPatcherStates();
         for (Patch patch : getPatches()) {
             ExpandableGroup pluginGroup = new ExpandableGroup(new PatchItem(patch));
             for (Patcher patcher : patch.getPatchers()) {
-                pluginGroup.add(new PatcherItem(patcher, baseDownloadViewModel));
+                PatcherState state = patchStates.get(patcher);
+                if (state == null) {
+                    state = new PatcherState(patcher);
+                    patchStates.put(patcher, state);
+                }
+
+                PatcherItem item = new PatcherItem(state, baseDownloadViewModel);
+                pluginGroup.add(item);
+                patchItems.put(state, item);
             }
 
             adapter.add(pluginGroup);
         }
+    }
+
+    public PatcherItem getActivePatcherItem(PatcherState state) {
+        return patchItems.get(state);
+    }
+
+    private Map<Patcher, PatcherState> getPatcherStates() {
+        Map<Patcher, PatcherState> patchStates = getVariable(PATCH_STATES);
+        if (patchStates == null) {
+            patchStates = new HashMap<>();
+            saveVariable(PATCH_STATES, patchStates);
+        }
+
+        return patchStates;
     }
 
     private Patch[] getPatches() {
@@ -74,4 +102,5 @@ public class PatchFragment extends BaseDownloadFragment {
     private void setPatches(Patch[] patches) {
         saveVariable(PATCHES, patches);
     }
+
 }

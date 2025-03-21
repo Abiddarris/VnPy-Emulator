@@ -22,7 +22,7 @@ import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 
-public class DownloadPatchTask extends DeterminateTask<DeterminateProgress> implements ProgressPublisher {
+public class DownloadPatchTask extends DeterminateTask<Boolean> implements ProgressPublisher {
 
     private final Patcher patcher;
 
@@ -32,12 +32,14 @@ public class DownloadPatchTask extends DeterminateTask<DeterminateProgress> impl
 
     @Override
     public void execute() throws Exception {
+        setResult(false);
         setTitle("Downloading Patch");
         setMessage(getString(R.string.downloading_patch_message, patcher.getPatch().getName(), patcher.getVersion()));
 
         patcher.download(getContext(), this);
 
         setMessage(getString(R.string.downloaded));
+        setResult(true);
     }
 
     @Override

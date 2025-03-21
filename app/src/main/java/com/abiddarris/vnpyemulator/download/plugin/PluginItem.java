@@ -19,7 +19,6 @@ package com.abiddarris.vnpyemulator.download.plugin;
 import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
 
 import static com.abiddarris.common.android.handlers.MainThreads.runOnMainThreadIfNot;
-import static com.abiddarris.vnpyemulator.files.Files.getPlugin;
 
 import android.content.Context;
 import android.view.View;
@@ -60,7 +59,7 @@ public class PluginItem extends BaseItem {
     public void bind(@NonNull LayoutPluginBinding viewBinding, int position) {
         this.viewBinding = viewBinding;
 
-        PluginFragment fragment = pluginViewModel.getFragment();
+        PluginFragment fragment = baseDownloadViewModel.getFragment();
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
         if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading() || pluginState.isInstalling()) {
@@ -100,7 +99,7 @@ public class PluginItem extends BaseItem {
             installPlugin();
         }
 
-        PluginFragment fragment = pluginViewModel.getFragment();
+        PluginFragment fragment = baseDownloadViewModel.getFragment();
         notifyItem(fragment.getActivePluginItem(pluginState));
     }
 
@@ -111,7 +110,7 @@ public class PluginItem extends BaseItem {
     }
 
     private void installPlugin() {
-        BaseDownloadFragment fragment = pluginViewModel.getFragment();
+        BaseDownloadFragment fragment = baseDownloadViewModel.getFragment();
         Context context = fragment.requireContext().getApplicationContext();
         pluginState.setInstalling(true);
 
@@ -127,10 +126,10 @@ public class PluginItem extends BaseItem {
     }
 
     private void onInstallResult(Context context, int status, String message) {
-        PluginFragment fragment = pluginViewModel.getFragment();
+        PluginFragment fragment = baseDownloadViewModel.getFragment();
         if (status != STATUS_SUCCESS) {
             SimpleDialog.show(
-                    pluginViewModel.getFragment().getChildFragmentManager(),
+                    baseDownloadViewModel.getFragment().getChildFragmentManager(),
                     context.getString(R.string.installation_error),
                     context.getString(
                             R.string.installation_error_message,
