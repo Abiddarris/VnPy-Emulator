@@ -86,6 +86,7 @@ public class PatcherItem extends BaseItem {
                         fragment.getDownloadService().download(new DownloadPatchTask(patcher));
                 taskInfo.addOnTaskExecuted(this::onTaskExecuted);
 
+                state.setDownloading(true);
                 this.notifyChanged();
             });
         }
