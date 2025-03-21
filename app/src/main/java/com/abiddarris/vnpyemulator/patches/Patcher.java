@@ -94,31 +94,13 @@ public class Patcher {
         return patch;
     }
 
+    @Deprecated
     public void download(Context context, ProgressPublisher progressPublisher) throws IOException {
-        File dest = getPatcherFolder(context);
-        makeDirectories(dest);
-
-        progressPublisher.setMaxProgress(patchFiles.length);
-        for (PatchFile patchFile : patchFiles) {
-            try (Connection connection = patchFile.open();
-                 OutputStream output = openBufferedOutput(new File(dest, getPathName(patchFile.getSource())))) {
-                InputStream input = new BufferedInputStream(connection.getInputStream());
-                writeAllTo(input, output);
-            } catch (IOException e) {
-                delete(dest);
-
-                throw e;
-            }
-            progressPublisher.incrementProgress(1);
-        }
+        PatchSource.download(this, progressPublisher);
     }
 
-    @NonNull File getPatcherFolder(Context context) {
-        File patch = new File(getPatchFolder(context), getPatch().getName());
-        return new File(patch, getVersion());
-    }
-
+    @Deprecated
     public boolean isInstalled(Context context) {
-        return getPatcherFolder(context).exists();
+        return PatchSource.isInstalled(this);
     }
 }

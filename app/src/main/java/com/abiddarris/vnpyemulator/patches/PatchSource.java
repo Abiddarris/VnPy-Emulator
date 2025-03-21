@@ -17,8 +17,13 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.patches;
 
+import static com.abiddarris.common.files.Files.delete;
 import static com.abiddarris.common.files.Files.getPathName;
+import static com.abiddarris.common.files.Files.makeDirectories;
+import static com.abiddarris.common.files.Files.openBufferedOutput;
 import static com.abiddarris.common.stream.InputStreams.readAll;
+import static com.abiddarris.common.stream.InputStreams.writeAllTo;
+import static com.abiddarris.vnpyemulator.files.Files.getPatchFolder;
 import static com.abiddarris.vnpyemulator.sources.Source.SOURCE;
 import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 
@@ -41,6 +46,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -49,11 +55,6 @@ import java.util.stream.Stream;
  * Class that provides patches
  */
 public class PatchSource {
-    
-    /**
-     * Hold {@code PatchSource} singleton
-     */
-    private static PatchSource patchSource;
 
     private static Context context;
 
@@ -174,25 +175,25 @@ public class PatchSource {
             throw new IOException("Unable to fetch patches", e);
         }
     }
-    
-    /**
-     * Returns {@code PatchSource} that provides {@code Patcher}
-     *
-     * @return {@code PatchSource} that provides {@code Patcher}
-     */
-    public static PatchSource getPatcher() {
-    	if(patchSource == null) {
-            return new PatchSource();
-        }
-        return patchSource;
-    }
-
-    public static boolean isInstalled(Patcher patcher) {
-        return patcher.isInstalled(context);
-    }
 
     public static void download(Patcher patcher, ProgressPublisher progressPublisher) throws IOException {
-        patcher.download(context, progressPublisher);
+        File dest = getPatcherFolder(patcher);
+        makeDirectories(dest);
+
+        PatchFile[] patchFiles = patcher.getPatches();
+        progressPublisher.setMaxProgress(patchFiles.length);
+        for (PatchFile patchFile : patchFiles) {
+            try (Connection connection = patchFile.open();
+                 OutputStream output = openBufferedOutput(new File(dest, getPathName(patchFile.getSource())))) {
+                InputStream input = new BufferedInputStream(connection.getInputStream());
+                writeAllTo(input, output);
+            } catch (IOException e) {
+                delete(dest);
+
+                throw e;
+            }
+            progressPublisher.incrementProgress(1);
+        }
     }
 
     public static boolean apply(Patcher patcher, String gamePath, IncompatiblePatchCallback callback) throws IOException {
@@ -202,7 +203,7 @@ public class PatchSource {
                 throw new PatchException("Unable to patch non exist file: " + target.getPath());
             }
 
-            File src = new File(patcher.getPatcherFolder(context), getPathName(patchFile.getSource()));
+            File src = new File(getPatcherFolder(patcher), getPathName(patchFile.getSource()));
             if (!src.exists()) {
                 throw new PatchException(String.format("Broken patch file (Missing %s)", patchFile.getSource()));
             }
@@ -239,5 +240,14 @@ public class PatchSource {
             os.close();
         }
         return true;
+    }
+
+    public static boolean isInstalled(Patcher patcher) {
+        return getPatcherFolder(patcher).exists();
+    }
+
+    private static File getPatcherFolder(Patcher patcher) {
+        File patch = new File(getPatchFolder(context), patcher.getPatch().getName());
+        return new File(patch, patcher.getVersion());
     }
 }
