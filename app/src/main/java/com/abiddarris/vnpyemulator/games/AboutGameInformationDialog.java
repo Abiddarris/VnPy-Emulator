@@ -41,11 +41,20 @@ public class AboutGameInformationDialog extends FragmentDialog<Void> {
         
         builder.setTitle(R.string.about);
         
-        Game game = getVariable(GAME); 
+        Game game = getVariable(GAME);
+        if (game == null) {
+            return;
+        }
+
         var fragment = new TextFragment();
+        fragment.setHighlightLink(false);
         fragment.setText(getString(R.string.about_message,
-            game.getName(),
-            game.getGamePath()
+                game.getName(),
+                game.getGamePath(),
+                game.getGameScript(),
+                game.getPlugin(),
+                game.getRenPyVersion(),
+                game.getPatchVersion()
         ));
         
         setFragment(fragment);

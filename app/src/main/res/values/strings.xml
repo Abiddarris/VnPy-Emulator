@@ -38,7 +38,7 @@
     <string name="delete_game">Delete game</string>
     <string name="delete_game_message">Are you sure want to delete %s? This operation cannot be undone!</string>
     <string name="open">Open</string>
-    <string name="about_message">Name: %s\nLocation: %s</string>
+    <string name="about_message">Name: %s\nLocation: %s\nScript: %s\nPlugin: %s\nRenpy version: %s\nPatch Version: %s</string>
     <string name="unknown">Unknown</string>
     <string name="unpack_archive">Unpack archive</string>
     <string name="finding_archives">Finding Archives&#8230;</string>
