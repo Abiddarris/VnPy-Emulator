@@ -32,28 +32,46 @@ import com.xwray.groupie.ExpandableGroup;
 public class PatchFragment extends BaseDownloadFragment {
 
     private static final String FETCHED = "fetched";
+    public static final String PATCHES = "patches";
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getVariable(FETCHED, false)) {
-            return;
-        }
-        saveVariable(FETCHED, true);
-        baseDownloadViewModel.execute(new FetchPatchTask());
+        setPatchesToAdapter();
     }
 
     public void onPatchFetched(Patch[] patches) {
-        runOnMainThreadIfNot(() -> {
-            for (Patch patch : patches) {
-                ExpandableGroup pluginGroup = new ExpandableGroup(new PatchItem(patch));
-                for (Patcher patcher : patch.getPatchers()){
-                    pluginGroup.add(new PatcherItem(patcher, baseDownloadViewModel));
-                }
+        setPatches(patches);
+        requireActivity().runOnUiThread(this::setPatchesToAdapter);
+    }
 
-                adapter.add(pluginGroup);
+    private void setPatchesToAdapter() {
+        if (!getVariable(FETCHED, false)) {
+            saveVariable(FETCHED, true);
+            baseDownloadViewModel.execute(new FetchPatchTask());
+            return;
+        }
+
+        if (getPatches() == null) {
+            return;
+        }
+
+        for (Patch patch : getPatches()) {
+            ExpandableGroup pluginGroup = new ExpandableGroup(new PatchItem(patch));
+            for (Patcher patcher : patch.getPatchers()) {
+                pluginGroup.add(new PatcherItem(patcher, baseDownloadViewModel));
             }
-        });
+
+            adapter.add(pluginGroup);
+        }
+    }
+
+    private Patch[] getPatches() {
+        return getVariable(PATCHES);
+    }
+
+    private void setPatches(Patch[] patches) {
+        saveVariable(PATCHES, patches);
     }
 }
