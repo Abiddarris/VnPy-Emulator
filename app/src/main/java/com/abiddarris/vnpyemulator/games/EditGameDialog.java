@@ -136,12 +136,13 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
         textView.setOnItemClickListener(itemClickListener);
         textView.setSimpleItems(Arrays.asList(getPluginVersions())
                 .stream()
-                .map(Plugin::toString)
+                .map(Plugin::toStringWithoutAbi)
+                .distinct()
                 .toArray(String[]::new));
 
         Plugin pluginVersion = getPluginVersion();
         if (pluginVersion != null) {
-            textView.setText(pluginVersion.toString(), false);
+            textView.setText(pluginVersion.toStringWithoutAbi(), false);
         }
 
         Glide.with(this)
@@ -204,7 +205,7 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
         if (!pluginStr.equals(game.getPlugin())) {
             Plugin plugin = Arrays.asList(getPluginVersions())
                     .stream()
-                    .filter(p -> p.toString().equals(pluginStr))
+                    .filter(p -> p.toStringWithoutAbi().equals(pluginStr))
                     .findFirst()
                     .get();
             game.setPlugin(plugin.toStringWithoutAbi());
