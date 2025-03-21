@@ -25,7 +25,13 @@ public class PatcherItem extends BaseItem {
         BaseDownloadFragment fragment = pluginViewModel.getFragment();
 
         viewBinding.version.setText(patcher.getVersion());
-        viewBinding.download.setVisibility(patcher.isInstalled(fragment.getContext()) ? View.GONE : View.VISIBLE);
-        viewBinding.download.setOnClickListener(v -> fragment.getDownloadService().downloadPatcher(patcher));
+
+        if (patcher.isInstalled(fragment.getContext())) {
+            viewBinding.download.setVisibility(View.INVISIBLE);
+            viewBinding.download.setOnClickListener(null);
+        } else {
+            viewBinding.download.setVisibility(View.VISIBLE);
+            viewBinding.download.setOnClickListener(v -> fragment.getDownloadService().downloadPatcher(patcher));
+        }
     }
 }
