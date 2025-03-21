@@ -46,6 +46,13 @@ public class DownloadPluginTask extends DeterminateTask<Boolean> implements Prog
     }
 
     @Override
+    public void onThrowableCatched(Throwable throwable) {
+        super.onThrowableCatched(throwable);
+        
+        setMessage(R.string.failed_to_download_plugin);
+    }
+
+    @Override
     public void incrementProgress(int progress) {
         this.progress += progress;
         setProgress(this.progress);

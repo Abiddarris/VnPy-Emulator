@@ -43,6 +43,13 @@ public class DownloadPatchTask extends DeterminateTask<Boolean> implements Progr
     }
 
     @Override
+    public void onThrowableCatched(Throwable throwable) {
+        super.onThrowableCatched(throwable);
+        
+        setMessage(R.string.failed_to_download_patch);
+    }
+
+    @Override
     public void incrementProgress(int progress) {
         setProgress(getProgress().getProgress() + progress);
     }
