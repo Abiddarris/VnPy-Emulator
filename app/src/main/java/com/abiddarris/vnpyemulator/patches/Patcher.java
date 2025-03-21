@@ -94,13 +94,15 @@ public class Patcher {
         return patch;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return getPatch().getRenPyVersion() + "." + getVersion();
+    }
+
     @Deprecated
     public void download(Context context, ProgressPublisher progressPublisher) throws IOException {
         PatchSource.download(this, progressPublisher);
     }
 
-    @Deprecated
-    public boolean isInstalled(Context context) {
-        return PatchSource.isInstalled(this);
-    }
 }

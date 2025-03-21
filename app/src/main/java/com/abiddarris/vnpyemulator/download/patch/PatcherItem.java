@@ -22,13 +22,20 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import com.abiddarris.common.android.dialogs.SimpleConfirmationDialog;
 import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
+import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownloadViewModel;
 import com.abiddarris.vnpyemulator.download.base.BaseItem;
+import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.patches.Patcher;
+import com.google.android.material.button.MaterialButton;
+
+import java.io.IOException;
 
 public class PatcherItem extends BaseItem {
 
@@ -48,10 +55,31 @@ public class PatcherItem extends BaseItem {
 
         viewBinding.version.setText(patcher.getVersion());
 
-        if (patcher.isInstalled(fragment.getContext()) || state.isDownloading()) {
+        if (PatchSource.isInstalled(patcher)) {
+            viewBinding.download.setVisibility(View.VISIBLE);
+            viewBinding.download.setIconResource(R.drawable.ic_delete);
+            viewBinding.download.setOnClickListener(v -> {
+                SimpleConfirmationDialog dialog = SimpleConfirmationDialog.newConfirmationDialog(
+                        fragment.getString(R.string.confirmation),
+                        fragment.getString(R.string.delete_patcher_confirmation, patcher),
+                        fragment.getString(android.R.string.cancel),
+                        fragment.getString(android.R.string.ok)
+                );
+                dialog.showForResult(fragment.getChildFragmentManager(), delete -> {
+                    try {
+                        PatchSource.uninstall(patcher);
+                    } catch (IOException e) {
+                        ExceptionDialog.showExceptionDialog(baseDownloadViewModel.getFragment()
+                                .getChildFragmentManager(), e);
+                    }
+                    notifyThisChanged();
+                });
+            });
+        } else if (state.isDownloading()) {
             viewBinding.download.setVisibility(View.INVISIBLE);
             viewBinding.download.setOnClickListener(null);
         } else {
+            viewBinding.download.setIconResource(R.drawable.ic_download);
             viewBinding.download.setVisibility(View.VISIBLE);
             viewBinding.download.setOnClickListener(v -> {
                 TaskInfo<DeterminateProgress, Boolean> taskInfo =
@@ -65,7 +93,10 @@ public class PatcherItem extends BaseItem {
 
     private void onTaskExecuted(Boolean success) {
         state.setDownloading(false);
+        notifyThisChanged();
+    }
 
+    private void notifyThisChanged() {
         PatchFragment fragment = baseDownloadViewModel.getFragment();
         PatcherItem item = fragment.getActivePatcherItem(state);
         if (item != null) {

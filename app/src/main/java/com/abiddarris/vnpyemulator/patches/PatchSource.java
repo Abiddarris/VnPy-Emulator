@@ -196,6 +196,11 @@ public class PatchSource {
         }
     }
 
+    public static void uninstall(Patcher patcher) throws IOException {
+        File dest = getPatcherFolder(patcher);
+        delete(dest);
+    }
+
     public static boolean apply(Patcher patcher, String gamePath, IncompatiblePatchCallback callback) throws IOException {
         for(PatchFile patchFile : patcher.getPatches()) {
             File target = new File(gamePath, patchFile.getTarget());
