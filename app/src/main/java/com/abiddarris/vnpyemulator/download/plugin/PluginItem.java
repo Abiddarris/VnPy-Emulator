@@ -213,7 +213,7 @@ public class PluginItem extends BaseItem {
                 }
 
                 if (neighbouringPlugin.getVersion().equals(plugin.getVersion())) {
-                    PluginSource.setInstalled(plugin, false);
+                    PluginSource.setInstalled(neighbouringPlugin, false);
                     notifyItem(fragment.getActivePluginItem(fragment.getPluginState(neighbouringPlugin)));
                 }
             }
