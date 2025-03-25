@@ -17,6 +17,9 @@
 package com.abiddarris.vnpyemulator.download.plugin;
 
 import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
+import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
 import static com.abiddarris.common.android.handlers.MainThreads.runOnMainThreadIfNot;
 
 import android.content.Context;
@@ -61,14 +64,14 @@ public class PluginItem extends BaseItem {
         PluginFragment fragment = baseDownloadViewModel.getFragment();
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
-        int downloadButtonVisibility = View.VISIBLE;
-        int deleteButtonVisibility = View.GONE;
+        int downloadButtonVisibility = VISIBLE;
+        int deleteButtonVisibility = PluginSource.isDownloaded(fragment.getContext(), plugin) ? VISIBLE : GONE;
         View.OnClickListener downloadClickListener = v -> download(fragment);
         Integer iconResource = R.drawable.ic_download;
 
         if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading() || pluginState.isInstalling()) {
             downloadClickListener = null;
-            downloadButtonVisibility = View.INVISIBLE;
+            downloadButtonVisibility = deleteButtonVisibility == VISIBLE ? GONE : INVISIBLE;
             iconResource = null;
         } else if (PluginSource.isDownloaded(fragment.getContext(), plugin)) {
             downloadClickListener = v -> {
@@ -76,7 +79,6 @@ public class PluginItem extends BaseItem {
                 notifyThisItem(fragment);
             };
             iconResource = R.drawable.ic_install;
-            deleteButtonVisibility = View.VISIBLE;
         }
 
         viewBinding.download.setVisibility(downloadButtonVisibility);
@@ -112,7 +114,7 @@ public class PluginItem extends BaseItem {
     }
 
     private void download(BaseDownloadFragment fragment) {
-        if (viewBinding.download.getVisibility() == View.INVISIBLE) {
+        if (viewBinding.download.getVisibility() == INVISIBLE) {
             return;
         }
         pluginState.setDownloading(true);
