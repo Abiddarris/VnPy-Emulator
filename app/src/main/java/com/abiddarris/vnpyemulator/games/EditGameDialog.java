@@ -134,11 +134,7 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
 
         MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.plugins.getEditText();
         textView.setOnItemClickListener(itemClickListener);
-        textView.setSimpleItems(Arrays.asList(getPluginVersions())
-                .stream()
-                .map(Plugin::toStringWithoutAbi)
-                .distinct()
-                .toArray(String[]::new));
+        textView.setAdapter(new PluginSpinnerAdapter(requireContext(), getPluginVersions()));
 
         Plugin pluginVersion = getPluginVersion();
         if (pluginVersion != null) {

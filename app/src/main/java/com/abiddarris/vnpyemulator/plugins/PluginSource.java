@@ -115,11 +115,7 @@ public class PluginSource {
 
     private static boolean isInstalledInternal(Context context, Plugin plugin) {
         PluginName name = new PluginName(plugin.toStringWithoutAbi());
-        if (!PluginLoader.hasPlugin(context, name)) {
-            return false;
-        }
-
-        if (PluginLoader.getPluginInternalVersion(context, name.getVersion()) != Integer.parseInt(plugin.getVersion())) {
+        if (!PluginLoader.hasPluginWithExactInternalVersion(context, name)) {
             return false;
         }
 
