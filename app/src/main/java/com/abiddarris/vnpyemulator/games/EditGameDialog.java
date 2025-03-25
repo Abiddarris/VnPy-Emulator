@@ -128,7 +128,7 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
 
             MaterialAutoCompleteTextView textView = (MaterialAutoCompleteTextView) ui.patches.getEditText();
             textView.setOnItemClickListener(itemClickListener);
-            textView.setSimpleItems(getPatchVersions());
+            textView.setAdapter(new PatchSpinnerAdapter(requireContext(), getPatchVersions()));
             textView.setText(getPatchVersion(), false);
         }
 

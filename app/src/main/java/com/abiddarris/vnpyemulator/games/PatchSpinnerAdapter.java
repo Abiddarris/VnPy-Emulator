@@ -24,23 +24,17 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.abiddarris.plugin.PluginLoader;
-import com.abiddarris.plugin.PluginName;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginForSpinnerBinding;
-import com.abiddarris.vnpyemulator.plugins.Plugin;
+import com.abiddarris.vnpyemulator.patches.PatchSource;
+import com.abiddarris.vnpyemulator.patches.Patcher;
 
-import java.util.Arrays;
+import java.io.IOException;
 
-public class PluginSpinnerAdapter extends ArrayAdapter<String> {
+public class PatchSpinnerAdapter extends ArrayAdapter<String> {
 
-    public PluginSpinnerAdapter(@NonNull Context context, @NonNull Plugin[] objects) {
-        super(context, R.layout.layout_plugin_for_spinner, R.id.text,
-                Arrays.asList(objects)
-                .stream()
-                .map(Plugin::toStringWithoutAbi)
-                .distinct()
-                .toArray(String[]::new));
+    public PatchSpinnerAdapter(@NonNull Context context, @NonNull String[] patchers) {
+        super(context, R.layout.layout_plugin_for_spinner, R.id.text, patchers);
     }
 
     @NonNull
@@ -48,9 +42,14 @@ public class PluginSpinnerAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
         LayoutPluginForSpinnerBinding ui = LayoutPluginForSpinnerBinding.bind(view);
-        PluginName name = new PluginName(getItem(position));
+        boolean installed = false;
+        try {
+            Patcher patcher = PatchSource.getPatcher(getItem(position));
+            installed = PatchSource.isInstalled(patcher);
+        } catch (IOException ignored) {
+        }
 
-        ui.imageView.setVisibility(PluginLoader.hasPluginWithExactInternalVersion(getContext(), name) ? View.GONE : View.VISIBLE);
+        ui.imageView.setVisibility(installed ? View.GONE : View.VISIBLE);
 
         return view;
     }

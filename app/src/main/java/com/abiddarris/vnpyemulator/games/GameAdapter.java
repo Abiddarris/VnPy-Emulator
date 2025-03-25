@@ -17,27 +17,18 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.games;
 
-import static com.abiddarris.vnpyemulator.files.Files.getKeyboardFolder;
 import static com.abiddarris.vnpyemulator.games.Game.GAME_NAME;
 
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.abiddarris.common.android.dialogs.SimpleDialog;
-import com.abiddarris.plugin.PluginArguments;
-import com.abiddarris.plugin.PluginLoader;
-import com.abiddarris.plugin.PluginName;
-import com.abiddarris.vnpyemulator.MainActivity;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutGameBinding;
 import com.abiddarris.vnpyemulator.games.GameAdapter.GameViewHolder;
-import com.abiddarris.vnpyemulator.plugins.PluginSource;
-import com.abiddarris.vnpyemulator.renpy.RenPyPrivate;
 import com.bumptech.glide.Glide;
 
 import org.json.JSONException;
