@@ -66,6 +66,10 @@ public class PatcherItem extends BaseItem {
                         fragment.getString(android.R.string.ok)
                 );
                 dialog.showForResult(fragment.getChildFragmentManager(), delete -> {
+                    if (!delete) {
+                        return;
+                    }
+
                     try {
                         PatchSource.uninstall(patcher);
                     } catch (IOException e) {
