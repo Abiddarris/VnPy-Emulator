@@ -23,6 +23,7 @@ public class PluginState {
     private final Plugin plugin;
     private boolean isDownloading;
     private boolean installing;
+    private boolean hideDownloadButton;
 
     public PluginState(Plugin plugin) {
         this.plugin = plugin;
@@ -46,5 +47,13 @@ public class PluginState {
 
     public boolean isInstalling() {
         return installing;
+    }
+
+    public boolean isHideDownloadButton() {
+        return hideDownloadButton;
+    }
+
+    public void setHideDownloadButton(boolean hide) {
+        this.hideDownloadButton = hide;
     }
 }

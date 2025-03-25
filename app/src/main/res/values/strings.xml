@@ -67,7 +67,9 @@
     <string name="permission_required">Permission required</string>
     <string name="request_install_permission_message">To install plugins, please grant install from unknown sources for this app.</string>
     <string name="installation_error">Installation Error</string>
+    <string name="uninstallation_error">Uninstallation Error</string>
     <string name="installation_error_message">Cannot install %s with error code : %s and message : %s</string>
+    <string name="uninstallation_error_message">Cannot uninstall %s with error code : %s and message : %s</string>
     <string name="failed_to_download_patch">Failed to download patch</string>
     <string name="failed_to_download_plugin">Failed to download plugin</string>
     <string name="confirmation">Confirmation</string>

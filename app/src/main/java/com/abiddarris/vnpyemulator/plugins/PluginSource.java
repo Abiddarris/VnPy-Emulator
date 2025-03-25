@@ -25,8 +25,10 @@ import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 import static java.lang.Boolean.TRUE;
 
 import android.content.Context;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageManager;
 
+import com.abiddarris.common.android.pm.InstallationCallback;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.files.Files;
 import com.abiddarris.common.utils.Exceptions;
@@ -50,6 +52,7 @@ public class PluginSource {
 
     private static PluginGroup[] pluginGroups;
     private static final Map<Plugin, Boolean> installed = new HashMap<>();
+    private static InstallationCallback listener;
 
     public static Connection openInCurrentVersion(String fileName) throws IOException {
         return openInCurrentVersion(SOURCE, fileName);
@@ -142,5 +145,17 @@ public class PluginSource {
 
     public static void delete(Context context, Plugin plugin) throws IOException {
         Files.delete(getPluginApk(context, plugin));
+    }
+
+    public static void uninstall(Context context, Plugin plugin, InstallationCallback callback) {
+        Packages.uninstallPackage(
+                context,
+                PluginLoader.getPackage(plugin.getPluginGroup().getVersion()),
+                (status, message) -> {
+                    if (status == PackageInstaller.STATUS_SUCCESS) {
+                        setInstalled(plugin, false);
+                    }
+                    callback.installationResult(status, message);
+                });
     }
 }

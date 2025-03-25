@@ -69,10 +69,13 @@ public class PluginItem extends BaseItem {
         View.OnClickListener downloadClickListener = v -> download(fragment);
         Integer iconResource = R.drawable.ic_download;
 
-        if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading() || pluginState.isInstalling()) {
+        if (pluginState.isHideDownloadButton() || pluginState.isDownloading() || pluginState.isInstalling()) {
             downloadClickListener = null;
             downloadButtonVisibility = deleteButtonVisibility == VISIBLE ? GONE : INVISIBLE;
             iconResource = null;
+        } else if (PluginSource.isInstalled(fragment.getContext(), plugin)) {
+            downloadClickListener = v -> uninstallPlugin();
+            iconResource = R.drawable.ic_close;
         } else if (PluginSource.isDownloaded(fragment.getContext(), plugin)) {
             downloadClickListener = v -> {
                 installPlugin();
@@ -89,6 +92,34 @@ public class PluginItem extends BaseItem {
         if (iconResource != null) {
             viewBinding.download.setIconResource(iconResource);
         }
+    }
+
+    private void uninstallPlugin() {
+        PluginFragment fragment = baseDownloadViewModel.getFragment();
+        Context context = fragment.requireContext().getApplicationContext();
+
+        pluginState.setHideDownloadButton(true);
+        notifyThisItem(fragment);
+
+        PluginSource.uninstall(context, plugin, (status, message) -> {
+            PluginFragment fragment1 = baseDownloadViewModel.getFragment();
+            pluginState.setHideDownloadButton(false);
+            notifyThisItem(fragment1);
+
+            if (status == STATUS_SUCCESS) {
+                return;
+            }
+
+            SimpleDialog.show(
+                    fragment1.getChildFragmentManager(),
+                    context.getString(R.string.uninstallation_error),
+                    context.getString(
+                            R.string.uninstallation_error_message,
+                            plugin.toString(),
+                            String.valueOf(status), message
+                    )
+            );
+        });
     }
 
     private void showDeleteConfirmationDialog(PluginFragment fragment) {
