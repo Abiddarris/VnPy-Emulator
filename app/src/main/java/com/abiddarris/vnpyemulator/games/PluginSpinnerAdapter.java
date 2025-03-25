@@ -20,6 +20,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,18 +30,23 @@ import com.abiddarris.plugin.PluginName;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginForSpinnerBinding;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 
 import java.util.Arrays;
 
 public class PluginSpinnerAdapter extends ArrayAdapter<String> {
 
-    public PluginSpinnerAdapter(@NonNull Context context, @NonNull Plugin[] objects) {
+    private MaterialAutoCompleteTextView owner;
+
+    public PluginSpinnerAdapter(@NonNull Context context, MaterialAutoCompleteTextView owner, @NonNull Plugin[] objects) {
         super(context, R.layout.layout_plugin_for_spinner, R.id.text,
                 Arrays.asList(objects)
                 .stream()
                 .map(Plugin::toStringWithoutAbi)
                 .distinct()
                 .toArray(String[]::new));
+
+        this.owner = owner;
     }
 
     @NonNull
@@ -48,9 +54,24 @@ public class PluginSpinnerAdapter extends ArrayAdapter<String> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
         LayoutPluginForSpinnerBinding ui = LayoutPluginForSpinnerBinding.bind(view);
-        PluginName name = new PluginName(getItem(position));
+        String item = getItem(position);
+        PluginName name = new PluginName(item);
 
-        ui.imageView.setVisibility(PluginLoader.hasPluginWithExactInternalVersion(getContext(), name) ? View.GONE : View.VISIBLE);
+        boolean installed = PluginLoader.hasPluginWithExactInternalVersion(getContext(), name);
+
+        ui.imageView.setVisibility(installed ? View.GONE : View.VISIBLE);
+
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ui.check.getLayoutParams();
+        if (installed) {
+            layoutParams.removeRule(RelativeLayout.LEFT_OF);
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+        } else {
+            layoutParams.addRule(RelativeLayout.LEFT_OF, ui.imageView.getId());
+            layoutParams.removeRule(RelativeLayout.ALIGN_PARENT_END);
+        }
+
+        boolean checked = item.equals(owner.getText().toString());
+        ui.check.setVisibility(checked ? View.VISIBLE : View.INVISIBLE);
 
         return view;
     }
