@@ -17,7 +17,6 @@
 package com.abiddarris.vnpyemulator.download.plugin;
 
 import static android.content.pm.PackageInstaller.STATUS_SUCCESS;
-
 import static com.abiddarris.common.android.handlers.MainThreads.runOnMainThreadIfNot;
 
 import android.content.Context;
@@ -26,6 +25,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.abiddarris.common.android.dialogs.ExceptionDialog;
+import com.abiddarris.common.android.dialogs.SimpleConfirmationDialog;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
@@ -38,7 +38,6 @@ import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownlo
 import com.abiddarris.vnpyemulator.download.base.BaseItem;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.abiddarris.vnpyemulator.plugins.PluginSource;
-import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
 
@@ -62,22 +61,54 @@ public class PluginItem extends BaseItem {
         PluginFragment fragment = baseDownloadViewModel.getFragment();
         viewBinding.version.setText(String.format("%s (%s)", plugin.getVersion(), plugin.getAbi()));
 
-        if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading() || pluginState.isInstalling()) {
-            viewBinding.download.setOnClickListener(null);
-            viewBinding.download.setVisibility(View.INVISIBLE);
-        } else if (PluginSource.isDownloaded(fragment.getContext(), plugin)) {
-            viewBinding.download.setVisibility(View.VISIBLE);
-            viewBinding.download.setOnClickListener(v -> {
-                installPlugin();
-                notifyItem(fragment.getActivePluginItem(pluginState));
-            });
-            ((MaterialButton)viewBinding.download).setIconResource(R.drawable.ic_install);
-        } else {
-            viewBinding.download.setVisibility(View.VISIBLE);
-            viewBinding.download.setOnClickListener(v -> download(fragment));
+        int downloadButtonVisibility = View.VISIBLE;
+        int deleteButtonVisibility = View.GONE;
+        View.OnClickListener downloadClickListener = v -> download(fragment);
+        Integer iconResource = R.drawable.ic_download;
 
-            ((MaterialButton)viewBinding.download).setIconResource(R.drawable.ic_download);
+        if (PluginSource.isInstalled(fragment.getContext(), plugin) || pluginState.isDownloading() || pluginState.isInstalling()) {
+            downloadClickListener = null;
+            downloadButtonVisibility = View.INVISIBLE;
+            iconResource = null;
+        } else if (PluginSource.isDownloaded(fragment.getContext(), plugin)) {
+            downloadClickListener = v -> {
+                installPlugin();
+                notifyThisItem(fragment);
+            };
+            iconResource = R.drawable.ic_install;
+            deleteButtonVisibility = View.VISIBLE;
         }
+
+        viewBinding.download.setVisibility(downloadButtonVisibility);
+        viewBinding.download.setOnClickListener(downloadClickListener);
+        viewBinding.delete.setVisibility(deleteButtonVisibility);
+        viewBinding.delete.setOnClickListener(v -> showDeleteConfirmationDialog(fragment));
+
+        if (iconResource != null) {
+            viewBinding.download.setIconResource(iconResource);
+        }
+    }
+
+    private void showDeleteConfirmationDialog(PluginFragment fragment) {
+        SimpleConfirmationDialog dialog = SimpleConfirmationDialog.newConfirmationDialog(
+                fragment.getString(R.string.confirmation),
+                fragment.getString(R.string.delete_plugin_confirmation, plugin),
+                fragment.getString(android.R.string.cancel),
+                fragment.getString(android.R.string.ok)
+        );
+        dialog.showForResult(fragment.getChildFragmentManager(), delete -> {
+            if (!delete) {
+                return;
+            }
+
+            PluginFragment fragment1 = baseDownloadViewModel.getFragment();
+            try {
+                PluginSource.delete(fragment1.getContext(), plugin);
+                notifyThisItem(fragment1);
+            } catch (IOException e) {
+                ExceptionDialog.showExceptionDialog(fragment1.getChildFragmentManager(), e);
+            }
+        });
     }
 
     private void download(BaseDownloadFragment fragment) {
@@ -100,6 +131,10 @@ public class PluginItem extends BaseItem {
         }
 
         PluginFragment fragment = baseDownloadViewModel.getFragment();
+        notifyThisItem(fragment);
+    }
+
+    private void notifyThisItem(PluginFragment fragment) {
         notifyItem(fragment.getActivePluginItem(pluginState));
     }
 
@@ -152,6 +187,6 @@ public class PluginItem extends BaseItem {
         }
 
         pluginState.setInstalling(false);
-        notifyItem(fragment.getActivePluginItem(pluginState));
+        notifyThisItem(fragment);
     }
 }

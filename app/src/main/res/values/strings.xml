@@ -74,4 +74,5 @@
     <string name="delete_patcher_confirmation">Are you sure want to delete patcher %s?</string>
     <string name="unsupported_plugin">Unsupported Plugin</string>
     <string name="plugin_not_supported_message">Plugin %s not supported anymore, please update the plugin to newer version</string>
+    <string name="delete_plugin_confirmation">Are you sure want to delete plugin %s?</string>
 </resources>

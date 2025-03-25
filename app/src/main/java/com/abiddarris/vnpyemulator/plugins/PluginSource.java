@@ -139,4 +139,8 @@ public class PluginSource {
     public static boolean isDownloaded(Context context, Plugin plugin) {
         return getPluginApk(context, plugin).exists();
     }
+
+    public static void delete(Context context, Plugin plugin) throws IOException {
+        Files.delete(getPluginApk(context, plugin));
+    }
 }
