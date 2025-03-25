@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
     android:focusable="true"
     android:layout_width="match_parent"
@@ -7,22 +8,42 @@
     android:layout_margin="8dp"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <RelativeLayout
         android:padding="9dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/name"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="VnPy-Emulator Plugin for 3.8" />
+            android:layout_centerVertical="true"
+            android:id="@+id/expand"
+            android:layout_alignParentEnd="true"
+            app:icon="@drawable/ic_expand_more"
+            style="?attr/materialIconButtonStyle"/>
 
-        <TextView
-            android:id="@+id/version"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@+id/expand"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="3.8" />
-    </LinearLayout>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="VnPy-Emulator Plugin for 3.8" />
+
+            <TextView
+                android:id="@+id/version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="3.8" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </com.google.android.material.card.MaterialCardView>
