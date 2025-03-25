@@ -65,5 +65,13 @@ public class PluginLoader {
         
         return intent;
     }
-    
+
+    public static boolean hasPluginWithExactInternalVersion(Context context, PluginName name) {
+        if (!hasPlugin(context, name)) {
+            return false;
+        }
+
+        return getPluginInternalVersion(context, name.getVersion())
+                == Integer.parseInt(name.getPluginInternalVersion());
+    }
 }
