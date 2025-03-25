@@ -16,6 +16,8 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.sources;
 
+import com.abiddarris.vnpyemulator.BuildConfig;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,9 +33,9 @@ public abstract class Source {
 
     /**
      * For testing purpose, {@link #getSource()} will provide
-     * stream on internal storage.
+     * stream on local network.
      */
-    private static final boolean LOCAL = false;
+    private static final boolean LOCAL = BuildConfig.DEBUG;
     
     /**
      * Store singleton of source
