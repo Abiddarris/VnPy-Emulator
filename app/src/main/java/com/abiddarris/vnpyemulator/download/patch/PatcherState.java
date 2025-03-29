@@ -16,12 +16,13 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.patch;
 
+import com.abiddarris.common.stream.Canceler;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 
 public class PatcherState {
 
     private final Patcher patcher;
-    private boolean downloading;
+    private Canceler canceler;
 
     public PatcherState(Patcher patcher) {
         this.patcher = patcher;
@@ -31,11 +32,11 @@ public class PatcherState {
         return patcher;
     }
 
-    public boolean isDownloading() {
-        return downloading;
+    public void setCanceler(Canceler canceler) {
+        this.canceler = canceler;
     }
 
-    public void setDownloading(boolean downloading) {
-        this.downloading = downloading;
+    public Canceler getCanceler() {
+        return canceler;
     }
 }

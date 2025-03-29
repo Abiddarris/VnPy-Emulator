@@ -16,27 +16,33 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.patch;
 
-import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
 import com.abiddarris.common.android.tasks.v2.DeterminateTask;
+import com.abiddarris.common.stream.Canceler;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
+import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 
 public class DownloadPatchTask extends DeterminateTask<Boolean> implements ProgressPublisher {
 
     private final Patcher patcher;
+    private final Canceler canceler;
 
-    public DownloadPatchTask(Patcher patcher) {
+    public DownloadPatchTask(Patcher patcher, Canceler canceler) {
         this.patcher = patcher;
+        this.canceler = canceler;
     }
 
     @Override
     public void execute() throws Exception {
         setResult(false);
-        setTitle("Downloading Patch");
+        setTitle(R.string.downloading_patch);
         setMessage(getString(R.string.downloading_patch_message, patcher.getPatch().getName(), patcher.getVersion()));
 
-        patcher.download(getContext(), this);
+        if (!PatchSource.download(patcher, this, canceler)) {
+            setMessage(R.string.download_canceled);
+            return;
+        }
 
         setMessage(getString(R.string.downloaded));
         setResult(true);

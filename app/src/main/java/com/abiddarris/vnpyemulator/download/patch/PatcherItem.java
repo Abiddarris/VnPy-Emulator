@@ -26,6 +26,7 @@ import com.abiddarris.common.android.dialogs.ExceptionDialog;
 import com.abiddarris.common.android.dialogs.SimpleConfirmationDialog;
 import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
+import com.abiddarris.common.stream.Canceler;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginBinding;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
@@ -33,7 +34,6 @@ import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment.BaseDownlo
 import com.abiddarris.vnpyemulator.download.base.BaseItem;
 import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.patches.Patcher;
-import com.google.android.material.button.MaterialButton;
 
 import java.io.IOException;
 
@@ -55,10 +55,14 @@ public class PatcherItem extends BaseItem {
 
         viewBinding.version.setText(patcher.getVersion());
 
-        if (PatchSource.isInstalled(patcher)) {
-            viewBinding.download.setVisibility(View.VISIBLE);
-            viewBinding.download.setIconResource(R.drawable.ic_delete);
-            viewBinding.download.setOnClickListener(v -> {
+        View.OnClickListener onClickListener;
+        int iconResource;
+        if (state.getCanceler() != null) {
+            iconResource = R.drawable.ic_close;
+            onClickListener = v -> state.getCanceler().cancel();
+        } else if (PatchSource.isInstalled(patcher)) {
+            iconResource = R.drawable.ic_delete;
+            onClickListener = v -> {
                 SimpleConfirmationDialog dialog = SimpleConfirmationDialog.newConfirmationDialog(
                         fragment.getString(R.string.confirmation),
                         fragment.getString(R.string.delete_patcher_confirmation, patcher),
@@ -78,26 +82,25 @@ public class PatcherItem extends BaseItem {
                     }
                     notifyThisChanged();
                 });
-            });
-        } else if (state.isDownloading()) {
-            viewBinding.download.setVisibility(View.INVISIBLE);
-            viewBinding.download.setOnClickListener(null);
+            };
         } else {
-            viewBinding.download.setIconResource(R.drawable.ic_download);
-            viewBinding.download.setVisibility(View.VISIBLE);
-            viewBinding.download.setOnClickListener(v -> {
+            iconResource = R.drawable.ic_download;
+            onClickListener = v -> {
+                Canceler canceler = new Canceler();
                 TaskInfo<DeterminateProgress, Boolean> taskInfo =
-                        fragment.getDownloadService().download(new DownloadPatchTask(patcher));
+                        fragment.getDownloadService().download(new DownloadPatchTask(patcher, canceler));
                 taskInfo.addOnTaskExecuted(this::onTaskExecuted);
 
-                state.setDownloading(true);
+                state.setCanceler(canceler);
                 this.notifyChanged();
-            });
+            };
         }
+        viewBinding.download.setOnClickListener(onClickListener);
+        viewBinding.download.setIconResource(iconResource);
     }
 
     private void onTaskExecuted(Boolean success) {
-        state.setDownloading(false);
+        state.setCanceler(null);
         notifyThisChanged();
     }
 

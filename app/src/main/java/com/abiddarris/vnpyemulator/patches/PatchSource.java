@@ -29,6 +29,7 @@ import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 
 import android.content.Context;
 
+import com.abiddarris.common.stream.Canceler;
 import com.abiddarris.common.stream.NullOutputStream;
 import com.abiddarris.common.utils.Hash;
 import com.abiddarris.vnpyemulator.download.ProgressPublisher;
@@ -177,23 +178,35 @@ public class PatchSource {
     }
 
     public static void download(Patcher patcher, ProgressPublisher progressPublisher) throws IOException {
+        download(patcher, progressPublisher, new Canceler());
+    }
+
+    public static boolean download(Patcher patcher, ProgressPublisher progressPublisher, Canceler canceler) throws IOException {
         File dest = getPatcherFolder(patcher);
         makeDirectories(dest);
 
         PatchFile[] patchFiles = patcher.getPatches();
         progressPublisher.setMaxProgress(patchFiles.length);
         for (PatchFile patchFile : patchFiles) {
+            if (canceler.isCancel()) {
+                delete(dest);
+                return false;
+            }
+
             try (Connection connection = patchFile.open();
                  OutputStream output = openBufferedOutput(new File(dest, getPathName(patchFile.getSource())))) {
                 InputStream input = new BufferedInputStream(connection.getInputStream());
-                writeAllTo(input, output);
+                if (!writeAllTo(input, output, canceler)) {
+                    delete(dest);
+                    return false;
+                }
             } catch (IOException e) {
                 delete(dest);
-
                 throw e;
             }
             progressPublisher.incrementProgress(1);
         }
+        return true;
     }
 
     public static void uninstall(Patcher patcher) throws IOException {

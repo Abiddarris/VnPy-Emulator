@@ -100,9 +100,5 @@ public class Patcher {
         return getPatch().getRenPyVersion() + "." + getVersion();
     }
 
-    @Deprecated
-    public void download(Context context, ProgressPublisher progressPublisher) throws IOException {
-        PatchSource.download(this, progressPublisher);
-    }
 
 }
