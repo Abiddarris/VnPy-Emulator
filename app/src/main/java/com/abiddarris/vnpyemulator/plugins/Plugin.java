@@ -17,6 +17,7 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.plugins;
 
+import static com.abiddarris.common.files.Files.getPathName;
 import static com.abiddarris.vnpyemulator.files.Files.getCacheFolder;
 import static com.abiddarris.vnpyemulator.renpy.RenPyPrivate.hasPrivateFiles;
 
@@ -117,7 +118,7 @@ public class Plugin {
         if (isPrivateFilesDownloaded(context)) {
             return;
         }
-        File cache = new File(getCacheFolder(context), getPrivateFiles());
+        File cache = new File(getCacheFolder(context), getPathName(getPrivateFiles()));
         cache.deleteOnExit();
 
         try(Connection connection = PluginSource.openInCurrentVersion(getPrivateFiles());
