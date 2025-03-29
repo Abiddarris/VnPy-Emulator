@@ -17,8 +17,8 @@ android {
         applicationId 'com.abiddarris.vnpyemulator'
         minSdk 21
         targetSdk 31
-        versionCode 4
-        versionName "v0.3.0-beta"
+        versionCode 5
+        versionName "v0.3.1-beta"
         
         vectorDrawables { 
             useSupportLibrary true
