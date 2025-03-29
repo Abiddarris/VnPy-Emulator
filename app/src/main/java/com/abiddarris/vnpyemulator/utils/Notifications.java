@@ -30,7 +30,7 @@ public class Notifications {
 
     public static void initNotificationChannel(Context context) {
         NotificationChannelCompat channel = new NotificationChannelCompat.Builder(
-                DOWNLOAD_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_DEFAULT)
+                DOWNLOAD_CHANNEL_ID, NotificationManagerCompat.IMPORTANCE_LOW)
                 .setName(context.getString(R.string.download))
                 .setDescription("Notification Channel that notify download progress")
                 .build();
