@@ -26,6 +26,7 @@ import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
+import com.abiddarris.common.android.tasks.v2.DelayedProgressPublisher;
 import com.abiddarris.common.android.tasks.v2.DeterminateProgress;
 import com.abiddarris.common.android.tasks.v2.DeterminateTask;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
@@ -51,7 +52,7 @@ public class DownloadService extends Service {
     public <Result> TaskInfo<DeterminateProgress, Result> download(DeterminateTask<Result> task) {
         var publisher = new DeterminateNotificationProgressPublisher(createDefaultNotification(), this);
 
-        return taskManager.execute(task, publisher);
+        return taskManager.execute(task, new DelayedProgressPublisher<>(publisher, 250));
     }
 
     private NotificationCompat.Builder createDefaultNotification() {
