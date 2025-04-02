@@ -205,7 +205,7 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
                     .findFirst()
                     .get();
             game.setPlugin(plugin.toStringWithoutAbi());
-            game.setRenPyPrivateVersion(getPathName(plugin.getPrivateFiles()));
+            game.setRenPyPrivateVersion(plugin.getPrivateFilesName());
 
             try {
                 GameLoader.saveGames(requireContext());

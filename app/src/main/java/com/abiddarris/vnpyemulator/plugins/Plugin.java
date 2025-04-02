@@ -72,6 +72,14 @@ public class Plugin {
         return privateFiles;
     }
 
+    public String getPrivateFilesName() {
+        String pathName = getPathName(getPrivateFiles());
+        if (pathName.endsWith(".tar.gz")) {
+            pathName = pathName.substring(0, pathName.length() - ".tar.gz".length());
+        }
+        return pathName;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -81,7 +89,7 @@ public class Plugin {
     }
 
     public boolean isPrivateFilesDownloaded(Context context) {
-        return hasPrivateFiles(context, getPrivateFiles());
+        return hasPrivateFiles(context, getPrivateFilesName());
     }
 
     public String toStringWithoutAbi() {
@@ -118,7 +126,7 @@ public class Plugin {
         if (isPrivateFilesDownloaded(context)) {
             return;
         }
-        File cache = new File(getCacheFolder(context), getPathName(getPrivateFiles()));
+        File cache = new File(getCacheFolder(context), getPrivateFilesName());
         cache.deleteOnExit();
 
         try(Connection connection = PluginSource.openInCurrentVersion(getPrivateFiles());
@@ -128,7 +136,7 @@ public class Plugin {
             progressPublisher.setMaxProgress(size >= Integer.MAX_VALUE ? Integer.MIN_VALUE : (int)size);
 
             download(progressPublisher, input, output);
-            unpackPrivateFiles(cache, RenPyPrivate.getPrivateFiles(context, getPrivateFiles()));
+            unpackPrivateFiles(cache, RenPyPrivate.getPrivateFiles(context, getPrivateFilesName()));
         } finally {
              cache.delete();
         }
