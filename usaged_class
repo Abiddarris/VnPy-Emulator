@@ -10,16 +10,9 @@ org.renpy.android.VideoPlayer
 org.renpy.iap.Store
 org/renpy/android/Action
 
-- Provide more details in about game dialog
-- Patcher can be uninstall
-- Fix Patcher download button not disappeared when downloading
-- Fix Game opened even though plugin version mismatched
-- Prevent game from running on unsupported plugin
-- Fix game's plugin cannot be edited if the plugin is already unsupported
-- Do not show abis when selecting plugin for a game
-- Allow to remove plugin's .apk
-- Add plugin uninstaller
-- Show download icon if the plugin is not installed when selecting plugin for a game
-- Show download icon if the patcher is not installed when selecting patcher for a game
-- Add expand button on patch and plugin
-- Add check button to checked plugin or patch
+Do not make noise when updating download progress
+Fix cannot download private renpy files
+Fix add icon has weird color when used in toolbar
+Make download notification more smooth
+Add cancel button when downloading patcher
+ Fix renpy private files not detected
