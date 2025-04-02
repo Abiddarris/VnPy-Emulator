@@ -17,11 +17,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "Renpy Emulator"
 
-include ':common', ':common-android', ':unrpa', ':python3'
+include ":app", ":definition", ":plugin", ":plugin-6.99.12.4.2187", ":plugin-7.3.5.606",
+  ':plugin-7.4.11.2266',':common', ':common-android', ':unrpa', ':python3'
 
 project(':common').projectDir = file('Common-Library/common')
 project(':common-android').projectDir = file('Common-Library/common-android')
 project(':unrpa').projectDir = file('Common-Library/unrpa')
 project(':python3').projectDir = file('Common-Library/python3')
-
-include(":app", ":definition", ":plugin", ":plugin-6.99.12.4.2187", ":plugin-7.3.5.606")
