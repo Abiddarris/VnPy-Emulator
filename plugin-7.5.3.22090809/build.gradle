@@ -1,0 +1,126 @@
+plugins {
+    id 'com.android.application'
+    id 'com.github.jk1.dependency-license-report'
+}
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    namespace 'com.abiddarris.renpy.plugin75322090809'
+    compileSdk 33
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
+    defaultConfig {
+        multiDexEnabled true
+        applicationId 'com.abiddarris.renpy.plugin75322090809'
+        minSdk 19
+        targetSdk 31
+        versionCode 1
+        versionName 'v7.5.3.22090809.1'
+    }
+
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile rootProject.file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            //remove this if you don't have key
+            signingConfig signingConfigs.release
+        }
+    }
+
+    aaptOptions {
+        noCompress 'ogv', 'avi', 'mpg', 'webm', 'mkv', 'mp4', 'mp3', 'mp2', 'ogg', 'opus', 'flac', 'png', 'jpg', 'jpeg', 'webp', 'rpyc', 'rpymc', 'rpyb'
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+
+            include "x86_64", "armeabi-v7a", "arm64-v8a"
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':plugin')
+
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+}
+
+def dest = rootProject.file("releases")
+dest.mkdirs();
+
+def copy(src, dest) {
+    def dir = file(src)
+    dir.listFiles().each(file -> {
+        def fileName = file.getName()
+        if(!fileName.endsWith('.apk')) {
+            return
+        }
+
+        def abi = fileName.substring(fileName.indexOf('-', fileName.indexOf('-') + 1) + 1, fileName.lastIndexOf('-'))
+        try(def input = new BufferedInputStream(new FileInputStream(file));
+            def output = new BufferedOutputStream(
+                    new FileOutputStream(new File(dest, "VnPy-Emulator-Plugin-7.5.3.22090809-${abi}.apk")));){
+
+            def buf = new byte[8192]
+            def len;
+            while((len = input.read(buf)) != -1) {
+                output.write(buf, 0, len);
+            }
+            output.flush();
+        }
+    })
+}
+
+tasks.register('copyDebug') {
+    dependsOn 'assembleDebug'
+
+    doLast {
+        copy("$buildDir/outputs/apk/debug", dest)
+    }
+}
+
+tasks.register('copyRelease') {
+    dependsOn 'assembleRelease'
+
+    doLast {
+        copy("$buildDir/outputs/apk/release", dest)
+    }
+}
