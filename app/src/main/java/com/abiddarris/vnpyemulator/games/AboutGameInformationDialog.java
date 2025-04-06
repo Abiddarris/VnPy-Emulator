@@ -19,12 +19,15 @@ package com.abiddarris.vnpyemulator.games;
 
 import android.os.Bundle;
 
+import com.abiddarris.common.android.dialogs.BaseDialogFragment;
 import com.abiddarris.common.android.dialogs.FragmentDialog;
 import com.abiddarris.common.android.fragments.TextFragment;
 import com.abiddarris.vnpyemulator.R;
+import com.abiddarris.vnpyemulator.databinding.DialogAboutGameBinding;
+import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class AboutGameInformationDialog extends FragmentDialog<Void> {
+public class AboutGameInformationDialog extends BaseDialogFragment<Void> {
     
     private static final String GAME = "game";
     
@@ -46,9 +49,8 @@ public class AboutGameInformationDialog extends FragmentDialog<Void> {
             return;
         }
 
-        var fragment = new TextFragment();
-        fragment.setHighlightLink(false);
-        fragment.setText(getString(R.string.about_message,
+        DialogAboutGameBinding ui = DialogAboutGameBinding.inflate(getLayoutInflater());
+        ui.aboutText.setText(getString(R.string.about_message,
                 game.getName(),
                 game.getGamePath(),
                 game.getGameScript(),
@@ -56,8 +58,13 @@ public class AboutGameInformationDialog extends FragmentDialog<Void> {
                 game.getRenPyVersion(),
                 game.getPatchVersion()
         ));
-        
-        setFragment(fragment);
+
+        Glide.with(this)
+                .load(game.getIconPath())
+                .fallback(R.drawable.ic_launcher)
+                .into(ui.gameIcon);
+
+        builder.setView(ui.getRoot());
     }
     
     
