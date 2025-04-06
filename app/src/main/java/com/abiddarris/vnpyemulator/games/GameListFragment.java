@@ -42,6 +42,7 @@ import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.common.android.tasks.v2.TaskManager;
 import com.abiddarris.common.android.tasks.v2.dialog.DialogProgressPublisherManager;
 import com.abiddarris.common.android.tasks.v2.dialog.IndeterminateDialogProgressPublisher;
+import com.abiddarris.common.utils.ObjectWrapper;
 import com.abiddarris.plugin.PluginArguments;
 import com.abiddarris.plugin.PluginLoader;
 import com.abiddarris.plugin.PluginName;
@@ -201,7 +202,8 @@ public class GameListFragment extends AdvanceFragment {
         IndeterminateDialogProgressPublisher progressPublisher = new IndeterminateDialogProgressPublisher("fetch");
         gameListViewModel.dialogManager.registerPublisher(progressPublisher);
 
-        TaskInfo<IndeterminateProgress, Boolean> taskInfo = gameListViewModel.taskManager.execute(new IndeterminateTask<>() {
+        ObjectWrapper<Boolean> shouldOpen = new ObjectWrapper<>(false);
+        TaskInfo<IndeterminateProgress, Plugin> taskInfo = gameListViewModel.taskManager.execute(new IndeterminateTask<>() {
             @Override
             public void execute() throws Exception {
                 setTitle(R.string.fetch_plugin_title);
@@ -210,8 +212,10 @@ public class GameListFragment extends AdvanceFragment {
                 Plugin[] plugins = PluginSource.getPlugins(getContext(), false);
                 setResult(Arrays.asList(plugins)
                         .stream()
-                        .map(Plugin::toStringWithoutAbi)
-                        .anyMatch(plugin -> plugin.equals(game.getPlugin())));
+                        .filter(plugin -> plugin.toStringWithoutAbi().equals(game.getPlugin()))
+                        .findFirst()
+                        .orElse(null));
+                shouldOpen.setObject(true);
             }
 
             @Override
@@ -221,15 +225,15 @@ public class GameListFragment extends AdvanceFragment {
                 ExceptionDialog.showExceptionDialog(getChildFragmentManager(), throwable);
             }
         }, progressPublisher);
-        taskInfo.addOnTaskExecuted(shouldOpen -> open(game, shouldOpen));
+        taskInfo.addOnTaskExecuted(plugin -> open(game, shouldOpen.getObject(), plugin));
     }
 
-    private void open(Game game, Boolean shouldOpen) {
-        if (shouldOpen == null) {
+    private void open(Game game, boolean shouldOpen, Plugin plugin0) {
+        if (!shouldOpen) {
             return;
         }
 
-        if (!shouldOpen) {
+        if (plugin0 == null) {
             SimpleDialog.newSimpleDialog(
                     getString(R.string.unsupported_plugin),
                     getString(R.string.plugin_not_supported_message, game.getPlugin())
@@ -240,7 +244,6 @@ public class GameListFragment extends AdvanceFragment {
         String plugin = game.getPlugin();
         String renpyPrivateVersion = game.getRenPyPrivateVersion();
 
-        game.getPlugin();
         PluginName name = new PluginName(plugin);
         if(!PluginLoader.hasPlugin(getContext(), name)) {
             SimpleDialog.show(
@@ -265,17 +268,20 @@ public class GameListFragment extends AdvanceFragment {
             return;
         }
 
-        if (!RenPyPrivate.hasPrivateFiles(getContext(), renpyPrivateVersion)) {
-            SimpleDialog.show(
-                    getChildFragmentManager(),
-                    getString(R.string.plugin_corrupted),
-                    getString(R.string.plugin_corrupted_message)
-            );
-            return;
+        String renpyPrivateVersionPath = null;
+        if (plugin0.getPrivateFiles() != null) {
+            if (!RenPyPrivate.hasPrivateFiles(getContext(), renpyPrivateVersion)) {
+                SimpleDialog.show(
+                        getChildFragmentManager(),
+                        getString(R.string.plugin_corrupted),
+                        getString(R.string.plugin_corrupted_message)
+                );
+                return;
+            }
+            renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(getContext(), renpyPrivateVersion)
+                    .getAbsolutePath();
         }
 
-        String renpyPrivateVersionPath = RenPyPrivate.getPrivateFiles(getContext(), renpyPrivateVersion)
-                .getAbsolutePath();
         MainActivity activity = (MainActivity)getActivity();
         var intent = PluginLoader.getIntentForPlugin(name.getVersion(), new PluginArguments()
                 .setRenPyPrivatePath(renpyPrivateVersionPath)
@@ -285,7 +291,6 @@ public class GameListFragment extends AdvanceFragment {
                 .setKeyboardFolderPath(getKeyboardFolder(getContext()).getAbsolutePath()));
 
         startActivity(intent);
-        
     }
 
     public GameAdapter getAdapter() {

@@ -29,7 +29,7 @@ import java.util.List;
  */
 public abstract class Source {
 
-    public static final String VERSION = "0.3.2";
+    public static final String VERSION = "0.3.3";
 
     /**
      * For testing purpose, {@link #getSource()} will provide

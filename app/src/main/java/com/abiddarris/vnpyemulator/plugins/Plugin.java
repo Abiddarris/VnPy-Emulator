@@ -57,7 +57,7 @@ public class Plugin {
         abi = object.getString("abi");
         version = object.getString("version");
         file = object.getString("file");
-        privateFiles = object.getString("private-files");
+        privateFiles = object.optString("private-files", null);
     }
 
     public String getAbi() {
@@ -73,7 +73,10 @@ public class Plugin {
     }
 
     public String getPrivateFilesName() {
-        String pathName = getPathName(getPrivateFiles());
+        String privateFiles = getPrivateFiles();
+        if (privateFiles == null) return null;
+
+        String pathName = getPathName(privateFiles);
         if (pathName.endsWith(".tar.gz")) {
             pathName = pathName.substring(0, pathName.length() - ".tar.gz".length());
         }
@@ -123,9 +126,14 @@ public class Plugin {
     }
 
     public void downloadPrivateFiles(Context context, ProgressPublisher progressPublisher) throws IOException {
+        if (privateFiles == null) {
+            return;
+        }
+
         if (isPrivateFilesDownloaded(context)) {
             return;
         }
+
         File cache = new File(getCacheFolder(context), getPrivateFilesName());
         cache.deleteOnExit();
 
