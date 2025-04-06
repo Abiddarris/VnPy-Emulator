@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
-import com.abiddarris.vnpyemulator.download.plugin.PluginState;
 import com.abiddarris.vnpyemulator.patches.Patch;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 import com.xwray.groupie.ExpandableGroup;
@@ -35,15 +34,22 @@ public class PatchFragment extends BaseDownloadFragment {
 
     private static final String FETCHED = "fetched";
     public static final String PATCHES = "patches";
-    public static final String PATCH_STATES = "patchStates";
 
-    private Map<PatcherState, PatcherItem> patchItems = new HashMap<>();
+    private static final Map<Patcher, PatcherState> PATCHER_STATE = new HashMap<>();
+    private static final Map<PatcherState, PatcherItem> PATCHER_ITEMS = new HashMap<>();
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         setPatchesToAdapter();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        PATCHER_ITEMS.clear();
     }
 
     public void onPatchFetched(Patch[] patches) {
@@ -62,19 +68,18 @@ public class PatchFragment extends BaseDownloadFragment {
             return;
         }
 
-        Map<Patcher, PatcherState> patchStates = getPatcherStates();
         for (Patch patch : getPatches()) {
             ExpandableGroup pluginGroup = new ExpandableGroup(new PatchItem(patch));
             for (Patcher patcher : patch.getPatchers()) {
-                PatcherState state = patchStates.get(patcher);
+                PatcherState state = PATCHER_STATE.get(patcher);
                 if (state == null) {
                     state = new PatcherState(patcher);
-                    patchStates.put(patcher, state);
+                    PATCHER_STATE.put(patcher, state);
                 }
 
                 PatcherItem item = new PatcherItem(state, baseDownloadViewModel);
                 pluginGroup.add(item);
-                patchItems.put(state, item);
+                PATCHER_ITEMS.put(state, item);
             }
 
             adapter.add(pluginGroup);
@@ -82,17 +87,7 @@ public class PatchFragment extends BaseDownloadFragment {
     }
 
     public PatcherItem getActivePatcherItem(PatcherState state) {
-        return patchItems.get(state);
-    }
-
-    private Map<Patcher, PatcherState> getPatcherStates() {
-        Map<Patcher, PatcherState> patchStates = getVariable(PATCH_STATES);
-        if (patchStates == null) {
-            patchStates = new HashMap<>();
-            saveVariable(PATCH_STATES, patchStates);
-        }
-
-        return patchStates;
+        return PATCHER_ITEMS.get(state);
     }
 
     private Patch[] getPatches() {
