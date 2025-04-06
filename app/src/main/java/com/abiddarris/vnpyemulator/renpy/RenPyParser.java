@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  *
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.renpy;
+
+import com.abiddarris.common.stream.InputStreams;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -58,34 +60,35 @@ public class RenPyParser {
         if(!initFile.isFile()) {
             return null;
         }
-        
-        BufferedReader reader = new BufferedReader(
-            new FileReader(initFile));
-        
-        StringBuilder builder = new StringBuilder();
-        reader.lines()
-            .forEach(builder::append);
-        reader.close();
-        
-        Matcher matcher = VERSION_PATTERN.matcher(builder.toString());
-        if(!matcher.find()) {
+
+        String version;
+        try (BufferedReader reader = new BufferedReader(new FileReader(initFile))) {
+            String content = InputStreams.readAll(reader);
+            Matcher matcher = VERSION_PATTERN.matcher(content);
+            if (!matcher.find()) {
+                return null;
+            }
+
+            version = matcher.group(1);
+        }
+
+        if (version == null) {
             return null;
         }
-        
-        String version = matcher.group(1);
-        if(version.contains(VC_VERSION)) {
-            builder.delete(0, builder.length());
-            
-            reader = new BufferedReader(new FileReader(
-                new File(gameFolder, "renpy/vc_version.py")));
-            reader.lines()
-                .forEach(builder::append);
-            reader.close();
-            
-            matcher = VC_VERSION_PATTERN.matcher(builder.toString());
-            version = version.replace("vc_version",
-                 matcher.find() ? matcher.group(1) : "0");
+
+        if (version.contains(VC_VERSION)) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(
+                    new File(gameFolder, "renpy/vc_version.py")))) {
+                String content = InputStreams.readAll(reader);
+                Matcher matcher = VC_VERSION_PATTERN.matcher(content);
+                String matcherVersion = matcher.find() ? matcher.group(1) : "0";
+                version = version.replace(
+                        "vc_version",
+                        matcherVersion == null ? "0" : matcherVersion
+                );
+            }
         }
+
         version = version.replace(",", "")
             .replace(" ", ".");
         return version;
