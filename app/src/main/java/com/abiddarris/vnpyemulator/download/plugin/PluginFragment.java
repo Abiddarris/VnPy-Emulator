@@ -40,10 +40,12 @@ import java.util.Map;
 
 public class PluginFragment extends BaseDownloadFragment {
 
-    public static final String PLUGIN_GROUPS = "pluginGroups";
-    public static final String PLUGIN_STATE = "pluginState";
-    public static final String PLUGIN_ITEMS = "pluginItems";
-    public static final String FETCHED = "fetched";
+    private static final String PLUGIN_GROUPS = "pluginGroups";
+    private static final String FETCHED = "fetched";
+
+    private static final Map<Plugin, PluginState> PLUGIN_STATES = new HashMap<>();
+    private static final Map<PluginState, PluginItem> PLUGIN_ITEMS = new HashMap<>();
+
     private ActivityResultLauncher<Void> requestInstallFromUnknownSource;
 
     @Override
@@ -69,7 +71,7 @@ public class PluginFragment extends BaseDownloadFragment {
     public void onDestroy() {
         super.onDestroy();
 
-        getPluginItems().clear();
+        PLUGIN_ITEMS.clear();
     }
 
     private void requestInstallFromUnknownSourceCallback(Boolean success) {
@@ -95,20 +97,18 @@ public class PluginFragment extends BaseDownloadFragment {
             return;
         }
 
-        Map<Plugin, PluginState> pluginStates = getPluginStates();
-        Map<PluginState, PluginItem> pluginItems = getPluginItems();
         for (PluginGroup group : pluginGroups) {
             ExpandableGroup pluginGroup = new ExpandableGroup(new PluginGroupItem(group));
             for (Plugin plugin : group.getPlugins()) {
-                PluginState state = pluginStates.get(plugin);
+                PluginState state = PLUGIN_STATES.get(plugin);
                 if (state == null) {
                     state = new PluginState(plugin);
-                    pluginStates.put(plugin, state);
+                    PLUGIN_STATES.put(plugin, state);
                 }
 
                 PluginItem item = new PluginItem(state, baseDownloadViewModel);
                 pluginGroup.add(item);
-                pluginItems.put(state, item);
+                PLUGIN_ITEMS.put(state, item);
             }
 
             adapter.add(pluginGroup);
@@ -116,31 +116,11 @@ public class PluginFragment extends BaseDownloadFragment {
     }
 
     public PluginItem getActivePluginItem(PluginState pluginState) {
-        return getPluginItems().get(pluginState);
+        return PLUGIN_ITEMS.get(pluginState);
     }
 
     public PluginState getPluginState(Plugin plugin) {
-        return getPluginStates().get(plugin);
-    }
-
-    private Map<PluginState, PluginItem> getPluginItems() {
-        Map<PluginState, PluginItem> pluginItems = getVariable(PLUGIN_ITEMS);
-        if (pluginItems == null) {
-            pluginItems = new HashMap<>();
-            saveVariable(PLUGIN_ITEMS, pluginItems);
-        }
-
-        return pluginItems;
-    }
-
-    private Map<Plugin, PluginState> getPluginStates() {
-        Map<Plugin, PluginState> pluginStates = getVariable(PLUGIN_STATE);
-        if (pluginStates == null) {
-            pluginStates = new HashMap<>();
-            saveVariable(PLUGIN_STATE, pluginStates);
-        }
-
-        return pluginStates;
+        return PLUGIN_STATES.get(plugin);
     }
 
     private void setPluginGroups(PluginGroup[] groups) {
