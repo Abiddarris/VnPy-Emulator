@@ -18,6 +18,9 @@ package com.abiddarris.vnpyemulator.games;
 
 import static com.abiddarris.vnpyemulator.files.Files.getKeyboardFolder;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -29,6 +32,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.abiddarris.common.android.about.AboutActivity;
@@ -178,6 +184,12 @@ public class GameListFragment extends AdvanceFragment {
             return true;
         }
 
+        if (item.getItemId() == R.id.create_shortcut) {
+            createShortcut(game);
+
+            return true;
+        }
+
         if(item.getItemId() == R.id.about) {
             AboutGameInformationDialog.newInstance(game)
                     .show(getChildFragmentManager(), null);
@@ -192,6 +204,37 @@ public class GameListFragment extends AdvanceFragment {
         }
 
         return false;
+    }
+
+    private void createShortcut(Game game) {
+        Intent intent = new Intent(requireContext(), MainActivity.class);
+        intent.setAction(game.getName());
+
+        String iconPath = game.getIconPath();
+        IconCompat icon;
+        Bitmap bitmap = null;
+        if (iconPath == null) {
+            icon = IconCompat.createWithResource(requireContext(), R.drawable.ic_launcher);
+        } else {
+            bitmap = BitmapFactory.decodeFile(iconPath);
+            if (bitmap == null) {
+                icon = IconCompat.createWithResource(requireContext(), R.drawable.ic_launcher);
+            } else {
+                icon = IconCompat.createWithBitmap(bitmap);
+            }
+        }
+
+        ShortcutInfoCompat shortcut = new ShortcutInfoCompat.Builder(requireContext(), game.getName())
+                .setShortLabel(game.getName())
+                .setIcon(icon)
+                .setIntent(intent)
+                .build();
+
+        ShortcutManagerCompat.requestPinShortcut(requireContext(), shortcut, null);
+
+        if (bitmap != null) {
+            bitmap.recycle();
+        }
     }
 
     public GameListViewModel getTaskModel() {
