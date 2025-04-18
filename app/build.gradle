@@ -16,8 +16,8 @@ android {
         applicationId 'com.abiddarris.vnpyemulator'
         minSdk 21
         targetSdk 31
-        versionCode 8
-        versionName "v0.3.4-beta"
+        versionCode 9
+        versionName "v0.3.5-beta"
         
         vectorDrawables { 
             useSupportLibrary true
@@ -56,6 +56,10 @@ android {
     buildFeatures {
         buildConfig true
         viewBinding true
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 

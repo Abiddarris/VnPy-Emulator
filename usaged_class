@@ -10,7 +10,10 @@ org.renpy.android.VideoPlayer
 org.renpy.iap.Store
 org/renpy/android/Action
 
-- Add game icon on about dialog
-- Restore plugin's button state after reentering download plugin fragment
-- Restore patcher's button state after reentering download patcher fragment
-- Add create shortcut for every game
+- Do not use `notifyDataSetChanged` after adding game
+- Replace dialog with swipe to refresh for plugin and patch fragment
+- Update to newer version of androidx and material3
+- Fix overdraw on layout_game
+- Use `ifRoom` instead `always` for add new game button
+- Fix possible overlap if archive name is so long
+- Better support for rtl layout
