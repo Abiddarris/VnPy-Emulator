@@ -20,7 +20,7 @@
         android:id="@+id/check"
         android:layout_centerVertical="true"
         android:layout_marginEnd="8dp"
-        android:layout_toLeftOf="@id/image_view"
+        android:layout_toStartOf="@id/image_view"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/ic_check" />
