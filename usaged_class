@@ -10,9 +10,7 @@ org.renpy.android.VideoPlayer
 org.renpy.iap.Store
 org/renpy/android/Action
 
-Do not make noise when updating download progress
-Fix cannot download private renpy files
-Fix add icon has weird color when used in toolbar
-Make download notification more smooth
-Add cancel button when downloading patcher
- Fix renpy private files not detected
+- Add game icon on about dialog
+- Restore plugin's button state after reentering download plugin fragment
+- Restore patcher's button state after reentering download patcher fragment
+- Add create shortcut for every game
