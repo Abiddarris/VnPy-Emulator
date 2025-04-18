@@ -64,7 +64,11 @@ public class PluginSource {
     }
 
     public static PluginGroup[] getPluginGroups(Context context) throws IOException {
-        if (pluginGroups != null) {
+        return getPluginGroups(context, false);
+    }
+
+    public static PluginGroup[] getPluginGroups(Context context, boolean doNotUseCache) throws IOException {
+        if (pluginGroups != null && !doNotUseCache) {
             return pluginGroups;
         }
 

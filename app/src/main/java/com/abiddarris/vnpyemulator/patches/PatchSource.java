@@ -152,7 +152,11 @@ public class PatchSource {
     }
 
     public static Patch[] getPatches() throws IOException {
-        if (patches == null) {
+        return getPatches(false);
+    }
+
+    public static Patch[] getPatches(boolean doNotUseCache) throws IOException {
+        if (patches == null || doNotUseCache) {
             fetch();
         }
         return patches;

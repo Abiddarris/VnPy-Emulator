@@ -22,9 +22,14 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.abiddarris.common.android.tasks.v2.Task;
+import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
 import com.abiddarris.vnpyemulator.patches.Patch;
+import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.patches.Patcher;
+import com.abiddarris.vnpyemulator.plugins.PluginGroup;
+import com.abiddarris.vnpyemulator.plugins.PluginSource;
 import com.xwray.groupie.ExpandableGroup;
 
 import java.util.HashMap;
@@ -37,11 +42,18 @@ public class PatchFragment extends BaseDownloadFragment {
 
     private static final Map<Patcher, PatcherState> PATCHER_STATE = new HashMap<>();
     private static final Map<PatcherState, PatcherItem> PATCHER_ITEMS = new HashMap<>();
+    private boolean refresh;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ui.refreshLayout.setOnRefreshListener(() -> {
+            setPatches(null);
+            setFetched(false);
+            setPatchesToAdapter();
+            refresh = true;
+        });
         setPatchesToAdapter();
     }
 
@@ -59,15 +71,27 @@ public class PatchFragment extends BaseDownloadFragment {
 
     private void setPatchesToAdapter() {
         if (!getVariable(FETCHED, false)) {
-            saveVariable(FETCHED, true);
-            baseDownloadViewModel.execute(new FetchPatchTask());
+            setFetched(true);
+
+            ui.refreshLayout.setRefreshing(true);
+            TaskInfo<Void, Patch[]> info =
+                    baseDownloadViewModel.getTaskManager().execute(new Task<>() {
+                        @Override
+                        public void execute() throws Exception {
+                            setResult(PatchSource.getPatches(refresh));
+                        }
+                    });
+
+            info.addOnTaskExecuted(this::onPatchFetched);
+
             return;
         }
-
         if (getPatches() == null) {
             return;
         }
 
+        ui.refreshLayout.setRefreshing(false);
+        adapter.clear();
         for (Patch patch : getPatches()) {
             ExpandableGroup pluginGroup = new ExpandableGroup(new PatchItem(patch));
             for (Patcher patcher : patch.getPatchers()) {
@@ -84,6 +108,10 @@ public class PatchFragment extends BaseDownloadFragment {
 
             adapter.add(pluginGroup);
         }
+    }
+
+    private void setFetched(boolean fetched) {
+        saveVariable(FETCHED, fetched);
     }
 
     public PatcherItem getActivePatcherItem(PatcherState state) {

@@ -1,5 +1,5 @@
 /***********************************************************************************
- * Copyright (C) 2024 Abiddarris
+ * Copyright (C) 2024-2025 Abiddarris
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,7 +13,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.plugin;
 
@@ -29,10 +28,13 @@ import androidx.annotation.Nullable;
 
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.pm.Packages;
+import com.abiddarris.common.android.tasks.v2.Task;
+import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.vnpyemulator.R;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
 import com.abiddarris.vnpyemulator.plugins.Plugin;
 import com.abiddarris.vnpyemulator.plugins.PluginGroup;
+import com.abiddarris.vnpyemulator.plugins.PluginSource;
 import com.xwray.groupie.ExpandableGroup;
 
 import java.util.HashMap;
@@ -47,6 +49,7 @@ public class PluginFragment extends BaseDownloadFragment {
     private static final Map<PluginState, PluginItem> PLUGIN_ITEMS = new HashMap<>();
 
     private ActivityResultLauncher<Void> requestInstallFromUnknownSource;
+    private boolean refresh;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,12 @@ public class PluginFragment extends BaseDownloadFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ui.refreshLayout.setOnRefreshListener(() -> {
+            setPluginGroups(null);
+            setFetched(false);
+            setPluginToAdapter();
+            refresh = true;
+        });
         setPluginToAdapter();
     }
 
@@ -91,12 +100,26 @@ public class PluginFragment extends BaseDownloadFragment {
             if (getVariable(FETCHED, false)) {
                 return;
             }
-            saveVariable(FETCHED, true);
+            setFetched(true);
 
-            baseDownloadViewModel.execute(new FetchPluginTask());
+            ui.refreshLayout.setRefreshing(true);
+            TaskInfo<Void, PluginGroup[]> info =
+                    baseDownloadViewModel.getTaskManager().execute(new Task<>() {
+                        @Override
+                        public void execute() throws Exception {
+                            setResult(PluginSource.getPluginGroups(getContext(), refresh));
+
+                            PluginSource.getPlugins(getContext(), false);
+                        }
+                    });
+
+            info.addOnTaskExecuted(this::onPluginFetched);
+
             return;
         }
+        ui.refreshLayout.setRefreshing(false);
 
+        adapter.clear();
         for (PluginGroup group : pluginGroups) {
             ExpandableGroup pluginGroup = new ExpandableGroup(new PluginGroupItem(group));
             for (Plugin plugin : group.getPlugins()) {
@@ -113,6 +136,10 @@ public class PluginFragment extends BaseDownloadFragment {
 
             adapter.add(pluginGroup);
         }
+    }
+
+    private void setFetched(boolean s) {
+        saveVariable(FETCHED, s);
     }
 
     public PluginItem getActivePluginItem(PluginState pluginState) {

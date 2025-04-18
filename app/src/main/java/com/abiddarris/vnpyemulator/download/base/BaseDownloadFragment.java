@@ -23,14 +23,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.abiddarris.common.android.fragments.AdvanceFragment;
-import com.abiddarris.common.android.tasks.TaskViewModel;
+import com.abiddarris.common.android.tasks.v2.vm.TaskViewModel;
 import com.abiddarris.vnpyemulator.databinding.FragmentPluginBinding;
 import com.abiddarris.vnpyemulator.download.DownloadFragment;
 import com.abiddarris.vnpyemulator.download.DownloadService;
-import com.abiddarris.vnpyemulator.download.plugin.PluginFragment;
 import com.xwray.groupie.GroupieAdapter;
 
 public class BaseDownloadFragment extends AdvanceFragment {
@@ -38,7 +38,7 @@ public class BaseDownloadFragment extends AdvanceFragment {
     protected BaseDownloadViewModel baseDownloadViewModel;
     protected GroupieAdapter adapter;
 
-    private FragmentPluginBinding ui;
+    protected FragmentPluginBinding ui;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,9 +71,18 @@ public class BaseDownloadFragment extends AdvanceFragment {
 
     public static class BaseDownloadViewModel extends TaskViewModel {
 
+        private Fragment fragment;
+
+        @Override
+        public void attach(Fragment fragment) {
+            super.attach(fragment);
+
+            this.fragment = fragment;
+        }
+
         @SuppressWarnings("unchecked")
         public <T extends BaseDownloadFragment> T getFragment() {
-            return (T) getOwner();
+            return (T) fragment;
         }
     }
 }
