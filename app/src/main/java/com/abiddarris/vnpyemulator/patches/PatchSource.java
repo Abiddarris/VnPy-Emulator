@@ -27,6 +27,7 @@ import static com.abiddarris.vnpyemulator.files.Files.getPatchFolder;
 import static com.abiddarris.vnpyemulator.sources.Source.SOURCE;
 import static com.abiddarris.vnpyemulator.sources.Source.VERSION;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.abiddarris.common.stream.Canceler;
@@ -57,6 +58,7 @@ import java.util.stream.Stream;
  */
 public class PatchSource {
 
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
 
     /**
