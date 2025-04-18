@@ -340,13 +340,6 @@ public class GameListFragment extends AdvanceFragment {
         return adapter;
     }
 
-    public void refresh() {
-        getActivity().runOnUiThread(() -> {
-            adapter.refresh();
-            adapter.notifyDataSetChanged();
-        });
-    }
-
     @Override
     public void onDestroy() {
         if (gameListViewModel != null) {
@@ -390,9 +383,9 @@ public class GameListFragment extends AdvanceFragment {
             super.onCleared();
         }
 
-        public void refresh() {
+        public void notifyNewGame(Game game) {
             GameListFragment fragment = (GameListFragment) getOwner();
-            fragment.refresh();
+            fragment.adapter.notifyNewGame(game);
         }
     }
 

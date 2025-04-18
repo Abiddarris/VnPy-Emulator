@@ -230,9 +230,9 @@ public class EditGameDialog extends BaseDialogFragment<Boolean> {
         IndeterminateDialogProgressPublisher publisher = new IndeterminateDialogProgressPublisher("PatchGameDialog");
         taskModel.getDialogManager().registerPublisher(publisher);
 
-        TaskInfo<IndeterminateProgress, Void> info = taskModel.getTaskManager()
+        TaskInfo<IndeterminateProgress, Game> info = taskModel.getTaskManager()
                 .execute(new PatchGameTask(game), publisher);
-        info.addOnTaskExecuted(ignored -> taskModel.refresh());
+        info.addOnTaskExecuted(_game -> taskModel.notifyNewGame(_game));
         sendResult(true);
     }
 

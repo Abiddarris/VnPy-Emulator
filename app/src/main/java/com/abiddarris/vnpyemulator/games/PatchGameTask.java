@@ -26,7 +26,7 @@ import com.abiddarris.vnpyemulator.patches.IncompatiblePatchStrategy;
 import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.patches.Patcher;
 
-public class PatchGameTask extends IndeterminateTask<Void> {
+public class PatchGameTask extends IndeterminateTask<Game> {
 
     private final Game game;
 
@@ -61,6 +61,8 @@ public class PatchGameTask extends IndeterminateTask<Void> {
             GameLoader.addGame(getContext(), game);
             GameLoader.saveGames(getContext());
         }
+
+        setResult(game);
     }
 
     private FragmentManager getFragmentManager() {

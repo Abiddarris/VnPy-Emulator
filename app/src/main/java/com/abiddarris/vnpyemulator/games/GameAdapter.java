@@ -34,6 +34,8 @@ import com.bumptech.glide.Glide;
 import org.json.JSONException;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameAdapter extends Adapter<GameViewHolder> {
@@ -46,7 +48,11 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     	this.fragment = fragment;
         this.inflater = fragment.getLayoutInflater();
 
-        refresh();
+        try {
+            this.games = GameLoader.loadGames(fragment.getContext());
+        } catch (IOException e) {
+            this.games = new ArrayList<>();
+        }
     }
     
     @Override
@@ -106,13 +112,13 @@ public class GameAdapter extends Adapter<GameViewHolder> {
     public Game get(int index) {
         return games.get(index);
     }
-    
-    public void refresh() {
-    	this.games = Game.loadGames(fragment.getContext());
-    }
 
     public void notifyGameModified(Game game) {
         notifyItemChanged(games.indexOf(game));
+    }
+
+    public void notifyNewGame(Game game) {
+        notifyItemInserted(games.indexOf(game));
     }
 
     public static class GameViewHolder extends ViewHolder {
