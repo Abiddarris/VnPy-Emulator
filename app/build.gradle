@@ -9,8 +9,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     namespace 'com.abiddarris.vnpyemulator'
-    compileSdk 33
-    buildToolsVersion '34.0.0'
+    compileSdk 35
     
     defaultConfig {
         multiDexEnabled true
@@ -71,11 +70,11 @@ dependencies {
     implementation 'org.kamranzafar:jtar:2.3'
     implementation "com.github.lisawray.groupie:groupie:$groupie_version"
     implementation "com.github.lisawray.groupie:groupie-viewbinding:$groupie_version"
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 }
