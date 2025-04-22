@@ -24,6 +24,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Class to store individual patch information for individual file
@@ -56,8 +57,15 @@ public class PatchFile {
         return PatchSource.openInCurrentVersion(getSource());
     }
 
-    public void patch(File folderToPatch, boolean force) {
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PatchFile patchFile = (PatchFile) o;
+        return Objects.equals(originalFileHash, patchFile.originalFileHash) && Objects.equals(source, patchFile.source) && Objects.equals(target, patchFile.target);
+    }
 
-
+    @Override
+    public int hashCode() {
+        return Objects.hash(originalFileHash, source, target);
     }
 }

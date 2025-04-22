@@ -22,7 +22,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Patch {
 
@@ -63,5 +65,17 @@ public class Patch {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Patch patch = (Patch) o;
+        return Objects.equals(name, patch.name) && Objects.equals(renpyVersion, patch.renpyVersion) && Objects.deepEquals(patchers, patch.patchers);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, renpyVersion, Arrays.hashCode(patchers));
     }
 }

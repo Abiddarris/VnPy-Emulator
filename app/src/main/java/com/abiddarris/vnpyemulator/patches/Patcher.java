@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Patcher is a group of patches
@@ -100,5 +102,15 @@ public class Patcher {
         return getPatch().getRenPyVersion() + "." + getVersion();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Patcher patcher = (Patcher) o;
+        return Objects.equals(version, patcher.version) && Objects.deepEquals(patchFiles, patcher.patchFiles);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(version, Arrays.hashCode(patchFiles));
+    }
 }
