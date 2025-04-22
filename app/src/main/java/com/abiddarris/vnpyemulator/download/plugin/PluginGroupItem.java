@@ -16,6 +16,8 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.plugin;
 
+import static com.abiddarris.vnpyemulator.download.plugin.PluginFragment.PLUGIN_GROUP_EXPANDED;
+
 import androidx.annotation.NonNull;
 
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginGroupBinding;
@@ -38,4 +40,10 @@ public class PluginGroupItem extends BaseGroupItem {
         binding.version.setText(group.getVersion());
     }
 
+    @Override
+    protected void toggleExpand() {
+        super.toggleExpand();
+
+        PLUGIN_GROUP_EXPANDED.put(group, isExpanded());
+    }
 }

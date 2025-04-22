@@ -18,6 +18,8 @@ package com.abiddarris.vnpyemulator.download.plugin;
 
 import static com.abiddarris.common.android.pm.Packages.isAllowedToInstallPackage;
 
+import static java.lang.Boolean.TRUE;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -44,6 +46,8 @@ public class PluginFragment extends BaseDownloadFragment {
 
     private static final String PLUGIN_GROUPS = "pluginGroups";
     private static final String FETCHED = "fetched";
+
+    static final Map<PluginGroup, Boolean> PLUGIN_GROUP_EXPANDED = new HashMap<>();
 
     private static final Map<Plugin, PluginState> PLUGIN_STATES = new HashMap<>();
     private static final Map<PluginState, PluginItem> PLUGIN_ITEMS = new HashMap<>();
@@ -133,6 +137,9 @@ public class PluginFragment extends BaseDownloadFragment {
                 pluginGroup.add(item);
                 PLUGIN_ITEMS.put(state, item);
             }
+            pluginGroup.setExpanded(
+                    TRUE.equals(PLUGIN_GROUP_EXPANDED.getOrDefault(group, false))
+            );
 
             adapter.add(pluginGroup);
         }
