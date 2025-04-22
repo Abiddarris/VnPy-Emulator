@@ -40,6 +40,7 @@ public class PatchFragment extends BaseDownloadFragment {
     private static final String FETCHED = "fetched";
     public static final String PATCHES = "patches";
 
+    static final Map<Patch, Boolean> PATCH_EXPANDED = new HashMap<>();
     private static final Map<Patcher, PatcherState> PATCHER_STATE = new HashMap<>();
     private static final Map<PatcherState, PatcherItem> PATCHER_ITEMS = new HashMap<>();
     private boolean refresh;
@@ -105,6 +106,9 @@ public class PatchFragment extends BaseDownloadFragment {
                 pluginGroup.add(item);
                 PATCHER_ITEMS.put(state, item);
             }
+
+            pluginGroup.setExpanded(
+                    Boolean.TRUE.equals(PATCH_EXPANDED.getOrDefault(patch, false)));
 
             adapter.add(pluginGroup);
         }

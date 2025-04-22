@@ -16,11 +16,14 @@
  ***********************************************************************************/
 package com.abiddarris.vnpyemulator.download.patch;
 
+import static com.abiddarris.vnpyemulator.download.patch.PatchFragment.PATCH_EXPANDED;
+
 import androidx.annotation.NonNull;
 
 import com.abiddarris.vnpyemulator.databinding.LayoutPluginGroupBinding;
 import com.abiddarris.vnpyemulator.download.base.BaseGroupItem;
 import com.abiddarris.vnpyemulator.patches.Patch;
+import com.xwray.groupie.ExpandableGroup;
 
 public class PatchItem extends BaseGroupItem {
 
@@ -36,5 +39,12 @@ public class PatchItem extends BaseGroupItem {
 
         binding.name.setText(patch.getName());
         binding.version.setText(patch.getRenPyVersion());
+    }
+
+    @Override
+    protected void toggleExpand() {
+        super.toggleExpand();
+
+        PATCH_EXPANDED.put(patch, isExpanded());
     }
 }

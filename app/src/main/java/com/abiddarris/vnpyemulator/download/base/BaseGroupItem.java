@@ -24,7 +24,7 @@ public abstract class BaseGroupItem extends BindableItem<LayoutPluginGroupBindin
     @Override
     public void bind(@NonNull LayoutPluginGroupBinding binding, int position) {
         View.OnClickListener onClickListener = v -> {
-            onToggleListener.onToggleExpanded();
+            toggleExpand();
             binding.expand.setIconResource(
                     onToggleListener.isExpanded() ? R.drawable.ic_expand_less : R.drawable.ic_expand_more);
         };
@@ -41,5 +41,13 @@ public abstract class BaseGroupItem extends BindableItem<LayoutPluginGroupBindin
     @Override
     public void setExpandableGroup(@NonNull ExpandableGroup onToggleListener) {
         this.onToggleListener = onToggleListener;
+    }
+
+    protected void toggleExpand() {
+        onToggleListener.onToggleExpanded();
+    }
+
+    protected boolean isExpanded() {
+        return onToggleListener.isExpanded();
     }
 }
