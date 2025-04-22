@@ -21,7 +21,10 @@ import static com.abiddarris.common.files.Files.getFilesTree;
 
 import androidx.fragment.app.DialogFragment;
 
+import com.abiddarris.common.android.dialogs.SimpleConfirmationDialog;
+import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.tasks.TaskDialog;
+import com.abiddarris.vnpyemulator.R;
 
 import java.io.File;
 import java.util.List;
@@ -53,7 +56,9 @@ public class FindRpaTask extends TaskDialog {
             .filter(File::isFile)
             .toArray(File[]::new);
         
-        UnpackArchiveOptionsDialog.newInstance(gameFolder.getPath(), archives)
-            .show(getFragmentManager(), null);
+        DialogFragment fragment = archives.length == 0 ?
+                SimpleDialog.newSimpleDialog(getString(R.string.unpack_archive), getString(R.string.no_rpa_found)) :
+                UnpackArchiveOptionsDialog.newInstance(gameFolder.getPath(), archives);
+        fragment.show(getFragmentManager(), null);
     }
 }

@@ -66,4 +66,5 @@
     <string name="download_canceled">Download canceled</string>
     <string name="downloading_patch">Downloading Patch</string>
     <string name="create_shortcut">Create Shortcut</string>
+    <string name="no_rpa_found">No .rpa found</string>
 </resources>
