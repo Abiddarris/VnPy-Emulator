@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.zip.GZIPInputStream;
 
 public class Plugin {
@@ -148,6 +149,18 @@ public class Plugin {
         } finally {
              cache.delete();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Plugin plugin = (Plugin) o;
+        return Objects.equals(privateFiles, plugin.privateFiles) && Objects.equals(abi, plugin.abi) && Objects.equals(file, plugin.file) && Objects.equals(version, plugin.version);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(privateFiles, abi, file, version);
     }
 
     private void unpackPrivateFiles(File cache, File dest) throws IOException {

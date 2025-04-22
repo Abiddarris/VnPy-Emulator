@@ -25,6 +25,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class PluginGroup {
 
@@ -66,5 +67,17 @@ public class PluginGroup {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PluginGroup that = (PluginGroup) o;
+        return Objects.equals(name, that.name) && Objects.equals(version, that.version) && Objects.deepEquals(plugins, that.plugins);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, version, Arrays.hashCode(plugins));
     }
 }
