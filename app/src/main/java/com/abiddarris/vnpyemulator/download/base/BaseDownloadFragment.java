@@ -35,6 +35,7 @@ import com.xwray.groupie.GroupieAdapter;
 
 public class BaseDownloadFragment extends AdvanceFragment {
 
+    public static final String REFRESH = "refresh";
     protected BaseDownloadViewModel baseDownloadViewModel;
     protected GroupieAdapter adapter;
 
@@ -59,6 +60,8 @@ public class BaseDownloadFragment extends AdvanceFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ui.refreshLayout.setRefreshing(isRefreshing());
+
         adapter = new GroupieAdapter();
 
         ui.plugins.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -67,6 +70,16 @@ public class BaseDownloadFragment extends AdvanceFragment {
 
     public DownloadService getDownloadService() {
         return ((DownloadFragment)getParentFragment()).getDownloadService();
+    }
+
+    protected void setRefreshing(boolean b) {
+        ui.refreshLayout.setRefreshing(b);
+
+        saveVariable(REFRESH, b);
+    }
+
+    protected boolean isRefreshing() {
+        return Boolean.TRUE.equals(getVariable(REFRESH, false));
     }
 
     public static class BaseDownloadViewModel extends TaskViewModel {

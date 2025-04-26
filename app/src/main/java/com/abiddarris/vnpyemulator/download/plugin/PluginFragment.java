@@ -28,6 +28,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
 import com.abiddarris.common.android.dialogs.SimpleDialog;
 import com.abiddarris.common.android.pm.Packages;
 import com.abiddarris.common.android.tasks.v2.Task;
@@ -92,8 +93,11 @@ public class PluginFragment extends BaseDownloadFragment {
     }
 
     public void onPluginFetched(PluginGroup[] pluginGroups) {
-        setPluginGroups(pluginGroups);
-        requireActivity().runOnUiThread(this::setPluginToAdapter);
+        requireActivity().runOnUiThread(() -> {
+            setPluginGroups(pluginGroups);
+            setRefreshing(false);
+            setPluginToAdapter();
+        });
 
         checkInstallFromUnknownSourcePermission();
     }
@@ -105,8 +109,8 @@ public class PluginFragment extends BaseDownloadFragment {
                 return;
             }
             setFetched(true);
+            setRefreshing(true);
 
-            ui.refreshLayout.setRefreshing(true);
             TaskInfo<Void, PluginGroup[]> info =
                     baseDownloadViewModel.getTaskManager().execute(new Task<>() {
                         @Override
@@ -115,13 +119,20 @@ public class PluginFragment extends BaseDownloadFragment {
 
                             PluginSource.getPlugins(getContext(), false);
                         }
+
+                        @Override
+                        public void onThrowableCatched(Throwable throwable) {
+                            super.onThrowableCatched(throwable);
+
+                            ExceptionDialog.showExceptionDialog(getChildFragmentManager(), throwable);
+                        }
                     });
 
             info.addOnTaskExecuted(this::onPluginFetched);
 
             return;
         }
-        ui.refreshLayout.setRefreshing(false);
+        setRefreshing(false);
 
         adapter.clear();
         for (PluginGroup group : pluginGroups) {

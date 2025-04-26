@@ -22,14 +22,13 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.abiddarris.common.android.dialogs.ExceptionDialog;
 import com.abiddarris.common.android.tasks.v2.Task;
 import com.abiddarris.common.android.tasks.v2.TaskInfo;
 import com.abiddarris.vnpyemulator.download.base.BaseDownloadFragment;
 import com.abiddarris.vnpyemulator.patches.Patch;
 import com.abiddarris.vnpyemulator.patches.PatchSource;
 import com.abiddarris.vnpyemulator.patches.Patcher;
-import com.abiddarris.vnpyemulator.plugins.PluginGroup;
-import com.abiddarris.vnpyemulator.plugins.PluginSource;
 import com.xwray.groupie.ExpandableGroup;
 
 import java.util.HashMap;
@@ -65,33 +64,38 @@ public class PatchFragment extends BaseDownloadFragment {
         PATCHER_ITEMS.clear();
     }
 
-    public void onPatchFetched(Patch[] patches) {
-        setPatches(patches);
-        requireActivity().runOnUiThread(this::setPatchesToAdapter);
-    }
-
     private void setPatchesToAdapter() {
         if (!getVariable(FETCHED, false)) {
             setFetched(true);
+            setRefreshing(true);
 
-            ui.refreshLayout.setRefreshing(true);
             TaskInfo<Void, Patch[]> info =
                     baseDownloadViewModel.getTaskManager().execute(new Task<>() {
                         @Override
                         public void execute() throws Exception {
                             setResult(PatchSource.getPatches(refresh));
                         }
+
+                        @Override
+                        public void onThrowableCatched(Throwable throwable) {
+                            super.onThrowableCatched(throwable);
+
+                            ExceptionDialog.showExceptionDialog(getChildFragmentManager(), throwable);
+                        }
                     });
 
-            info.addOnTaskExecuted(this::onPatchFetched);
-
+            info.addOnTaskExecuted(patches -> {
+                setPatches(patches);
+                requireActivity().runOnUiThread(this::setPatchesToAdapter);
+            });
             return;
         }
+
+        setRefreshing(false);
         if (getPatches() == null) {
             return;
         }
 
-        ui.refreshLayout.setRefreshing(false);
         adapter.clear();
         for (Patch patch : getPatches()) {
             ExpandableGroup pluginGroup = new ExpandableGroup(new PatchItem(patch));
