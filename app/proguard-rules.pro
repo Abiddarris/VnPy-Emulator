@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 -dontwarn org.renpy.android.PythonSDLActivity
+-keep class com.abiddarris.python3.** { *; }
